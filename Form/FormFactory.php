@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Csrf\CsrfTokenManager;
 use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 use Symfony\Component\Security\Csrf\TokenStorage\SessionTokenStorage;
-use Symfony\Component\Validator\Validation;
 
 class FormFactory implements FormFactoryInterface
 {
@@ -28,20 +27,16 @@ class FormFactory implements FormFactoryInterface
     private static function create()
     {
         $csrfManager = self::createCsrfManager();
-        $validator = self::createValidator();
 
         $formFactory = Forms::createFormFactoryBuilder()
             ->addExtension(new HttpFoundationExtension())
             ->addExtension(new CsrfExtension($csrfManager))
-            ->addExtension(new ValidatorExtension($validator))
+            ->addExtension(new ValidatorExtension(
+                \TelNowEdge\FreePBX\Base\Validator\Validator::getInstance()
+            ))
             ->getFormFactory();
 
         return $formFactory;
-    }
-
-    private static function createValidator()
-    {
-        return Validation::createValidator();
     }
 
     private static function createCsrfManager()

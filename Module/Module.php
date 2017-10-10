@@ -41,6 +41,7 @@ abstract class Module extends \FreePBX_Helpers
 
         $this->request = \TelNowEdge\FreePBX\Base\Http\Request::create();
         $this->formFactory = \TelNowEdge\FreePBX\Base\Form\FormFactory::getInstance();
+        $this->validator = \TelNowEdge\FreePBX\Base\Validator\Validator::getInstance();
 
         $this->twig = $templateHelper
             ->addRegisterPath(static::getViewsDir(), static::getViewsNamespace())
