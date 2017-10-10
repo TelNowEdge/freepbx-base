@@ -30,12 +30,12 @@ abstract class Module extends \FreePBX_Helpers
 
     public function __construct($freepbx = null)
     {
-		parent::__construct($freepbx);
+        parent::__construct($freepbx);
 
-		$this->astman = $freepbx->astman;
-		$this->config = $freepbx->Config;
-		$this->database = $freepbx->Database;
-		$this->freepbx = $freepbx;
+        $this->astman = $freepbx->astman;
+        $this->config = $freepbx->Config;
+        $this->database = $freepbx->Database;
+        $this->freepbx = $freepbx;
 
         $templateHelper = new TemplateEngine();
 
@@ -46,10 +46,7 @@ abstract class Module extends \FreePBX_Helpers
             ->addRegisterPath(static::getViewsDir(), static::getViewsNamespace())
             ->getTemplateEngine()
             ;
-
-        xdebug_break();
-
-	}
+    }
 
     abstract public static function getViewsDir();
     abstract public static function getViewsNamespace();
