@@ -28,9 +28,16 @@ abstract class Module extends \FreePBX_Helpers
      */
     protected $twig;
 
+    /**
+     * Symfony\Component\Validator\Validator\RecursiveValidator.php.
+     */
+    protected $validator;
+
     public function __construct($freepbx = null)
     {
         parent::__construct($freepbx);
+
+        static::autoloadTelNowEdgeModule();
 
         $this->astman = $freepbx->astman;
         $this->config = $freepbx->Config;
@@ -47,6 +54,21 @@ abstract class Module extends \FreePBX_Helpers
             ->addRegisterPath(static::getViewsDir(), static::getViewsNamespace())
             ->getTemplateEngine()
             ;
+    }
+
+    private static function autoloadTelNowEdgeModule()
+    {
+        // SearchHelper: TelNowEdge\Module
+        // Autoload to add my own NS starting by TelNowEdge\Module
+        spl_autoload_register(function ($class) {
+            if (1 !== preg_match('/^TelNowEdge\\\\Module\\\\(.*)$/', $class, $match)) {
+                return;
+            }
+
+            $classLoader = preg_replace('/\\\\/', '/', $match[1]);
+
+            require('modules/' . $classLoader . '.php');
+        });
     }
 
     abstract public static function getViewsDir();
