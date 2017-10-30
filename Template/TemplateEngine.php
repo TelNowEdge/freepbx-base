@@ -14,13 +14,14 @@ class TemplateEngine implements TemplateEngineInterface
 
     public function __construct()
     {
-        $defaultFormTheme = 'form_div_layout.html.twig';
+        $defaultFormTheme = 'freepbx_layout.html.twig';
 
         $appVariableReflection = new \ReflectionClass('\Symfony\Bridge\Twig\AppVariable');
         $vendorTwigBridgeDir = dirname($appVariableReflection->getFileName());
 
         $twig = new \Twig_Environment(new \Twig_Loader_Filesystem(array(
             $vendorTwigBridgeDir.'/Resources/views/Form',
+            __DIR__.'/../Resources/views/Form',
         )));
 
         $formEngine = new TwigRendererEngine(array($defaultFormTheme), $twig);

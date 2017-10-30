@@ -1,0 +1,36 @@
+{% use "freepbx_bootstrap_3_horizontal_layout.html.twig" %}
+
+{% block widget_container_attributes %}
+  class="row"
+{% endblock %}
+
+{# Big ack because FPBX gui_html create the parent whole structure #}
+{%- block form_rows -%}
+  {% for child in form %}
+    {{- form_row(child) -}}
+    </div>
+    </div>
+    </div>
+    </div>
+
+    {% if loop.last != true %}
+      <div class="element-container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+    {% endif %}
+  {% endfor %}
+{%- endblock form_rows -%}
+
+{%- block form_row -%}
+  <div class="form-group">
+    <div class="col-md-4 control-label">
+      {{- form_label(form) -}}
+      <i class="fa fa-question-circle fpbx-help-icon" data-for="emergency_cid"></i>
+    </div>
+    {{- form_errors(form) -}}
+    <div class="col-md-8 control-item">
+      {{- form_widget(form) -}}
+    </div>
+  </div>
+{%- endblock form_row -%}
