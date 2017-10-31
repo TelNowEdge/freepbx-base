@@ -15,5 +15,7 @@ abstract class AbstractRepository
     {
         $this->connection = $database->getDoctrineConnection();
         $this->connection->setFetchMode(\PDO::FETCH_OBJ);
+
+        return $this;
     }
 }
