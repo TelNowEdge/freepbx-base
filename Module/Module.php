@@ -2,7 +2,9 @@
 
 namespace TelNowEdge\FreePBX\Base\Module;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use TelNowEdge\FreePBX\Base\Template\TemplateEngine;
+use TelNowEdge\Module\tnehook\Repository\PhoneProvisionRepository;
 
 abstract class Module extends \FreePBX_Helpers
 {
@@ -33,11 +35,17 @@ abstract class Module extends \FreePBX_Helpers
      */
     protected $validator;
 
+    /**
+     * Symfony\Component\DependencyInjection\ContainerBuilder.
+     */
+    protected $container;
+
     public function __construct($freepbx = null)
     {
         parent::__construct($freepbx);
 
         static::autoloadTelNowEdgeModule();
+        $this->startContainer();
 
         $this->astman = $freepbx->astman;
         $this->config = $freepbx->Config;
@@ -54,6 +62,39 @@ abstract class Module extends \FreePBX_Helpers
             ->addRegisterPath(static::getViewsDir(), static::getViewsNamespace())
             ->getTemplateEngine()
             ;
+
+
+    }
+
+    private function startContainer()
+    {
+        $this->container = $this->createDependencyInjectionContainer();
+
+        $this
+            ->registerModuleExtension()
+            ->registerSelf()
+            ;
+
+        $this->container->compile();
+    }
+
+    private function registerModuleExtension()
+    {
+        $reflection = new \ReflectionClass(static::class);
+        $className = $reflection->getShortName();
+        $fqdn = sprintf('\TelNowEdge\Module\%s\DependencyInjection\%sExtension', strtolower($className), ucfirst($className));
+
+        call_user_func(array($fqdn, 'load'), $this->container);
+
+        return $this;
+    }
+
+    private function registerSelf()
+    {
+        $c = new \TelNowEdge\FreePBX\Base\DependencyInjection\BaseExtension();
+        $c->load($this->container);
+
+        return $this;
     }
 
     private static function autoloadTelNowEdgeModule()
@@ -69,6 +110,11 @@ abstract class Module extends \FreePBX_Helpers
 
             require('modules/' . $classLoader . '.php');
         });
+    }
+
+    public function createDependencyInjectionContainer()
+    {
+        return new ContainerBuilder();
     }
 
     abstract public static function getViewsDir();

@@ -15,4 +15,9 @@ trait ModuleTrait
 
         return $this->twig->render($nsTemplate, $data);
     }
+
+    protected function get($service)
+    {
+        return $this->container->get($service);
+    }
 }

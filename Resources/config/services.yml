@@ -1,0 +1,14 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: false
+    public: false
+
+  FreePBX\Database: ~
+
+  TelNowEdge\FreePBX\Base\Repository\AbstractRepository:
+    abstract: true
+    calls:
+      - method: setConnection
+        arguments:
+          - '@FreePBX\Database'
