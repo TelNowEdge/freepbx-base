@@ -2,9 +2,11 @@ services:
   _defaults:
     autowire: true
     autoconfigure: false
-    public: false
+    public: true
 
-  FreePBX\Database: ~
+  FreePBX\Database:
+    arguments:
+      - 'mysql:host=localhost;dbname=asterisk;charset=utf8'
 
   TelNowEdge\FreePBX\Base\Repository\AbstractRepository:
     abstract: true
@@ -12,3 +14,24 @@ services:
       - method: setConnection
         arguments:
           - '@FreePBX\Database'
+
+  TelNowEdge\FreePBX\Base\Validator\Constraints\ChoiceValidator:
+    arguments:
+      - 'ddss'
+    tags: [validator.constraint_validator]
+
+  validator.validator_factory:
+    class: Symfony\Component\Validator\ContainerConstraintValidatorFactory
+    arguments:
+      -
+
+  validator.expression:
+    class: Symfony\Component\Validator\Constraints\ExpressionValidator
+    tags:
+      - {name:validator.constraint_validator, alias:validator.expression}
+
+  validator.email:
+    class: Symfony\Component\Validator\Constraints\EmailValidator
+    tags:
+      - {name:validator.constraint_validator, alias:Symfony\Component\Validator\Constraints\EmailValidator}
+    arguments: ~

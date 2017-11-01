@@ -8,16 +8,16 @@ class Validator
 {
     private static $instance;
 
-    public static function getInstance()
+    public static function getInstance($c)
     {
         if (false === isset(static::$instance)) {
-            static::$instance = static::create();
+            static::$instance = static::create($c);
         }
 
         return static::$instance;
     }
 
-    private static function create()
+    private static function create($c)
     {
         $loader = include(__DIR__ . "/../../../autoload.php");
 
@@ -27,6 +27,7 @@ class Validator
 
         return Validation::createValidatorBuilder()
             ->enableAnnotationMapping()
+            ->setConstraintValidatorFactory($c->get('validator.validator_factory'))
             ->getValidator();
         ;
     }

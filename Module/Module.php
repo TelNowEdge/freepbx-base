@@ -5,6 +5,8 @@ namespace TelNowEdge\FreePBX\Base\Module;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use TelNowEdge\FreePBX\Base\Template\TemplateEngine;
 use TelNowEdge\Module\tnehook\Repository\PhoneProvisionRepository;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+use Symfony\Component\Config\Resource\ClassExistenceResource;
 
 abstract class Module extends \FreePBX_Helpers
 {
@@ -52,12 +54,12 @@ abstract class Module extends \FreePBX_Helpers
         $this->database = $freepbx->Database;
         $this->freepbx = $freepbx;
 
-        $templateHelper = new TemplateEngine();
-
+        $csrfManager = \TelNowEdge\FreePBX\Base\Http\Security\CsrfManager::create();
         $this->request = \TelNowEdge\FreePBX\Base\Http\Request::create();
-        $this->formFactory = \TelNowEdge\FreePBX\Base\Form\FormFactory::getInstance();
-        $this->validator = \TelNowEdge\FreePBX\Base\Validator\Validator::getInstance();
 
+        $this->validator = \TelNowEdge\FreePBX\Base\Validator\Validator::getInstance($this->container);
+        $this->formFactory = \TelNowEdge\FreePBX\Base\Form\FormFactory::getInstance($csrfManager);
+        $templateHelper = new TemplateEngine($csrfManager);
         $this->twig = $templateHelper
             ->addRegisterPath(static::getViewsDir(), static::getViewsNamespace())
             ->getTemplateEngine()
@@ -75,6 +77,9 @@ abstract class Module extends \FreePBX_Helpers
             ->registerSelf()
             ;
 
+        $this->container->addResource(new ClassExistenceResource('\Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass'));
+
+        $this->container->addCompilerPass(new \Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass, PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
         $this->container->compile();
     }
 
@@ -84,7 +89,9 @@ abstract class Module extends \FreePBX_Helpers
         $className = $reflection->getShortName();
         $fqdn = sprintf('\TelNowEdge\Module\%s\DependencyInjection\%sExtension', strtolower($className), ucfirst($className));
 
-        call_user_func(array($fqdn, 'load'), $this->container);
+        $instance = new $fqdn();
+
+        call_user_func(array($instance, 'load'), $this->container);
 
         return $this;
     }
