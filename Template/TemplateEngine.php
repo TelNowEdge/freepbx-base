@@ -12,7 +12,7 @@ class TemplateEngine implements TemplateEngineInterface
      */
     private $twig;
 
-    public function __construct()
+    public function __construct(\Symfony\Component\Security\Csrf\CsrfTokenManager $csrfManager)
     {
         $defaultFormTheme = 'freepbx_layout.html.twig';
 
