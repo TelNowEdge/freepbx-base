@@ -1,0 +1,45 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: false
+    public: true
+
+  validator:
+    class: Symfony\Component\Validator\Validator\ValidatorInterface
+    factory: 'validator.builder:getValidator'
+
+  Symfony\Component\Validator\Validator\ValidatorInterface:
+    alias: validator
+
+  validator.builder:
+    class: Symfony\Component\Validator\ValidatorBuilderInterface
+    factory: ['Symfony\Component\Validator\Validation', createValidatorBuilder]
+    calls:
+      - method: enableAnnotationMapping
+      - method: setConstraintValidatorFactory
+        arguments:
+          - '@validator.validator_factory'
+
+  validator.validator_factory:
+    class: Symfony\Component\Validator\ContainerConstraintValidatorFactory
+    arguments:
+      -
+      # Dummy arg to register class_exists
+      - '@Doctrine\Common\Annotations\AnnotationRegistry'
+
+  validator.expression:
+    class: Symfony\Component\Validator\Constraints\ExpressionValidator
+    tags:
+      - {name:validator.constraint_validator, alias:validator.expression}
+
+  validator.email:
+    class: Symfony\Component\Validator\Constraints\EmailValidator
+    tags:
+      - {name:validator.constraint_validator, alias:Symfony\Component\Validator\Constraints\EmailValidator}
+    arguments: ~
+
+  Doctrine\Common\Annotations\AnnotationRegistry:
+    calls:
+      - method: registerLoader
+        arguments:
+         - class_exists

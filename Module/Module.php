@@ -46,40 +46,33 @@ abstract class Module extends \FreePBX_Helpers
     {
         parent::__construct($freepbx);
 
-        static::autoloadTelNowEdgeModule();
-        $this->startContainer();
-
         $this->astman = $freepbx->astman;
         $this->config = $freepbx->Config;
         $this->database = $freepbx->Database;
         $this->freepbx = $freepbx;
 
-        $csrfManager = \TelNowEdge\FreePBX\Base\Http\Security\CsrfManager::create();
-        $this->request = \TelNowEdge\FreePBX\Base\Http\Request::create();
+        static::autoloadTelNowEdgeModule();
+        $this->startContainer();
 
-        $this->validator = \TelNowEdge\FreePBX\Base\Validator\Validator::getInstance($this->container);
-        $this->formFactory = \TelNowEdge\FreePBX\Base\Form\FormFactory::getInstance($csrfManager);
-        $templateHelper = new TemplateEngine($csrfManager);
-        $this->twig = $templateHelper
+        $this->twig = $this->get('template_engine')
             ->addRegisterPath(static::getViewsDir(), static::getViewsNamespace())
             ->getTemplateEngine()
             ;
-
-
     }
 
     private function startContainer()
     {
-        $this->container = $this->createDependencyInjectionContainer();
+        $this->container = new ContainerBuilder();
 
         $this
             ->registerModuleExtension()
             ->registerSelf()
             ;
 
-        $this->container->addResource(new ClassExistenceResource('\Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass'));
+        /* $this->container->addResource(new ClassExistenceResource('\Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass')); */
 
         $this->container->addCompilerPass(new \Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass, PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
+
         $this->container->compile();
     }
 
@@ -91,7 +84,8 @@ abstract class Module extends \FreePBX_Helpers
 
         $instance = new $fqdn();
 
-        call_user_func(array($instance, 'load'), $this->container);
+        $this->container->registerExtension($instance);
+        $this->container->loadFromExtension($instance->getAlias());
 
         return $this;
     }
@@ -99,7 +93,9 @@ abstract class Module extends \FreePBX_Helpers
     private function registerSelf()
     {
         $c = new \TelNowEdge\FreePBX\Base\DependencyInjection\BaseExtension();
-        $c->load($this->container);
+
+        $this->container->registerExtension($c);
+        $this->container->loadFromExtension($c->getAlias());
 
         return $this;
     }
@@ -117,11 +113,6 @@ abstract class Module extends \FreePBX_Helpers
 
             require('modules/' . $classLoader . '.php');
         });
-    }
-
-    public function createDependencyInjectionContainer()
-    {
-        return new ContainerBuilder();
     }
 
     abstract public static function getViewsDir();

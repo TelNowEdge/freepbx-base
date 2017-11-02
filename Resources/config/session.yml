@@ -1,0 +1,35 @@
+parameters:
+
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: false
+    public: true
+
+  session:
+    class: Symfony\Component\HttpFoundation\Session\Session
+    arguments:
+      - '@session.storage'
+      - '@session.attribute_bag'
+      - '@session.flash_bag'
+    calls:
+      - method: migrate
+
+  Symfony\Component\HttpFoundation\Session\SessionInterface:
+    alias: session
+
+  Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface:
+    alias: session.storage
+
+  session.attribute_bag:
+    class: Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag
+
+  session.flash_bag:
+    class: Symfony\Component\HttpFoundation\Session\Flash\FlashBag
+
+  session.storage.native:
+    class: Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage
+
+  session.storage:
+    alias: session.storage.native

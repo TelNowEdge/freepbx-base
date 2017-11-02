@@ -1,0 +1,25 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: false
+    public: true
+
+  security.csrf.token_generator:
+    class: Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator
+
+  Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface:
+    alias: security.csrf.token_generator
+
+  security.csrf.token_storage:
+    class: Symfony\Component\Security\Csrf\TokenStorage\SessionTokenStorage
+    arguments:
+      - '@session'
+
+  Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface:
+    alias: security.csrf.token_storage
+
+  security.csrf.token_manager:
+    class: Symfony\Component\Security\Csrf\CsrfTokenManager
+    arguments:
+      - '@security.csrf.token_generator'
+      - '@security.csrf.token_storage'

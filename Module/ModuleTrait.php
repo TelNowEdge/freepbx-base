@@ -6,7 +6,7 @@ trait ModuleTrait
 {
     protected function createForm($type, $data = null, array $options = array())
     {
-        return $this->formFactory->create($type, $data, $options);
+        return $this->get('form_factory')->create($type, $data, $options);
     }
 
     protected function render($template, $data = array())

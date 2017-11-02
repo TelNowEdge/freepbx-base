@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: false
+    public: true
+
+  template_engine:
+    class: TelNowEdge\FreePBX\Base\Template\TemplateEngine
+    arguments:
+      - '@security.csrf.token_manager'

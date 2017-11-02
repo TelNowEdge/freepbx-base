@@ -1,0 +1,12 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: false
+    public: true
+
+  request:
+    class: Symfony\Component\HttpFoundation\Request
+    factory: ['Symfony\Component\HttpFoundation\Request', createFromGlobals]
+
+  Symfony\Component\HttpFoundation\Request:
+    alias: 'request'

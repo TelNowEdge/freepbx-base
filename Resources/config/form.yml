@@ -1,0 +1,36 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: false
+    public: true
+
+  form_factory:
+    class: Symfony\Component\Form\FormFactoryInterface
+    factory: 'form_factory.builder:getFormFactory'
+
+  form_factory.builder:
+    class: Symfony\Component\Form\FormFactoryBuilderInterface
+    factory: ['Symfony\Component\Form\Forms', createFormFactoryBuilder]
+    calls:
+      - method: addExtension
+        arguments:
+          - '@form.extension.http_foundation'
+      - method: addExtension
+        arguments:
+          - '@form.extension.csrf'
+      - method: addExtension
+        arguments:
+          - '@form.extension.validator'
+
+  form.extension.http_foundation:
+    class: Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension
+
+  form.extension.csrf:
+    class: Symfony\Component\Form\Extension\Csrf\CsrfExtension
+    arguments:
+      - '@security.csrf.token_manager'
+
+  form.extension.validator:
+    class: Symfony\Component\Form\Extension\Validator\ValidatorExtension
+    arguments:
+      - '@validator'
