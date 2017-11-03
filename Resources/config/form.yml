@@ -21,6 +21,9 @@ services:
       - method: addExtension
         arguments:
           - '@form.extension.validator'
+      - method: addExtension
+        arguments:
+          - '@form.extension'
 
   form.extension.http_foundation:
     class: Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension
@@ -34,3 +37,10 @@ services:
     class: Symfony\Component\Form\Extension\Validator\ValidatorExtension
     arguments:
       - '@validator'
+
+  form.extension:
+    class: Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension
+    arguments:
+      -
+      - []
+      - !iterator {}

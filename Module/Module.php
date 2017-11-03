@@ -72,6 +72,7 @@ abstract class Module extends \FreePBX_Helpers
         /* $this->container->addResource(new ClassExistenceResource('\Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass')); */
 
         $this->container->addCompilerPass(new \Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass, PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
+        $this->container->addCompilerPass(new \Symfony\Component\Form\DependencyInjection\FormPass, PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
 
         $this->container->compile();
     }
