@@ -21,8 +21,9 @@ abstract class AbstractMigration implements MigrationInterface
         $reflector = new \ReflectionClass(static::class);
         $methods = $reflector->getMethods();
 
+        asort($methods);
         foreach ($methods as $method) {
-            if (1 !== preg_match('/^migration\d{8}/', $method->name)) {
+            if (1 !== preg_match('/^migration\d{10}$/', $method->name)) {
                 continue;
             }
 
