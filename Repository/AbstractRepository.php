@@ -39,4 +39,44 @@ abstract class AbstractRepository
 
         return $res;
     }
+
+    protected function sqlToArray($param)
+    {
+        if (true === $param instanceof \stdClass) {
+            $param = (array) $param;
+        }
+
+        $res = array();
+        foreach ($param as $key => $value) {
+            $chunks = preg_split('/__/', $key);
+            $class = $chunks[0];
+            $prop = trim($chunks[1], '_');
+
+            $prop = preg_replace_callback('/_(\w)/', function ($match) {
+                return ucfirst($match[1]);
+            }, $prop);
+            $res[$class][$prop] = $value;
+        }
+
+        return $res;
+    }
+
+    protected function objectFromArray($fqn, array $array)
+    {
+        $reflector = new \ReflectionClass($fqn);
+        $class = $reflector->newInstance();
+
+        foreach ($array as $prop => $value) {
+            $method = sprintf('set%s', ucfirst($prop));
+
+            if (true === $reflector->hasMethod($method)) {
+                $reflector->getMethod($method)->invoke($class, $value);
+            } else {
+                throw new \Exception(sprintf('%s:%s is not callable', $fqn, $method));
+            }
+        }
+
+        return $class;
+    }
+
 }
