@@ -16,6 +16,22 @@ services:
           - '@FreePBX\Database'
 
   TelNowEdge\FreePBX\Base\Validator\Constraints\ChoiceValidator:
-    arguments:
-      - 'ddss'
+    calls:
+      - method: setContainer
+        arguments:
+          - '@service_container'
     tags: [validator.constraint_validator]
+
+  TelNowEdge\FreePBX\Base\Validator\Constraints\DependsValidator:
+    calls:
+      - method: setContainer
+        arguments:
+          - '@service_container'
+    tags: [validator.constraint_validator]
+
+  TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractMigration:
+    abstract: true
+    calls:
+      - method: setConnection
+        arguments:
+          - '@FreePBX\Database'

@@ -4,23 +4,48 @@ namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\ChoiceValidator as BaseChoiceValidator;
-use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
-use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class ChoiceValidator extends BaseChoiceValidator
+class ChoiceValidator extends BaseChoiceValidator implements ContainerAwareInterface
 {
     private $container;
 
-    public function __construct($container)
+    public function setContainer(ContainerInterface $container = null)
     {
-        xdebug_break();
         $this->container = $container;
     }
 
     public function validate($value, Constraint $consraint)
     {
-        if ($consraint->service) {
-            xdebug_break();
+        if (true === is_array($consraint->service)) {
+            if (false === $this->container->has($consraint->service[0])) {
+                $this->context
+                    ->buildViolation('Unable to find service: {{ service }}')
+                    ->setParameter('{{ service }}', $consraint->service[0])
+                    ->addViolation()
+                    ;
+            }
+
+            $service = $this->container->get($consraint->service[0]);
+
+            $reflector = new \ReflectionClass($service);
+
+            if (false === $reflector->hasMethod($consraint->service[1])) {
+                $this->context
+                    ->buildViolation('Unable to find method: {{ method }}')
+                    ->setParameter('{{ method }}', $consraint->service[1])
+                    ->addViolation()
+                    ;
+            }
+
+            $method = $reflector->getMethod($consraint->service[1]);
+
+            if (false === in_array($value, $method->invoke($service))) {
+                $this->context->addViolation($consraint->message);
+            }
+
+            return true;
         }
 
         parent::validate($value, $consraint);
