@@ -1,0 +1,17 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: false
+    public: true
+
+  Symfony\Component\Serializer\Encoder\JsonEncoder: ~
+
+  Symfony\Component\Serializer\Normalizer\ObjectNormalizer: ~
+
+  Symfony\Component\Serializer\Serializer:
+    arguments:
+      - ['@Symfony\Component\Serializer\Normalizer\ObjectNormalizer']
+      - ['@Symfony\Component\Serializer\Encoder\JsonEncoder']
+
+  serializer:
+    alias: Symfony\Component\Serializer\Serializer

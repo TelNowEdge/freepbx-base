@@ -23,6 +23,7 @@ class BaseExtension extends Extension
             ->registerValidatorConfiguration($config, $container, $loader)
             ->registerRequestConfiguration($config, $container, $loader)
             ->registerTemplateEngineConfiguration($config, $container, $loader)
+            ->registerSerializerConfiguration($config, $container, $loader)
             ->registerContainerConfiguration($config, $container, $loader)
             ;
 
@@ -67,6 +68,13 @@ class BaseExtension extends Extension
     private function registerTemplateEngineConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
     {
         $loader->load('template_engine.yml');
+
+        return $this;
+    }
+
+    private function registerSerializerConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
+    {
+        $loader->load('serializer.yml');
 
         return $this;
     }
