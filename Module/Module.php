@@ -3,7 +3,6 @@
 namespace TelNowEdge\FreePBX\Base\Module;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use TelNowEdge\FreePBX\Base\Template\TemplateEngine;
 use TelNowEdge\Module\tnehook\Repository\PhoneProvisionRepository;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\Config\Resource\ClassExistenceResource;
@@ -53,11 +52,6 @@ abstract class Module extends \FreePBX_Helpers
 
         static::autoloadTelNowEdgeModule();
         $this->startContainer();
-
-        $this->twig = $this->get('template_engine')
-            ->addRegisterPath(static::getViewsDir(), static::getViewsNamespace())
-            ->getTemplateEngine()
-            ;
     }
 
     private function startContainer()
@@ -73,6 +67,7 @@ abstract class Module extends \FreePBX_Helpers
 
         $this->container->addCompilerPass(new \Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass, PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
         $this->container->addCompilerPass(new \Symfony\Component\Form\DependencyInjection\FormPass, PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
+        $this->container->addCompilerPass(new \TelNowEdge\FreePBX\Base\DependencyInjection\Compiler\ControllerPass, PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
 
         $this->container->compile();
     }
@@ -115,7 +110,4 @@ abstract class Module extends \FreePBX_Helpers
             require('modules/' . $classLoader . '.php');
         });
     }
-
-    abstract public static function getViewsDir();
-    abstract public static function getViewsNamespace();
 }

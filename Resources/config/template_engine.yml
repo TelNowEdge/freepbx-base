@@ -8,3 +8,7 @@ services:
     class: TelNowEdge\FreePBX\Base\Template\TemplateEngine
     arguments:
       - '@security.csrf.token_manager'
+
+  twig:
+    class: Twig_Environment
+    factory: 'template_engine:getTemplateEngine'

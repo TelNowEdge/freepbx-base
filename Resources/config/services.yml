@@ -35,3 +35,10 @@ services:
       - method: setConnection
         arguments:
           - '@FreePBX\Database'
+
+  TelNowEdge\FreePBX\Base\Controller\AbstractController:
+    abstract: true
+    calls:
+      - method: setContainer
+        arguments:
+          - '@service_container'

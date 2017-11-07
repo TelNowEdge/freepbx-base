@@ -52,9 +52,13 @@ class DependsValidator extends ConstraintValidator implements ContainerAwareInte
         $method = $reflector->getMethod($consraint->service[1]);
         $dependsMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($consraint->depends)));
         $fieldMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($consraint->field)));
-        xdebug_break();
+
         if (false === in_array($fieldMethod->invoke($obj), $method->invoke($service, $dependsMethod->invoke($obj)))) {
-            $this->context->addViolation($consraint->message);
+            $this->context
+                ->buildViolation($consraint->message)
+                ->atPath($consraint->field)
+                ->addViolation()
+                ;
         }
 
         return true;
