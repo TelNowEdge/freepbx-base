@@ -15,6 +15,13 @@ services:
         arguments:
           - '@FreePBX\Database'
 
+  TelNowEdge\FreePBX\Base\Handler\AbstractDbHandler:
+    abstract: true
+    calls:
+      - method: setConnection
+        arguments:
+          - '@FreePBX\Database'
+
   TelNowEdge\FreePBX\Base\Validator\Constraints\ChoiceValidator:
     calls:
       - method: setContainer
