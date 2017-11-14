@@ -11,21 +11,11 @@ abstract class AbstractController implements ContainerAwareInterface
 
     protected $container;
 
-    public function __construct()
-    {
-        /* $this->twig = $this */
-        /*     ->get('template_engine') */
-        /*     ->addRegisterPath(static::getViewsDir(), static::getViewsNamespace()) */
-        /*     ->getTemplateEngine() */
-        /*     ; */
-    }
-
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
     }
 
-    abstract public function process($cc);
     abstract public static function getViewsDir();
     abstract public static function getViewsNamespace();
 }
