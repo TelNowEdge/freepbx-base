@@ -196,7 +196,7 @@ mixed function get(string $service);
     Render return the compile html from the template. Append on FreePBX® with the FreePBX® practices.
 
     ```php
-    $html = $this->render(foo.html.twig', array(
+    $html = $this->render('foo.html.twig', array(
         'form' => $form->createView(),
     ));
 
