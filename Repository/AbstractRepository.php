@@ -2,13 +2,12 @@
 
 namespace TelNowEdge\FreePBX\Base\Repository;
 
-use FreePBX\Database;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
 
 abstract class AbstractRepository
 {
     /**
-     * \Doctrine\DBAL\Connection
+     * \Doctrine\DBAL\Connection.
      */
     protected $connection;
 
@@ -78,5 +77,4 @@ abstract class AbstractRepository
 
         return $class;
     }
-
 }

@@ -2,9 +2,8 @@
 
 namespace TelNowEdge\FreePBX\Base\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ControllerPass implements CompilerPassInterface
 {
@@ -21,7 +20,7 @@ class ControllerPass implements CompilerPassInterface
         foreach ($taggedServices as $id => $service) {
             $definition->addMethodCall('addRegisterPath', array(
                 call_user_func(array($id, 'getViewsDir')),
-                call_user_func(array($id, 'getViewsNamespace'))
+                call_user_func(array($id, 'getViewsNamespace')),
             ));
         }
     }

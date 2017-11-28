@@ -17,5 +17,6 @@ abstract class AbstractController implements ContainerAwareInterface
     }
 
     abstract public static function getViewsDir();
+
     abstract public static function getViewsNamespace();
 }

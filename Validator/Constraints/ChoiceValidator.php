@@ -2,10 +2,10 @@
 
 namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\Constraints\ChoiceValidator as BaseChoiceValidator;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints\ChoiceValidator as BaseChoiceValidator;
 
 class ChoiceValidator extends BaseChoiceValidator implements ContainerAwareInterface
 {
@@ -41,7 +41,7 @@ class ChoiceValidator extends BaseChoiceValidator implements ContainerAwareInter
 
             $method = $reflector->getMethod($consraint->service[1]);
 
-            if (false === in_array($value, $method->invoke($service))) {
+            if (false === in_array($value, $method->invoke($service), true)) {
                 $this->context->addViolation($consraint->message);
             }
 

@@ -30,7 +30,6 @@ abstract class AbstractMigration implements MigrationInterface
             try {
                 $this->connection->executeUpdate($method->invoke($this));
             } catch (\Exception $e) {
-
             }
         }
     }

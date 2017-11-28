@@ -5,7 +5,7 @@ namespace TelNowEdge\FreePBX\Base\Handler;
 abstract class AbstractDbHandler
 {
     /**
-     * \Doctrine\DBAL\Connection
+     * \Doctrine\DBAL\Connection.
      */
     protected $connection;
 

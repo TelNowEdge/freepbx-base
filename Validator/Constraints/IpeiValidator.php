@@ -29,13 +29,13 @@ class IpeiValidator extends ConstraintValidator
         $ipei = substr($ipei, 0, 12);
         $crc = 0;
 
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 12; ++$i) {
             $crc += $ipei[$i] * ($i + 1);
         }
 
         $crc = $crc % 11;
 
-        $crc = $crc === 10 ? '*' : $crc;
+        $crc = 10 === $crc ? '*' : $crc;
 
         return $ipei.$crc;
     }

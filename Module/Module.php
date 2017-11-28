@@ -2,10 +2,9 @@
 
 namespace TelNowEdge\FreePBX\Base\Module;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use TelNowEdge\Module\tnehook\Repository\PhoneProvisionRepository;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\Config\Resource\ClassExistenceResource;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 abstract class Module extends \FreePBX_Helpers
 {
@@ -65,9 +64,9 @@ abstract class Module extends \FreePBX_Helpers
 
         /* $this->container->addResource(new ClassExistenceResource('\Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass')); */
 
-        $this->container->addCompilerPass(new \Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass, PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
-        $this->container->addCompilerPass(new \Symfony\Component\Form\DependencyInjection\FormPass, PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
-        $this->container->addCompilerPass(new \TelNowEdge\FreePBX\Base\DependencyInjection\Compiler\ControllerPass, PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
+        $this->container->addCompilerPass(new \Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
+        $this->container->addCompilerPass(new \Symfony\Component\Form\DependencyInjection\FormPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
+        $this->container->addCompilerPass(new \TelNowEdge\FreePBX\Base\DependencyInjection\Compiler\ControllerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
 
         $this->container->compile();
     }
@@ -107,7 +106,7 @@ abstract class Module extends \FreePBX_Helpers
 
             $classLoader = preg_replace('/\\\\/', '/', $match[1]);
 
-            require('modules/' . $classLoader . '.php');
+            require 'modules/'.$classLoader.'.php';
         });
     }
 }

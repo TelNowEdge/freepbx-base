@@ -44,7 +44,7 @@ class DependsValidator extends ConstraintValidator implements ContainerAwareInte
         ) {
             $this->context
                 ->buildViolation('Unable to find a least one of this methods: {{ methods }}')
-                ->setParameter('{{ methods }}', sprintf("%s or %s", $consraint->field, $consraint->depends))
+                ->setParameter('{{ methods }}', sprintf('%s or %s', $consraint->field, $consraint->depends))
                 ->addViolation()
                 ;
         }
@@ -53,7 +53,7 @@ class DependsValidator extends ConstraintValidator implements ContainerAwareInte
         $dependsMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($consraint->depends)));
         $fieldMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($consraint->field)));
 
-        if (false === in_array($fieldMethod->invoke($obj), $method->invoke($service, $dependsMethod->invoke($obj)))) {
+        if (false === in_array($fieldMethod->invoke($obj), $method->invoke($service, $dependsMethod->invoke($obj)), true)) {
             $this->context
                 ->buildViolation($consraint->message)
                 ->atPath($consraint->field)

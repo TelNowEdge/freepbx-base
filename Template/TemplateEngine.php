@@ -1,4 +1,5 @@
 <?php
+
 namespace TelNowEdge\FreePBX\Base\Template;
 
 use Symfony\Bridge\Twig\Extension\FormExtension;
@@ -8,7 +9,7 @@ use Symfony\Bridge\Twig\Form\TwigRendererEngine;
 class TemplateEngine implements TemplateEngineInterface
 {
     /**
-     * \Twig_Environment
+     * \Twig_Environment.
      */
     private $twig;
 
