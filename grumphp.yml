@@ -2,7 +2,7 @@ parameters:
   git_dir: .
   bin_dir: ./vendor/bin
   tasks:
-    jsonlint: null
+    jsonlint: ~
     phpcsfixer2:
       allow_risky: true
       rules:
@@ -20,12 +20,13 @@ parameters:
         - strict_comparison
         - strict_param
       using_cache: false
-    phplint: null
+    phplint: ~
     phpmd:
       ruleset: ['unusedcode', 'codesize']
-    phpparser: null
-    phpspec: null
-    shell: null
-    xmllint: null
-    yamllint: null
-    xdebugparse: null
+    phpparser: ~
+    phpspec: ~
+    shell: ~
+    xmllint: ~
+    yamllint:
+      parse_custom_tags: true
+    xdebugparse: ~
