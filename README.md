@@ -174,6 +174,8 @@ FreePBX® module must extends `TelNowEdge\FreePBX\Base\Module\Module`
 
 ### Controller
 
+[Documentation](http://symfony.com/doc/current/controller.html)
+
 Your Controller must extends `TelNowEdge\FreePBX\Base\Controller\AbstractController`
 
 ```php
@@ -191,17 +193,80 @@ mixed function get(string $service);
 
 1. [render()](https://symfony.com/doc/current/quick_tour/the_view.html)
 
-    Render return the compile html from the template
+    Render return the compile html from the template. Append on FreePBX® with the FreePBX® practices.
+
+    ```php
+    $html = $this->render(foo.html.twig', array(
+        'form' => $form->createView(),
+    ));
+
+    $cc->addguielem(_('Foo'), new \gui_html('Foo', $html), 1, null, _('TelNowEdge'));
+    ```
 
 1. [get()](http://symfony.com/doc/current/service_container.html)
 
 ### Model
+
+[Documentation](https://symfony.com/doc/current/doctrine.html)
+
+**Note:**
+> This bundle don't use Doctrine ORM. But the way is the same.
+
+Model is the Database representation. This class must not extends anything.
+
+On each properties, you can add a validator.
+
+
+```php
+<?php
+
+namespace TelNowEdge\Module\foo\Model;
+
+use Symfony\Component\Validator\Constraints as Assert;
+
+class Foo
+{
+    protected $id;
+
+    /**
+     * @Assert\NotBlank()
+     */
+    protected $name;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+}
+
+```
 
 ### Repository
 
 ### DbHandler
 
 ### Form
+
+### Validator
 
 ### Dependency Injection
 
