@@ -368,6 +368,8 @@ This component is used exactly like Symfony.
 
 - [Symfony documentation](http://symfony.com/doc/current/components/dependency_injection.html)
 
+### [Twig](Resources/docs/twig.md)
+
 ## Todo
 
 1. Increase security in service.yml with publc / private service
