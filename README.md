@@ -168,7 +168,7 @@ class FooBarController extends AbstractController
 
 ## Reference
 
-### Module
+### [Module](Resources/docs/entrypoint.md)
 
 Entry point to start FreepbxBase *bundle*.
 
