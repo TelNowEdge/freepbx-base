@@ -174,7 +174,7 @@ Entry point to start FreepbxBase *bundle*.
 
 FreePBX® module must extends `TelNowEdge\FreePBX\Base\Module\Module`
 
-### Controller
+### [Controller](Resources/docs/controller.md)
 
 [Documentation](http://symfony.com/doc/current/controller.html)
 
@@ -207,7 +207,7 @@ mixed function get(string $service);
 
 1. [get()](http://symfony.com/doc/current/service_container.html)
 
-### Model
+### [Model](Resources/docs/model.md)
 
 [Documentation](https://symfony.com/doc/current/doctrine.html)
 
@@ -262,7 +262,7 @@ class Foo
 
 ```
 
-### Repository
+### [Repository](Resources/docs/repository.md)
 
 `Repository` get informations from sql storage and map with Model. ORM like very lite.
 
@@ -314,7 +314,7 @@ Model objectFromArray(string $modelClass, array $sqlToArrayRes);
     }
     ```
 
-### DbHandler
+### [DbHandler](Resources/docs/db-handler.md)
 
 `DbHandler` save data from the `Model` to the sql.
 
@@ -342,7 +342,7 @@ class PhoneProvisionDbHandler extends AbstractDbHandler
     }
 ```
 
-### Form
+### [Form](Resources/docs/form.md)
 
 `Form` provide an easy way to build and validate your form.
 
@@ -351,7 +351,7 @@ This component is used exactly like Symfony.
 - [Symfony documentation](https://symfony.com/doc/current/forms.html)
 - [Advanced documentation](https://symfony.com/doc/current/components/form.html)
 
-### Validator
+### [Validator](Resources/docs/validator.md)
 
 `Validator` works with `Form` to validate it on server side.
 
@@ -360,7 +360,7 @@ This component is used exactly like Symfony.
 - [Symfony documentation](https://symfony.com/doc/current/validation.html)
 - [Advanced documentation](http://symfony.com/doc/current/components/validator.html)
 
-### Dependency Injection
+### [Dependency Injection](Resources/docs/dependency-injection.md)
 
 `Dependency Injection` create a container of services to deal with on your code.
 
