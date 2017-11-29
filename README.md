@@ -38,7 +38,7 @@ composer.phar dump-autoload
 
 ## Overview
 
-This FreepbxBase *bundle* provide an easy way to write FreePBX® modules like an MVC project. He works alone without any modification of FreePBX® core files.
+This FreepbxBase *bundle* provide an easy way to write FreePBX® modules like an MVC project. He works alone without any modification of FreePBX® core files except composer.json.
 
 FreepbxBase *bundle* use Symfony® components to improve security, accessibility and support.
 
@@ -46,6 +46,8 @@ He register own namespace to give access on the differents components through se
 
 FreepbxBase *bundle* introduce in FreePBX® the **Dependency Injection** concept with the Symfony® component. This component is very useful to prevent any `singleton` and share easily your object through your own code.
 He provide too the Symfony® **Form** component to validate your form on the server side before to save it on your sql storage.
+
+Before start using it, you need to understand namespace and known the Symfony base development concepts.
 
 ## Included components
 
@@ -212,7 +214,7 @@ mixed function get(string $service);
 **Note:**
 > This bundle don't use Doctrine ORM. But the way is the same.
 
-Model is the Database representation. This class must not extends anything.
+`Model` is the Database representation. This class must not extends anything.
 
 On each properties, you can add a validator.
 
@@ -262,13 +264,109 @@ class Foo
 
 ### Repository
 
+`Repository` get informations from sql storage and map with Model. ORM like very lite.
+
+Your Repository must extends `TelNowEdge\FreePBX\Base\Repository\AbtractRepository`
+
+```php
+array sqlToArray(array $sqlRes);
+
+\Doctrine\DBAL\Statement fetch(\Doctrine\DBAL\Statement $stmt);
+
+\Doctrine\DBAL\Statement fetchAll(\Doctrine\DBAL\Statement $stmt);
+
+Model objectFromArray(string $modelClass, array $sqlToArrayRes);
+
+```
+
+1. sqlToArray()
+   Transform sql results set to an array for `objectFromArray()`
+
+    `sqlToArray()` need a formatted input.
+
+    ```sql
+    SELECT t.id t__id, t.name t__name, t.long_name t__long_name, t2.id t2__id
+    FROM table t INNER JOIN table2 t2 ON (t2.id = t1.id)
+    ```
+
+    `sqlToArray()` return an associative array like:
+
+    ```php
+    array(
+        't' => array('id' => '1', 'name' => 'foo', 'longName' => 'foobar'),
+        't2' => array('id' => 1)
+    )
+    ```
+
+    **Note:**
+    > The __ was remove to create table key and _ was camel case.
+
+1. objectFromArray()
+   Map the `sqlToArray()` to the model. On each properties, he try to call the setter.
+
+    ```php
+    private function mapModel(array $res)
+    {
+        $foo = $this->objectFromArray(Foo::class, $res['t']);
+        $fooBar = $this->objectFromArray(FooBar::class, $res['t2']);
+
+        return $foo->setFooBar($fooBar);
+    }
+    ```
+
 ### DbHandler
+
+`DbHandler` save data from the `Model` to the sql.
+
+Your Repository must extends `TelNowEdge\FreePBX\Base\Handler\AbtractDbHandler`
+
+```php
+<?php
+
+namespace TelNowEdge\Module\foo\Handler\DbHandler;
+
+use TelNowEdge\FreePBX\Base\Handler\AbstractDbHandler;
+use TelNowEdge\Module\foo\Model\Foo;
+
+class PhoneProvisionDbHandler extends AbstractDbHandler
+{
+    public function create(Foo $foo)
+    {
+        $sql = "INSERT INTO Foo (`id`, `name`, `value`) VALUES (:id, :name, :value)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam('id', $foo->getId());
+        $stmt->bindParam('name', $foo->getName());
+        $stmt->bindParam('value', $foo->getValue());
+
+        $stmt->execute();
+    }
+```
 
 ### Form
 
+`Form` provide an easy way to build and validate your form.
+
+This component is used exactly like Symfony.
+
+- [Symfony documentation](https://symfony.com/doc/current/forms.html)
+- [Advanced documentation](https://symfony.com/doc/current/components/form.html)
+
 ### Validator
 
+`Validator` works with `Form` to validate it on server side.
+
+This component is used exactly like Symfony.
+
+- [Symfony documentation](https://symfony.com/doc/current/validation.html)
+- [Advanced documentation](http://symfony.com/doc/current/components/validator.html)
+
 ### Dependency Injection
+
+`Dependency Injection` create a container of services to deal with on your code.
+
+This component is used exactly like Symfony.
+
+- [Symfony documentation](http://symfony.com/doc/current/components/dependency_injection.html)
 
 ## Todo
 
