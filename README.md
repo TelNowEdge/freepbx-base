@@ -45,7 +45,8 @@ FreepbxBase *bundle* use Symfony® components to improve security, accessibility
 He register own namespace to give access on the differents components through several helpers.
 
 FreepbxBase *bundle* introduce in FreePBX® the **Dependency Injection** concept with the Symfony® component. This component is very useful to prevent any `singleton` and share easily your object through your own code.
-He provide too the Symfony® **Form** component to validate your form on the server side before to save it on your sql storage.
+
+FreepbxBase *bundle* provide too the Symfony® **Form** component to validate your form on the server side before to save it on your sql storage.
 
 Before start using it, you need to understand namespace and known the Symfony base development concepts.
 
