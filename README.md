@@ -176,7 +176,7 @@ FreePBX® module must extends `TelNowEdge\FreePBX\Base\Module\Module`
 
 ### [Controller](Resources/docs/controller.md)
 
-[Documentation](http://symfony.com/doc/current/controller.html)
+- [Symfony Documentation](http://symfony.com/doc/current/controller.html)
 
 Your Controller must extends `TelNowEdge\FreePBX\Base\Controller\AbstractController`
 
@@ -209,7 +209,7 @@ mixed function get(string $service);
 
 ### [Model](Resources/docs/model.md)
 
-[Documentation](https://symfony.com/doc/current/doctrine.html)
+- [Symfony Documentation](https://symfony.com/doc/current/doctrine.html)
 
 **Note:**
 > This bundle don't use Doctrine ORM. But the way is the same.
