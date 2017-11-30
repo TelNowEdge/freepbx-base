@@ -50,6 +50,79 @@ FreepbxBase *bundle* provide too the Symfony® **Form** component to validate yo
 
 Before start using it, you need to understand namespace and known the Symfony base development concepts.
 
+## Coding standard
+
+To check the `coding standard` please include on your module GrumPHP.
+
+1. Require packages
+   ```bash
+       $ composer require --dev "phpro/grumphp" "nikic/php-parser" "friendsofphp/php-cs-fixer" "jakub-onderka/php-parallel-lint" "phpmd/phpmd" "phpspec/phpspec"
+   ```
+
+1. Create config file for `php-cs-fixer` `./php_cs`
+   ```php
+       <?php
+
+       return PhpCsFixer\Config::create()
+           ->setRiskyAllowed(true)
+           ->setRules([
+               '@Symfony' => true,
+               '@Symfony:risky' => true,
+               'array_syntax' => true,
+               'combine_consecutive_unsets' => true,
+               'no_useless_else' => true,
+               'no_useless_return' => true,
+               'ordered_class_elements' => true,
+               'ordered_imports' => true,
+               'php_unit_strict' => true,
+               'strict_comparison' => true,
+               'strict_param' => true,
+           ])
+           ->setFinder(PhpCsFixer\Finder::create()
+               ->exclude('vendor')
+               ->in(__DIR__)
+           )
+       ;
+   ```
+
+1. Create GrumPHP config file `./grumphp.yml`
+    ```yaml
+       parameters:
+         git_dir: .
+         bin_dir: ./vendor/bin
+         tasks:
+           jsonlint: ~
+           phpcsfixer2:
+             config: "./.php_cs"
+             allow_risky: true
+             # rules:
+             #   - "@@Symfony"
+             #   - "@@Symfony:risky"
+             #   - array_syntax
+             #   - combine_consecutive_unsets
+             #   - no_extra_consecutive_blank_lines
+             #   - no_useless_else
+             #   - no_useless_return
+             #   - ordered_class_elements
+             #   - ordered_imports
+             #   - php_unit_strict
+             #   - psr4
+             #   - strict_comparison
+             #   - strict_param
+             using_cache: false
+             config_contains_finder: false
+           phplint: ~
+           phpmd:
+             ruleset: ['unusedcode', 'codesize']
+           phpparser: ~
+           phpspec: ~
+           shell: ~
+           xmllint: ~
+           yamllint:
+             parse_custom_tags: true
+           xdebugparse: ~
+    ```
+
 ## Included components
 
 1. [doctrine/annotations](https://github.com/doctrine/annotations)
