@@ -368,7 +368,13 @@ This component is used exactly like Symfony.
 
 - [Symfony documentation](http://symfony.com/doc/current/components/dependency_injection.html)
 
-### [Twig](Resources/docs/twig.md)
+### [Twig](https://symfony.com/doc/current/templating.html)
+
+`Twig` is a templating component. Cery useful to render the Symfony® forms
+
+This component is used exactly like Symfony.
+
+- [Symfony documentation](https://symfony.com/doc/current/templating.html)
 
 ## Todo
 
