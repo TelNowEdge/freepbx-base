@@ -342,7 +342,7 @@ class PhoneProvisionDbHandler extends AbstractDbHandler
     }
 ```
 
-### [Form](Resources/docs/form.md)
+### [Form](https://symfony.com/doc/current/forms.html)
 
 `Form` provide an easy way to build and validate your form.
 
@@ -351,7 +351,7 @@ This component is used exactly like Symfony.
 - [Symfony documentation](https://symfony.com/doc/current/forms.html)
 - [Advanced documentation](https://symfony.com/doc/current/components/form.html)
 
-### [Validator](Resources/docs/validator.md)
+### [Validator](https://symfony.com/doc/current/validation.html)
 
 `Validator` works with `Form` to validate it on server side.
 
