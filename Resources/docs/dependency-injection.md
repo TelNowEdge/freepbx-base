@@ -11,7 +11,7 @@ Create the register DIC function
 ```php
 <?php
 
-namespace TelNowEdge\Module\tnehook\DependencyInjection;
+namespace TelNowEdge\Module\foo\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
