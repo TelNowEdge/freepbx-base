@@ -15,7 +15,7 @@ class TemplateEngine implements TemplateEngineInterface
 
     public function __construct(\Symfony\Component\Security\Csrf\CsrfTokenManager $csrfManager)
     {
-        $defaultFormTheme = 'freepbx_layout.html.twig';
+        $defaultFormTheme = 'freepbx_layout_page.html.twig';
 
         $appVariableReflection = new \ReflectionClass('\Symfony\Bridge\Twig\AppVariable');
         $vendorTwigBridgeDir = dirname($appVariableReflection->getFileName());

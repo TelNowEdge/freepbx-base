@@ -1,0 +1,68 @@
+{% use "freepbx_bootstrap_3_horizontal_layout.html.twig" %}
+
+{# Big ack because FPBX gui_html create the parent whole structure #}
+{%- block form_rows -%}
+  {% for child in form %}
+    <div class="element-container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            {{- form_row(child) -}}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{%- endblock form_rows -%}
+
+{%- block form_row -%}
+  <div class="form-group">
+    <div class="col-md-4 control-label">
+      <div class="row">
+        <div class="col-md-4">
+          {{- form_label(form) -}}
+          <i class="fa fa-question-circle fpbx-help-icon" data-for="emergency_cid"></i>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8 control-item">
+      {{- form_widget(form) -}}
+    </div>
+    <div class="col-md-8 col-md-push-4">
+      {{- form_errors(form) -}}
+    </div>
+  </div>
+{%- endblock form_row -%}
+
+{%- block choice_widget_expanded -%}
+  <div class="radioset">
+    {%- for child in form %}
+      <input type="radio" class="form-control" name="{{full_name}}" id="{{ child.vars.id }}" value="{{ child.vars.value }}" {{ value == child.vars.value ? 'checked' : '' }} />
+      {{ form_label(child) }}
+    {% endfor %}
+  </div>
+{%- endblock -%}
+
+
+{% block checkbox_radio_label %}
+  {# Do not display the label if widget is not defined in order to prevent double label rendering #}
+  {% if required %}
+    {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
+  {% endif %}
+  {% if parent_label_class is defined %}
+    {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ parent_label_class)|trim}) %}
+  {% endif %}
+  {% if label is not same as(false) and label is empty %}
+    {%- if label_format is not empty -%}
+      {% set label = label_format|replace({
+        '%name%': name,
+        '%id%': id,
+      }) %}
+    {%- else -%}
+      {% set label = name|humanize %}
+    {%- endif -%}
+  {% endif %}
+  <label for="{{ id }}">
+    {{ label -}}
+  </label>
+{% endblock checkbox_radio_label %}
