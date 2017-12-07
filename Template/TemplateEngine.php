@@ -35,6 +35,11 @@ class TemplateEngine implements TemplateEngineInterface
 
         $twig->addExtension(new FormExtension());
 
+        $filter = new \Twig_SimpleFilter('fpbxtrans', function ($string) {
+            return _($string);
+        });
+
+        $twig->addFilter($filter);
         $this->twig = $twig;
     }
 
