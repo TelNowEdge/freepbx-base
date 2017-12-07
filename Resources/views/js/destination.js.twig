@@ -1,0 +1,110 @@
+<script type="text/javascript">
+ function processForm(category, destination) {
+   var actualState = $(destination).val();
+
+   if (actualState) {
+     getCategoryByDestination(destination, category, actualState)
+       .then(function (x) {
+         $(category)
+           .find('option[value="' + x.category + '"]')
+           .attr('selected', 'selected')
+         ;
+
+         getDestinationsByCategory(destination, x.category);
+       })
+       .catch(function (x) {
+         clearDestination(destination);
+
+         $('<option />', {
+           text: actualState,
+           value: '',
+           selected: true
+         }).appendTo(destination)
+         ;
+
+         $(category)
+           .attr('style', 'background-color: rgba(255, 0, 0, 0.5);')
+           .find('option[value="' + x.category + '"]')
+           .attr('selected', 'selected')
+         ;
+
+         $(destination)
+           .attr('style', 'background-color: rgba(255, 0, 0, 0.5);')
+         ;
+       })
+     ;
+   }
+
+   $(category)
+     .on('change', function () {
+       const val = $(this).val();
+
+       if (!val) {
+         clearDestination(destination)
+
+         return;
+       }
+
+       $(category)
+         .removeAttr('style')
+         .find('option[value="Error"]')
+         .remove();
+       ;
+
+       $(destination)
+         .removeAttr('style')
+       ;
+
+       getDestinationsByCategory(destination, val);
+     });
+
+ }
+
+ function clearDestination(destination, addText) {
+   if (typeof addText === 'undefined') {
+     addText = true;
+   }
+
+   $(destination)
+     .empty()
+     .append(
+       addText === true
+       ? '<option value="">{{ 'Choose category before' | fpbxtrans }}</option>'
+       : ''
+     )
+   ;
+ }
+
+ function getCategoryByDestination(destSelectot, categorySelector, destination) {
+   const prototype = $(destSelectot).data('prototype');
+
+   return new Promise(function (resolve, reject) {
+     Object.keys(prototype).forEach(function (x) {
+       prototype[x].forEach(function (z) {
+         if (z.destination === destination) {
+           if (z.category === 'Error') {
+             reject(z);
+           }
+
+           resolve(z);
+         }
+       });
+     });
+   });
+ }
+
+ function getDestinationsByCategory(selector, category) {
+   const prototype = $(selector).data('prototype');
+
+   var actual = $(selector).val();
+   clearDestination(selector, false);
+
+   prototype[category].forEach(function (x) {
+     $('<option />', {
+       selected: actual === x.destination ? true : '',
+       text: x.description,
+       value: x.destination
+     }).appendTo(selector);
+   });
+ }
+</script>

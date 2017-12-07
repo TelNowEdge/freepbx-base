@@ -25,6 +25,8 @@ class TemplateEngine implements TemplateEngineInterface
             __DIR__.'/../Resources/views/Form',
         )));
 
+        $twig->getLoader()->addPath(__DIR__.'/../Resources/views', 'telnowedge');
+
         $formEngine = new TwigRendererEngine(array($defaultFormTheme), $twig);
 
         $twig->addRuntimeLoader(new \Twig_FactoryRuntimeLoader(array(
