@@ -10,7 +10,7 @@
            .attr('selected', 'selected')
          ;
 
-         getDestinationsByCategory(destination, x.category);
+         appendDestinationByCategory(destination, x.category);
        })
        .catch(function (x) {
          clearDestination(destination);
@@ -55,7 +55,7 @@
          .removeAttr('style')
        ;
 
-       getDestinationsByCategory(destination, val);
+       appendDestinationByCategory(destination, val);
      });
 
  }
@@ -93,7 +93,7 @@
    });
  }
 
- function getDestinationsByCategory(selector, category) {
+ function appendDestinationByCategory(selector, category) {
    const prototype = $(selector).data('prototype');
 
    var actual = $(selector).val();
