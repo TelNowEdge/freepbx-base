@@ -1,10 +1,35 @@
 {
-    "require-dev": {
-        "phpro/grumphp": "^0.12.0",
-        "nikic/php-parser": "^3.1",
-        "friendsofphp/php-cs-fixer": "^2.8",
-        "jakub-onderka/php-parallel-lint": "^0.9.2",
-        "phpmd/phpmd": "^2.6",
-        "phpspec/phpspec": "^3.4"
+  "name": "telnowedge/freepbx-base",
+  "description": "Helper to create module with the Symfony component powerfull like form validation, dependency injection...",
+  "homepage": "",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Boris Morel",
     }
+  ],
+  "autoload": {
+    "psr-4": { "TelNowEdge\\FreePBX\\Base\\": "vendor/telnowedge/freepbx-base" }
+  },
+  "require": {
+    "doctrine/annotations": "^1.4",
+    "doctrine/cache": "^1.6",
+    "symfony/config": "^3.3.3",
+    "symfony/dependency-injection": "^3.3.3",
+    "symfony/form": "^3.3.10",
+    "symfony/http-foundation": "^3.0.9",
+    "symfony/security-csrf": "^3.3.10",
+    "symfony/twig-bridge": "^3.3.10",
+    "symfony/validator": "^3.0.9",
+    "symfony/yaml": "^3.0.3",
+    "symfony/serializer": "^3.0.3"
+  },
+  "require-dev": {
+    "phpro/grumphp": "^0.12.0",
+    "nikic/php-parser": "^3.1",
+    "friendsofphp/php-cs-fixer": "^2.8",
+    "jakub-onderka/php-parallel-lint": "^0.9.2",
+    "phpmd/phpmd": "^2.6",
+    "phpspec/phpspec": "^3.4"
+  }
 }
