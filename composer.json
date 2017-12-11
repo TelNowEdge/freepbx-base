@@ -9,7 +9,7 @@
     }
   ],
   "autoload": {
-    "psr-4": { "TelNowEdge\\FreePBX\\Base\\": "vendor/telnowedge/freepbx-base" }
+    "psr-4": { "TelNowEdge\\FreePBX\\Base\\": "" }
   },
   "require": {
     "doctrine/annotations": "^1.4",
