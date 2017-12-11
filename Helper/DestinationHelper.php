@@ -10,37 +10,11 @@ class DestinationHelper
 
     public function __construct()
     {
-        global $active_modules;
+        $destinations = \FreePBX::Modules()->getDestinations();
 
-        $activeModules = $active_modules;
-
-        foreach ($activeModules as $name => $module) {
-            $function = sprintf('%s_destinations', $name);
-
-            if (false === function_exists($function)) {
-                continue;
-            }
-
-            $destinations = call_user_func($function, 0);
-
-            if (false === is_array($destinations)) {
-                $destinations = array();
-                array_push($destinations, array(
-                    'destination' => '',
-                    'description' => _('No yet available destination'),
-                ));
-            }
-
-            foreach ($destinations as $destination) {
-                $category = true === isset($destination['category'])
-                    ? $destination['category']
-                    : $module['displayname']
-                    ;
-
-                $category = $this->sanitizeCategory($category);
-
-                $this->destinations[$category][] = $destination;
-            }
+        foreach ($destinations as $destination) {
+            $category = true === isset($destination['category']) ? $destination['category'] : $destination['name'];
+            $this->destinations[$category][] = $destination;
         }
     }
 
@@ -109,13 +83,5 @@ class DestinationHelper
         }
 
         return false;
-    }
-
-    private function sanitizeCategory($category)
-    {
-        $category = str_replace('|', '', $category);
-        $category = str_replace('&', _('and'), $category);
-
-        return $category;
     }
 }
