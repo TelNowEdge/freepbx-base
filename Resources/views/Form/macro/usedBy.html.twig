@@ -1,0 +1,35 @@
+{% macro usedBy(array) %}
+  {% import _self as self %}
+  <div class="row">
+    <div class="col-md-2 used-by">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        data-container="body"
+        data-toggle="popover"
+        data-placement="bottom"
+        data-html="true"
+        data-content='{{ self.content(array) }}'
+      >
+        {{ 'Destination is used by ' ~ array|length | fpbxtrans }}
+      </button>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro content(array) %}
+  <ul class="list-group">
+    {% for category, modules in array %}
+      <li class="list-group-item"><strong> {{ category }} </strong></li>
+      <ul class="list-group">
+        {% for module in modules %}
+          <li class="list-group-item">
+            <a href="{{ module.edit_url }}">
+              {{ module.description }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endfor %}
+  </ul>
+{% endmacro %}
