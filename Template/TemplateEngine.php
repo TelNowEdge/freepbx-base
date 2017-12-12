@@ -3,8 +3,8 @@
 namespace TelNowEdge\FreePBX\Base\Template;
 
 use Symfony\Bridge\Twig\Extension\FormExtension;
-use Symfony\Bridge\Twig\Form\TwigRenderer;
 use Symfony\Bridge\Twig\Form\TwigRendererEngine;
+use Symfony\Component\Form\FormRenderer;
 
 class TemplateEngine implements TemplateEngineInterface
 {
@@ -30,8 +30,8 @@ class TemplateEngine implements TemplateEngineInterface
         $formEngine = new TwigRendererEngine(array($defaultFormTheme), $twig);
 
         $twig->addRuntimeLoader(new \Twig_FactoryRuntimeLoader(array(
-            TwigRenderer::class => function () use ($formEngine, $csrfManager) {
-                return new TwigRenderer($formEngine, $csrfManager);
+            FormRenderer::class => function () use ($formEngine, $csrfManager) {
+                return new FormRenderer($formEngine, $csrfManager);
             },
         )));
 
@@ -40,8 +40,13 @@ class TemplateEngine implements TemplateEngineInterface
         $filter = new \Twig_SimpleFilter('fpbxtrans', function ($string) {
             return _($string);
         });
-
         $twig->addFilter($filter);
+
+        $filter = new \Twig_SimpleFilter('trans', function ($string) {
+            return _($string);
+        });
+        $twig->addFilter($filter);
+
         $this->twig = $twig;
     }
 

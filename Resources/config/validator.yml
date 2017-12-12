@@ -16,6 +16,8 @@ services:
     factory: ['Symfony\Component\Validator\Validation', createValidatorBuilder]
     calls:
       - method: enableAnnotationMapping
+        arguments:
+          - '@annotation.reader'
       - method: setConstraintValidatorFactory
         arguments:
           - '@validator.validator_factory'
@@ -23,9 +25,8 @@ services:
   validator.validator_factory:
     class: Symfony\Component\Validator\ContainerConstraintValidatorFactory
     arguments:
+      # Argument must be present but he is replaced by compiler pass AddConstraintValidatorsPass()
       -
-      # Dummy arg to register class_exists
-      - '@Doctrine\Common\Annotations\AnnotationRegistry'
 
   validator.expression:
     class: Symfony\Component\Validator\Constraints\ExpressionValidator
@@ -37,6 +38,15 @@ services:
     tags:
       - {name:validator.constraint_validator, alias:Symfony\Component\Validator\Constraints\EmailValidator}
     arguments: ~
+
+  annotation.reader:
+    class: Doctrine\Common\Annotations\AnnotationReader
+    calls:
+      - method: addGlobalIgnoredName
+        arguments:
+          - 'required'
+          # dummy arg to register class_exists as annotation loader only when required
+          - '@Doctrine\Common\Annotations\AnnotationRegistry'
 
   Doctrine\Common\Annotations\AnnotationRegistry:
     calls:
