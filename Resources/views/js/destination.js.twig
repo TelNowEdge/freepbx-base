@@ -6,6 +6,11 @@
      getCategoryByDestination(destination, category, actualState)
        .then(function (x) {
          $(category)
+           .find('option:selected')
+           .removeAttr('selected')
+         ;
+
+         $(category)
            .find('option[value="' + x.category + '"]')
            .attr('selected', 'selected')
          ;
