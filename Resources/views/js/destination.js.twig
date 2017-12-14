@@ -12,7 +12,7 @@
 
          $(category)
            .find('option[value="' + x.category + '"]')
-           .attr('selected', 'selected')
+           .prop('selected', true)
          ;
 
          appendDestinationByCategory(destination, x.category);
