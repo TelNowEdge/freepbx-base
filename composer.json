@@ -1,10 +1,10 @@
 {
   "name": "telnowedge/freepbx-base",
   "description": "Helper to create module with the Symfony component powerfull like form validation, dependency injection...",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "authors": [
     {
-      "name": "Boris Morel"
+      "name": "Boris Morel <TelNowEdge>"
     }
   ],
   "autoload": {
