@@ -61,7 +61,6 @@ abstract class Module extends \FreePBX_Helpers
             ->registerSelf()
             ;
 
-
         $this->container
             ->addCompilerPass(
                 new \Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass(),

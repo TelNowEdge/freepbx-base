@@ -93,5 +93,4 @@ class BaseExtension extends Extension
 
         return $this;
     }
-
 }
