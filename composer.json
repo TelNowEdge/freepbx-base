@@ -15,13 +15,14 @@
     "doctrine/cache": "^1.6",
     "symfony/config": "^3.3.3",
     "symfony/dependency-injection": "^3.3.3",
+    "symfony/event-dispatcher": "^3.3.0",
     "symfony/form": "^3.3.10",
     "symfony/http-foundation": "^3.0.9",
     "symfony/security-csrf": "^3.3.10",
+    "symfony/serializer": "^3.0.3",
     "symfony/twig-bridge": "^3.3.10",
     "symfony/validator": "^3.0.9",
-    "symfony/yaml": "^3.0.3",
-    "symfony/serializer": "^3.0.3"
+    "symfony/yaml": "^3.0.3"
   },
   "require-dev": {
     "phpro/grumphp": "^0.12.0",

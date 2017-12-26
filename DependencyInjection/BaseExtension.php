@@ -17,14 +17,15 @@ class BaseExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $this
-            ->registerSessionConfiguration($config, $container, $loader)
-            ->registerSecurityCsrfConfiguration($config, $container, $loader)
-            ->registerFormConfiguration($config, $container, $loader)
-            ->registerValidatorConfiguration($config, $container, $loader)
-            ->registerRequestConfiguration($config, $container, $loader)
-            ->registerTemplateEngineConfiguration($config, $container, $loader)
-            ->registerSerializerConfiguration($config, $container, $loader)
             ->registerContainerConfiguration($config, $container, $loader)
+            ->registerEventDispatcherConfiguration($config, $container, $loader)
+            ->registerFormConfiguration($config, $container, $loader)
+            ->registerRequestConfiguration($config, $container, $loader)
+            ->registerSecurityCsrfConfiguration($config, $container, $loader)
+            ->registerSerializerConfiguration($config, $container, $loader)
+            ->registerSessionConfiguration($config, $container, $loader)
+            ->registerTemplateEngineConfiguration($config, $container, $loader)
+            ->registerValidatorConfiguration($config, $container, $loader)
             ;
 
         $loader->load('services.yml');
@@ -85,4 +86,12 @@ class BaseExtension extends Extension
 
         return $this;
     }
+
+    private function registerEventDispatcherConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
+    {
+        $loader->load('event_dispatcher.yml');
+
+        return $this;
+    }
+
 }

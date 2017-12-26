@@ -2,7 +2,6 @@
 
 namespace TelNowEdge\FreePBX\Base\Module;
 
-use Symfony\Component\Config\Resource\ClassExistenceResource;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -62,11 +61,29 @@ abstract class Module extends \FreePBX_Helpers
             ->registerSelf()
             ;
 
-        /* $this->container->addResource(new ClassExistenceResource('\Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass')); */
 
-        $this->container->addCompilerPass(new \Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
-        $this->container->addCompilerPass(new \Symfony\Component\Form\DependencyInjection\FormPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
-        $this->container->addCompilerPass(new \TelNowEdge\FreePBX\Base\DependencyInjection\Compiler\ControllerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
+        $this->container
+            ->addCompilerPass(
+                new \Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass(),
+                PassConfig::TYPE_BEFORE_OPTIMIZATION,
+                0
+            )
+            ->addCompilerPass(
+                new \Symfony\Component\Form\DependencyInjection\FormPass(),
+                PassConfig::TYPE_BEFORE_OPTIMIZATION,
+                0
+            )
+            ->addCompilerPass(
+                new \TelNowEdge\FreePBX\Base\DependencyInjection\Compiler\ControllerPass(),
+                PassConfig::TYPE_BEFORE_OPTIMIZATION,
+                0
+            )
+            ->addCompilerPass(
+                new \Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass(),
+                PassConfig::TYPE_BEFORE_OPTIMIZATION,
+                0
+            )
+            ;
 
         $this->container->compile();
     }
