@@ -10,4 +10,6 @@ use Symfony\Component\Validator\Constraints\Choice as BaseChoice;
 class Choice extends BaseChoice
 {
     public $service;
+
+    public $nullable;
 }

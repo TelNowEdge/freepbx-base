@@ -19,6 +19,10 @@ class ChoiceValidator extends BaseChoiceValidator implements ContainerAwareInter
     public function validate($value, Constraint $consraint)
     {
         if (true === is_array($consraint->service)) {
+            if (true === $consraint->nullable) {
+                return true;
+            }
+
             if (false === $this->container->has($consraint->service[0])) {
                 $this->context
                     ->buildViolation('Unable to find service: {{ service }}')
