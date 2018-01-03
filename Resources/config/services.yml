@@ -21,6 +21,9 @@ services:
       - method: setConnection
         arguments:
           - '@FreePBX\Database'
+      - method: setEventDispatcher
+        arguments:
+          - '@event_dispatcher'
 
   TelNowEdge\FreePBX\Base\Validator\Constraints\ChoiceValidator:
     calls:
