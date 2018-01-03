@@ -10,4 +10,8 @@ use Symfony\Component\Validator\Constraint;
 class MacAddress extends Constraint
 {
     public $message = 'The value is not a valid mac address.';
+
+    public $allowAuto = false;
+
+    public $changeAll = false;
 }
