@@ -61,4 +61,12 @@ services:
     tags:
       - "form.type"
 
+  TelNowEdge\FreePBX\Base\Form\RepositoryType:
+    calls:
+      - method: setContainer
+        arguments:
+          - '@service_container'
+    tags:
+      - "form.type"
+
   TelNowEdge\FreePBX\Base\Helper\DestinationHelper: ~
