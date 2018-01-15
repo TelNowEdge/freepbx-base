@@ -87,7 +87,7 @@ class ContainerBuilder
         $container->loadFromExtension($c->getAlias());
     }
 
-    private function registerModuleExtension(BaseContainerBuilder $container)
+    private static function registerModuleExtension(BaseContainerBuilder $container)
     {
         foreach (new \DirectoryIterator(__DIR__.'/../../../../../../modules/') as $child) {
             if (false === $child->isDir()) {
