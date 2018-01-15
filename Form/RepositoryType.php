@@ -7,6 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use TelNowEdge\FreePBX\Base\Exception\NoResultException;
 use TelNowEdge\FreePBX\Base\Form\ChoiceList\RepositoryChoiceLoader;
 
 class RepositoryType extends AbstractType implements ContainerAwareInterface
@@ -30,7 +31,11 @@ class RepositoryType extends AbstractType implements ContainerAwareInterface
                 return;
             }
 
-            $collection = $this->container->get($options['repository'])->{$options['caller']}();
+            try {
+                $collection = $this->container->get($options['repository'])->{$options['caller']}();
+            } catch (NoResultException $e) {
+                $collection = new \Doctrine\Common\Collections\ArrayCollection();
+            }
 
             return new RepositoryChoiceLoader($collection);
         };
