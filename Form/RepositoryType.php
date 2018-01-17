@@ -41,15 +41,13 @@ class RepositoryType extends AbstractType implements ContainerAwareInterface
         };
 
         $resolver->setRequired(array(
-            'repository',
             'caller',
+            'repository',
         ));
 
         $resolver->setDefaults(array(
-            'repository' => null,
-            'caller' => null,
-            'choices' => null,
             'choice_loader' => $choiceLoader,
+            'choices' => null,
         ));
     }
 }
