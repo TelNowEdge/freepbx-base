@@ -39,6 +39,22 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
             return array();
         }
 
-        return $this->loadChoiceList($value)->getValuesForChoices($choices);
+        $values = array();
+
+        foreach ($choices as $i => $givenChoice) {
+            if (false === is_object($givenChoice)) {
+                continue;
+            }
+
+            foreach ($this->collection as $value => $choice) {
+                if ($choice->getId() !== $givenChoice->getId()) {
+                    continue;
+                }
+
+                $values[$i] = $value;
+            }
+        }
+
+        return $values;
     }
 }
