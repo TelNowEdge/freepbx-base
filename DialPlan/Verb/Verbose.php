@@ -2,7 +2,7 @@
 
 namespace TelNowEdge\FreePBX\Base\DialPlan\Verb;
 
-class ExtVerbose implements VerbInterface
+class Verbose implements VerbInterface
 {
     private $level;
     private $message;
