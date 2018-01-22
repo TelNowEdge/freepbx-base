@@ -1,13 +1,23 @@
 <?php
 
+/**
+ * Please read this article to understand why this is a ContainerBuilderFactory
+ * and not just a ContainerBuilder.
+ *
+ * https://bugs.php.net/bug.php?id=55068
+ * http://blog.mageekbox.net/?post/2011/07/14/Espace-de-noms-et-importations-de-classes
+ */
+
 namespace TelNowEdge\FreePBX\Base\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder as BaseContainerBuilder;
 
-class ContainerBuilder
+class ContainerBuilderFactory
 {
     private static $instance;
+
+    private $container;
 
     public function __construct()
     {
@@ -21,12 +31,7 @@ class ContainerBuilder
             static::$instance = new static();
         }
 
-        return static::$instance;
-    }
-
-    public function getContainer()
-    {
-        return $this->container;
+        return static::$instance->container;
     }
 
     private static function autoloadTelNowEdgeModule()

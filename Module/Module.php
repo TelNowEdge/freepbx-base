@@ -2,7 +2,7 @@
 
 namespace TelNowEdge\FreePBX\Base\Module;
 
-use TelNowEdge\FreePBX\Base\DependencyInjection\ContainerBuilder;
+use TelNowEdge\FreePBX\Base\DependencyInjection\ContainerBuilderFactory;
 
 abstract class Module extends \FreePBX_Helpers
 {
@@ -46,7 +46,6 @@ abstract class Module extends \FreePBX_Helpers
         $this->config = $freepbx->Config;
         $this->database = $freepbx->Database;
         $this->freepbx = $freepbx;
-        $this->container = ContainerBuilder::getInstance()
-            ->getContainer();
+        $this->container = ContainerBuilderFactory::getInstance();
     }
 }
