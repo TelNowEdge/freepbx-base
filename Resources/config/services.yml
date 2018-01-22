@@ -15,6 +15,13 @@ services:
         arguments:
           - '@FreePBX\Database'
 
+  TelNowEdge\FreePBX\Base\DialPlan\Generator\AbstractGenerator:
+    abstract: true
+    calls:
+      - method: setContainer
+        arguments:
+          - '@service_container'
+
   TelNowEdge\FreePBX\Base\Handler\AbstractDbHandler:
     abstract: true
     calls:
