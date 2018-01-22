@@ -8,14 +8,14 @@ class Raw implements VerbInterface
 
     public function __construct($data = '')
     {
-      $this->data = $data;
+        $this->data = $data;
     }
 
     public function output()
     {
         return sprintf(
-		       '%s',
-		       $this->data
-		       );
+               '%s',
+               $this->data
+               );
     }
 }

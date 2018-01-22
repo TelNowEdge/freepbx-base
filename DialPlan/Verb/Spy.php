@@ -13,11 +13,12 @@ class Spy implements VerbInterface
         $this->options = $options;
     }
 
-    function output() {
+    public function output()
+    {
         return sprintf(
                        'ExtenSpy(%s%s)',
                        $this->prefix,
-                       $this->options?','.$this->options:''
+                       $this->options ? ','.$this->options : ''
                        );
     }
 }
