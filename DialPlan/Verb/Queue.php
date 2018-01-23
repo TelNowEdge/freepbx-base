@@ -31,14 +31,14 @@ class Queue implements VerbInterface
         }
 
         return sprintf(
-           'Queue(%s,%s,%s,%s,%s,,,,%s%s)',
-           $this->queuename,
-           $this->options,
-           $this->optionalurl,
-           $this->announceoverride,
-           $this->timeout,
-           $this->rules,
-           $cmdend
-           );
+            'Queue(%s,%s,%s,%s,%s,,,,%s%s)',
+            $this->queuename,
+            $this->options,
+            $this->optionalurl,
+            $this->announceoverride,
+            $this->timeout,
+            $this->rules,
+            $cmdend
+        );
     }
 }

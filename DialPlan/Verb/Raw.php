@@ -14,8 +14,8 @@ class Raw implements VerbInterface
     public function output()
     {
         return sprintf(
-               '%s',
-               $this->data
-               );
+            '%s',
+            $this->data
+        );
     }
 }
