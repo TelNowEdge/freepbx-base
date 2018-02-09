@@ -4,6 +4,12 @@ services:
     autoconfigure: false
     public: true
 
+  TelNowEdge\FreePBX\Base\Manager\AsteriskManagerFactory: ~
+
+  AsteriskManager:
+    class: AGI_AsteriskManager
+    factory: 'TelNowEdge\FreePBX\Base\Manager\AsteriskManagerFactory:getAsteriskManager'
+
   FreePBX\Database:
     arguments:
       - 'mysql:host=localhost;dbname=asterisk;charset=utf8'
@@ -28,6 +34,16 @@ services:
       - method: setConnection
         arguments:
           - '@FreePBX\Database'
+      - method: setEventDispatcher
+        arguments:
+          - '@event_dispatcher'
+
+  TelNowEdge\FreePBX\Base\Handler\AbstractAstHandler:
+    abstract: true
+    calls:
+      - method: setConnection
+        arguments:
+          - '@AsteriskManager'
       - method: setEventDispatcher
         arguments:
           - '@event_dispatcher'
