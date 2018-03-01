@@ -2,11 +2,11 @@
 
 ## Version
 
-- 2017/11/28 <0.1>: First available working verison
+- 2017/11/28 <0.1>: First available working version
 
 ## Install
 
-### With composer require
+### With `composer require`
 
 Currently unavailable
 
@@ -42,13 +42,13 @@ This FreepbxBase *bundle* provide an easy way to write FreePBX® modules like an
 
 FreepbxBase *bundle* use Symfony® components to improve security, accessibility and support.
 
-He register own namespace to give access on the differents components through several helpers.
+It register its own namespace to give access on the different components through several helpers.
 
 FreepbxBase *bundle* introduce in FreePBX® the **Dependency Injection** concept with the Symfony® component. This component is very useful to prevent any `singleton` and share easily your object through your own code.
 
 FreepbxBase *bundle* provide too the Symfony® **Form** component to validate your form on the server side before to save it on your sql storage.
 
-Before start using it, you need to understand namespace and known the Symfony base development concepts.
+Before start using it, you need to understand namespace and the Symfony base development concepts.
 
 ## Coding standard
 
@@ -420,7 +420,7 @@ class PhoneProvisionDbHandler extends AbstractDbHandler
 
 `Form` provide an easy way to build and validate your form.
 
-This component is used exactly like Symfony.
+This component is used exactly like Symfony does.
 
 - [Symfony documentation](https://symfony.com/doc/current/forms.html)
 - [Advanced documentation](https://symfony.com/doc/current/components/form.html)
@@ -429,7 +429,7 @@ This component is used exactly like Symfony.
 
 `Validator` works with `Form` to validate it on server side.
 
-This component is used exactly like Symfony.
+This component is used exactly like Symfony does.
 
 - [Symfony documentation](https://symfony.com/doc/current/validation.html)
 - [Advanced documentation](http://symfony.com/doc/current/components/validator.html)
@@ -438,7 +438,7 @@ This component is used exactly like Symfony.
 
 `Dependency Injection` create a container of services to deal with on your code.
 
-This component is used exactly like Symfony.
+This component is used exactly like Symfony does.
 
 - [Symfony documentation](http://symfony.com/doc/current/components/dependency_injection.html)
 
@@ -446,7 +446,7 @@ This component is used exactly like Symfony.
 
 `Twig` is a templating component. Cery useful to render the Symfony® forms
 
-This component is used exactly like Symfony.
+This component is used exactly like Symfony does.
 
 - [Symfony documentation](https://symfony.com/doc/current/templating.html)
 
