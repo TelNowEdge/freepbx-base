@@ -36,12 +36,15 @@ abstract class AbstractAsteriskRepository
 
         $array = preg_split('#/#', $keys, 2);
 
+        $key = \Doctrine\Common\Util\Inflector::camelize($array[0]);
+
         if (1 === count($array)) {
-            return array($array[0] => $value);
+            $value = true === empty($value) ? null : $value;
+
+            return array($key => $value);
         }
 
-        $b = $this->linearize($array[1], $value);
-        $out[$array[0]] = $b;
+        $out[$key] = $this->linearize($array[1], $value);
 
         return $out;
     }
@@ -49,22 +52,28 @@ abstract class AbstractAsteriskRepository
     public function sqlToArray(array $res, $idName = 'id')
     {
         $temp = array();
+        $out = array();
 
         foreach ($res as $key => $child) {
+            $key = strtolower($key);
+
             $tld = preg_split('#/#', $key, 3, PREG_SPLIT_NO_EMPTY);
 
-            $b = $this->linearize($tld[2], $child);
+            $x = $this->linearize($tld[2], $child);
 
-            $temp = array_merge_recursive($temp, $b);
+            $temp = array_merge_recursive($temp, $x);
 
-            $out[$tld[0]] = $out;
+            $out[$tld[0]] = $temp;
+            $out[$tld[0]]['id'] = $tld[1];
         }
 
-        return $toto;
+        return $out;
     }
 
     protected function objectFromArray($fqn, array $array)
     {
+        $violations = new \Doctrine\Common\Collections\ArrayCollection();
+
         $reflector = new \ReflectionClass($fqn);
         $class = $reflector->newInstance();
 
@@ -74,10 +83,13 @@ abstract class AbstractAsteriskRepository
             if (true === $reflector->hasMethod($method)) {
                 $reflector->getMethod($method)->invoke($class, $value);
             } else {
-                throw new \Exception(sprintf('%s:%s is not callable', $fqn, $method));
+                $violations->add(sprintf('%s:%s is not callable', $fqn, $method));
             }
         }
 
-        return $class;
+        return array(
+            'object' => $class,
+            'violations' => $violations,
+        );
     }
 }
