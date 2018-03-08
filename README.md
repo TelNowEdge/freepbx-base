@@ -8,7 +8,9 @@
 
 ### With `composer require`
 
+
 ```bash
+cd /var/www/admin/libraries/Composer/composer.json
 composer require telnowedge/freepbx-base
 ```
 
