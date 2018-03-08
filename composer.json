@@ -1,6 +1,6 @@
 {
   "name": "telnowedge/freepbx-base",
-  "description": "Helper to create module with the Symfony component powerfull like form validation, dependency injection...",
+  "description": "Helper to create module with the Symfony components like form validation, dependency injection...",
   "license": "Apache-2.0",
   "authors": [
     {
