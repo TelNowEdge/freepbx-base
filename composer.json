@@ -5,6 +5,9 @@
   "authors": [
     {
       "name": "Boris Morel <TelNowEdge>"
+    },
+    {
+      "name": "Bernard Merindol <TelNowEdge>"
     }
   ],
   "autoload": {
