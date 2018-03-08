@@ -8,7 +8,9 @@
 
 ### With `composer require`
 
-Currently unavailable
+```bash
+composer require telnowedge/freepbx-base
+```
 
 ### With git
 
@@ -49,6 +51,9 @@ FreepbxBase *bundle* introduce in FreePBX® the **Dependency Injection** concept
 FreepbxBase *bundle* provide too the Symfony® **Form** component to validate your form on the server side before to save it on your sql storage.
 
 Before start using it, you need to understand namespace and the Symfony base development concepts.
+
+## Acme example module
+[Modfagi](https://github.com/TelNowEdge/modfagi)
 
 ## Coding standard
 
@@ -453,4 +458,3 @@ This component is used exactly like Symfony does.
 ## Todo
 
 1. Increase security in service.yml with publc / private service
-1. Create an Acme module
