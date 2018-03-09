@@ -26,11 +26,20 @@ class AmpConfManager
     {
         global $amp_conf;
 
-        $this->ampConf = $amp_conf;
+        $this->ampConf = new \Doctrine\Common\Collections\ArrayCollection();
+
+        foreach ($amp_conf as $k => $v) {
+            $this->ampConf->set($k, $v);
+        }
     }
 
     public function get($param)
     {
-        return $this->ampConf[$param];
+        return $this->ampConf->get($param);
+    }
+
+    public function exists($param)
+    {
+        return null === $this->ampConf->get($param) ? false : true;
     }
 }
