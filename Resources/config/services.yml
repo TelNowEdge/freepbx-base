@@ -100,3 +100,5 @@ services:
       - "form.type"
 
   TelNowEdge\FreePBX\Base\Helper\DestinationHelper: ~
+
+  TelNowEdge\FreePBX\Base\Manager\AmpConfManager: ~
