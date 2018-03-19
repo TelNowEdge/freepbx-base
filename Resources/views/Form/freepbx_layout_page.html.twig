@@ -17,20 +17,29 @@
 
 {%- block form_row -%}
   <div class="form-group">
-    <div class="col-md-4 control-label">
-      <div class="row">
-        <div class="col-md-10">
-          {{- form_label(form) -}}
-          <i class="fa fa-question-circle fpbx-help-icon" data-for="emergency_cid"></i>
+    {% if form_label(form) is not empty %}
+      <div class="col-md-4 control-label">
+        <div class="row">
+          <div class="col-md-10">
+            {{- form_label(form) -}}
+            <i class="fa fa-question-circle fpbx-help-icon" data-for="emergency_cid"></i>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-8 control-item">
-      {{- form_widget(form) -}}
-    </div>
-    <div class="col-md-8 col-md-push-4">
-      {{- form_errors(form) -}}
-    </div>
+      <div class="col-md-8 control-item">
+        {{- form_widget(form) -}}
+      </div>
+      <div class="col-md-8 col-md-push-4">
+        {{- form_errors(form) -}}
+      </div>
+    {% else %}
+      <div class="col-md-12 control-item">
+        {{- form_widget(form) -}}
+      </div>
+      <div class="col-md-12 col-md-push-4">
+        {{- form_errors(form) -}}
+      </div>
+    {% endif %}
   </div>
 {%- endblock form_row -%}
 
