@@ -93,4 +93,18 @@ abstract class AbstractRepository
 
         return $class;
     }
+
+    protected function uncontrolledObjectFromArray($fqdn, array $array)
+    {
+        $reflector = new \ReflectionClass($fqdn);
+        $class = $reflector->newInstance();
+
+        foreach ($array as $prop => $value) {
+            $method = sprintf('set%s', ucfirst($prop));
+
+            call_user_func(array($class, $method), $value);
+        }
+
+        return $class;
+    }
 }
