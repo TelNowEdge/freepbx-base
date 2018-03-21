@@ -25,6 +25,10 @@ class AbstractUncontrolledModel
     public function __construct()
     {
         $this->storage = new \Doctrine\Common\Collections\ArrayCollection();
+
+        /*
+         * Used by MacProvision
+         */
         $this->storage->set('keys', new \Doctrine\Common\Collections\ArrayCollection());
     }
 
