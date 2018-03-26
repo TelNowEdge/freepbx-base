@@ -80,7 +80,7 @@ CREATE
             'SELECT * FROM tne_migrations WHERE id = ? AND module = ?',
             array(
                 $version,
-                $module
+                $module,
             )
         );
 
