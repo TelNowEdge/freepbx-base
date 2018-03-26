@@ -36,50 +36,28 @@ abstract class AbstractMigration implements MigrationInterface
     public function migrate()
     {
         $this->checkDb();
+    }
 
-        $error = false;
+    protected function getOrderedMigration()
+    {
         $reflector = new \ReflectionClass(static::class);
         $methods = $reflector->getMethods();
-
-        $this->connection->beginTransaction();
+        $temp = array();
 
         asort($methods);
+
         foreach ($methods as $method) {
             if (1 !== preg_match('/^migration(\d{10})$/', $method->name, $match)) {
                 continue;
             }
 
-            if (true === $this->alreadyMigrate($match[1], static::class)) {
-                continue;
-            }
-
-            try {
-                $this->connection->executeUpdate($method->invoke($this));
-                $this->connection->executeQuery(
-                    'INSERT INTO `tne_migrations` VALUES (?, ?, NOW())',
-                    array(
-                        $match[1],
-                        static::class,
-                    )
-                );
-            } catch (\Exception $e) {
-                outn($e->getMessage());
-                $error = true;
-            }
+            $temp[$match[1]] = $method;
         }
 
-        if (true === $error) {
-            $this->connection->rollBack();
-
-            return false;
-        }
-
-        $this->connection->commit();
-
-        return true;
+        return $temp;
     }
 
-    private function checkDb()
+    protected function checkDb()
     {
         try {
             $this->connection->executeQuery('desc tne_migrations');
@@ -96,10 +74,27 @@ CREATE
         }
     }
 
-    private function alreadyMigrate($version, $module)
+    protected function alreadyMigrate($version, $module)
     {
-        $stmt = $this->connection->executeQuery('SELECT * FROM tne_migrations WHERE id = ? AND module = ?', array($version, $module));
+        $stmt = $this->connection->executeQuery(
+            'SELECT * FROM tne_migrations WHERE id = ? AND module = ?',
+            array(
+                $version,
+                $module
+            )
+        );
 
         return false === $stmt->fetch() ? false : true;
+    }
+
+    protected function markAsMigrated($version, $module)
+    {
+        $this->connection->executeQuery(
+            'INSERT INTO `tne_migrations` VALUES (?, ?, NOW())',
+            array(
+                $version,
+                $module,
+            )
+        );
     }
 }

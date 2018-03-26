@@ -76,6 +76,13 @@ services:
         arguments:
           - '@FreePBX\Database'
 
+  TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractSqlMigration:
+    abstract: true
+    parent: TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractMigration
+    autowire: true
+    autoconfigure: false
+    public: true
+
   TelNowEdge\FreePBX\Base\Controller\AbstractController:
     abstract: true
     calls:
