@@ -83,6 +83,13 @@ services:
     autoconfigure: false
     public: true
 
+  TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractPhpMigration:
+    abstract: true
+    parent: TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractMigration
+    autowire: true
+    autoconfigure: false
+    public: true
+
   TelNowEdge\FreePBX\Base\Controller\AbstractController:
     abstract: true
     calls:
