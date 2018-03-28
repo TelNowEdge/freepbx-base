@@ -80,8 +80,8 @@
    ;
  }
 
- function getCategoryByDestination(destSelectot, categorySelector, destination) {
-   const prototype = $(destSelectot).data('prototype');
+ function getCategoryByDestination(destSelector, categorySelector, destination) {
+   const prototype = $(destSelector).data('prototype');
 
    return new Promise(function (resolve, reject) {
      Object.keys(prototype).forEach(function (x) {
