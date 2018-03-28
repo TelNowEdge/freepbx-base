@@ -30,6 +30,7 @@ class DestinationHelper
 
         foreach ($destinations as $destination) {
             $category = true === isset($destination['category']) ? $destination['category'] : $destination['name'];
+            $destination['category'] = $category;
             $this->destinations[$category][] = $destination;
         }
     }
