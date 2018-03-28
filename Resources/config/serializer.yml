@@ -6,7 +6,14 @@ services:
 
   Symfony\Component\Serializer\Encoder\JsonEncoder: ~
 
-  Symfony\Component\Serializer\Normalizer\ObjectNormalizer: ~
+  TelNowEdge\FreePBX\Base\Serializer\Normalizer\ObjectNormalizerFactory: ~
+
+  object_normalizer:
+    class: Symfony\Component\Serializer\Normalizer\ObjectNormalizer
+    factory: 'TelNowEdge\FreePBX\Base\Serializer\Normalizer\ObjectNormalizerFactory:getObjectNormalizer'
+
+  Symfony\Component\Serializer\Normalizer\ObjectNormalizer:
+    alias: object_normalizer
 
   Symfony\Component\Serializer\Serializer:
     arguments:
