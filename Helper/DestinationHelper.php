@@ -46,7 +46,7 @@ class DestinationHelper
 
         foreach ($this->destinations as $destinations) {
             foreach ($destinations as $destination) {
-                $out[$destination['description']] = $destination['destination'];
+                $out[] = $destination['destination'];
             }
         }
 
