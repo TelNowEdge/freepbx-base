@@ -18,6 +18,7 @@
 
 namespace TelNowEdge\FreePBX\Base\Form\Model;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use TelNowEdge\FreePBX\Base\Validator\Constraints as TNEAssert;
 
 /**
@@ -29,8 +30,14 @@ use TelNowEdge\FreePBX\Base\Validator\Constraints as TNEAssert;
  */
 class Destination
 {
+    /**
+     * @Assert\NotNull()
+     */
     protected $category;
 
+    /**
+     * @Assert\NotNull()
+     */
     protected $destination;
 
     public function __toString()
