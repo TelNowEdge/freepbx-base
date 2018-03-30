@@ -39,8 +39,8 @@ abstract class AbstractPhpMigration extends AbstractMigration
                 outn($e->getMessage());
                 $error = true;
             }
-
-            return true === $error ? false : true;
         }
+
+        return true === $error ? false : true;
     }
 }
