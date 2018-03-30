@@ -1,10 +1,58 @@
 <script type="text/javascript">
- function processForm(category, destination) {
-   var actualState = $(destination).val();
+ const clearDestination = (destination, addText) => {
+   if (typeof addText === 'undefined') {
+     addText = true;
+   }
+
+   $(destination)
+     .empty()
+     .append(
+       addText === true
+       ? '<option value="">{{ 'Choose category before' | fpbxtrans }}</option>'
+       : ''
+     )
+   ;
+ };
+
+ const getCategoryByDestination = (destSelector, categorySelector, destination) => {
+   const prototype = $(destSelector).data('prototype');
+
+   return new Promise((resolve, reject) => {
+     Object.keys(prototype).forEach((x) => {
+       prototype[x].forEach((z) => {
+         if (z.destination === destination) {
+           if (z.category === 'Error') {
+             reject(z);
+           }
+
+           resolve(z);
+         }
+       });
+     });
+   });
+ };
+
+ const appendDestinationByCategory = (selector, category) => {
+   const prototype = $(selector).data('prototype');
+
+   const actual = $(selector).val();
+   clearDestination(selector, false);
+
+   prototype[category].forEach((x) => {
+     $('<option />', {
+       selected: actual === x.destination ? true : '',
+       text: x.description,
+       value: x.destination
+     }).appendTo(selector);
+   });
+ };
+
+ const processForm = (category, destination) => {
+   const actualState = $(destination).val();
 
    if (actualState) {
      getCategoryByDestination(destination, category, actualState)
-       .then(function (x) {
+       .then((x) => {
          $(category)
            .find('option:selected')
            .removeAttr('selected')
@@ -17,7 +65,7 @@
 
          appendDestinationByCategory(destination, x.category);
        })
-       .catch(function (x) {
+       .catch((x) => {
          clearDestination(destination);
 
          $('<option />', {
@@ -43,8 +91,8 @@
    }
 
    $(category)
-     .on('change', function () {
-       const val = $(this).val();
+     .on('change', (e) => {
+       const val = $(e.currentTarget).val();
 
        if (!val) {
          clearDestination(destination)
@@ -65,53 +113,5 @@
        appendDestinationByCategory(destination, val);
      });
 
- }
-
- function clearDestination(destination, addText) {
-   if (typeof addText === 'undefined') {
-     addText = true;
-   }
-
-   $(destination)
-     .empty()
-     .append(
-       addText === true
-       ? '<option value="">{{ 'Choose category before' | fpbxtrans }}</option>'
-       : ''
-     )
-   ;
- }
-
- function getCategoryByDestination(destSelector, categorySelector, destination) {
-   const prototype = $(destSelector).data('prototype');
-
-   return new Promise(function (resolve, reject) {
-     Object.keys(prototype).forEach(function (x) {
-       prototype[x].forEach(function (z) {
-         if (z.destination === destination) {
-           if (z.category === 'Error') {
-             reject(z);
-           }
-
-           resolve(z);
-         }
-       });
-     });
-   });
- }
-
- function appendDestinationByCategory(selector, category) {
-   const prototype = $(selector).data('prototype');
-
-   var actual = $(selector).val();
-   clearDestination(selector, false);
-
-   prototype[category].forEach(function (x) {
-     $('<option />', {
-       selected: actual === x.destination ? true : '',
-       text: x.description,
-       value: x.destination
-     }).appendTo(selector);
-   });
  }
 </script>
