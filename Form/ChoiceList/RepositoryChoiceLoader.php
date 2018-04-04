@@ -62,12 +62,26 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
                 continue;
             }
 
-            foreach ($this->collection as $value => $choice) {
-                if ($choice->getId() !== $givenChoice->getId()) {
-                    continue;
+            if (null !== $value) {
+                $givenChoice = call_user_func($value, $givenChoice);
+            }
+
+            foreach ($this->collection as $val => $choice) {
+                if (null !== $value) {
+                    $val = call_user_func($value, $choice);
+
+                    if ($val !== $givenChoice) {
+                        continue;
+                    }
                 }
 
-                $values[$i] = $value;
+                if (null === $value) {
+                    if ($choice->getId() !== $givenChoice->getId()) {
+                        continue;
+                    }
+                }
+
+                $values[$i] = (string) $val;
             }
         }
 
