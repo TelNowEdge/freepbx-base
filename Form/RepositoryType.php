@@ -21,10 +21,12 @@ namespace TelNowEdge\FreePBX\Base\Form;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
 use TelNowEdge\FreePBX\Base\Form\ChoiceList\RepositoryChoiceLoader;
+use TelNowEdge\FreePBX\Base\Form\DataTransformer\CollectionToArrayTransformer;
 
 class RepositoryType extends AbstractType implements ContainerAwareInterface
 {
@@ -33,6 +35,15 @@ class RepositoryType extends AbstractType implements ContainerAwareInterface
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        if ($options['multiple']) {
+            $builder
+                ->addViewTransformer(new CollectionToArrayTransformer(), true)
+            ;
+        }
     }
 
     public function getParent()
