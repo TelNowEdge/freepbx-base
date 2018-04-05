@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright [2016] [TelNowEdge]
+ * Copyright [2018] [TelNowEdge]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace TelNowEdge\FreePBX\Base\DialPlan\Verb;
+namespace TelNowEdge\FreePBX\Base\DialPlan\Utility;
 
 interface VerbInterface
 {
