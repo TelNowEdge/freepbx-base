@@ -1,0 +1,12 @@
+<link rel="stylesheet" href="assets/tnehook/select2/css/select2.min.css">
+<script src="assets/tnehook/select2/js/select2.full.min.js" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript">
+ $(document).ready(() => {
+   $('.user-choice-select').select2({
+     tags: false,
+     multiple: true,
+     tokenSeparators: [',', ' ', ';', '/'],
+   });
+ });
+</script>
