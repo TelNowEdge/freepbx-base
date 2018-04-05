@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace TelNowEdge\FreePBX\Base\DialPlan\Utility;
+namespace TelNowEdge\FreePBX\Base\DialPlan\Verb;
 
 interface VerbInterface
 {
