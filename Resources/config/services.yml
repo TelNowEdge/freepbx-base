@@ -69,6 +69,13 @@ services:
           - '@service_container'
     tags: [validator.constraint_validator]
 
+  TelNowEdge\FreePBX\Base\Validator\Constraints\UniqueIdValidator:
+    calls:
+      - method: setContainer
+        arguments:
+          - '@service_container'
+    tags: [validator.constraint_validator]
+
   TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractMigration:
     abstract: true
     calls:
