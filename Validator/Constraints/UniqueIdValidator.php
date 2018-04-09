@@ -35,14 +35,6 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
 
     public function validate($obj, Constraint $constraint)
     {
-        /* if (true === is_object($value)) { */
-        /*     $value = $value->getId(); */
-        /* } */
-
-        /* if (null === $value && true === (bool) $constraint->nullable) { */
-        /*     return; */
-        /* } */
-
         if (false === $this->container->has($constraint->service[0])) {
             $this->context
                 ->buildViolation('Unable to find service: {{ service }}')
