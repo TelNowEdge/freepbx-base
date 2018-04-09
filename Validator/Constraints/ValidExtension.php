@@ -26,4 +26,21 @@ use Symfony\Component\Validator\Constraint;
 class ValidExtension extends Constraint
 {
     public $message = 'Extension already in use by [{{ item }}]';
+
+    public $service;
+
+    public $field;
+
+    public function getRequiredOptions()
+    {
+        return array(
+            'service',
+            'field',
+        );
+    }
+
+    public function getTargets()
+    {
+        return self::CLASS_CONSTRAINT;
+    }
 }

@@ -18,22 +18,76 @@
 
 namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use TelNowEdge\FreePBX\Base\Exception\NoResultException;
 
-class ValidExtensionValidator extends ConstraintValidator
+class ValidExtensionValidator extends ConstraintValidator implements ContainerAwareInterface
 {
-    public function validate($value, Constraint $constraint)
+    private $container;
+
+    public function setContainer(ContainerInterface $container = null)
     {
+        $this->container = $container;
+    }
+
+    public function validate($obj, Constraint $constraint)
+    {
+        if (false === $this->container->has($constraint->service[0])) {
+            $this->context
+                ->buildViolation('Unable to find service: {{ service }}')
+                ->setParameter('{{ service }}', $constraint->service[0])
+                ->addViolation()
+                ;
+        }
+
+        $service = $this->container->get($constraint->service[0]);
+
+        $reflector = new \ReflectionClass($service);
+
+        if (false === $reflector->hasMethod($constraint->service[1])) {
+            $this->context
+                ->buildViolation('Unable to find method: {{ method }}')
+                ->setParameter('{{ method }}', $constraint->service[1])
+                ->addViolation()
+                ;
+        }
+
+        $reflModel = new \ReflectionClass($obj);
+
+        if (false === $reflModel->hasMethod(sprintf('get%s', ucfirst($constraint->field)))) {
+            $this->context
+                ->buildViolation('Unable to find methods: {{ method }}')
+                ->setParameter('{{ method }}', $constraint->field)
+                ->addViolation()
+                ;
+        }
+
+        $method = $reflector->getMethod($constraint->service[1]);
+        $fieldMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($constraint->field)));
+        $fieldValue = $fieldMethod->invoke($obj);
+
+        try {
+            $res = $method->invoke($service, $fieldValue);
+
+            if ($obj->getId() === $res->getId()) {
+                return;
+            }
+        } catch (NoResultException $e) {
+        }
+
         $exts = framework_get_extmap();
 
-        if (false === array_key_exists($value, $exts)) {
+        if (false === array_key_exists($fieldValue, $exts)) {
             return;
         }
 
         $this->context
             ->buildViolation($constraint->message)
-            ->setParameter('{{ item }}', $exts[$value])
+            ->setParameter('{{ item }}', $exts[$fieldValue])
+            ->atPath($constraint->field)
             ->addViolation()
             ;
     }
