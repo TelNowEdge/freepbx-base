@@ -59,7 +59,10 @@ class RepositoryType extends AbstractType implements ContainerAwareInterface
             }
 
             try {
-                $collection = $this->container->get($options['repository'])->{$options['caller']}();
+                $collection = call_user_func_array(
+                    array($this->container->get($options['repository']), $options['caller']),
+                    $options['parameters']
+                );
             } catch (NoResultException $e) {
                 $collection = new \Doctrine\Common\Collections\ArrayCollection();
             }
@@ -68,11 +71,13 @@ class RepositoryType extends AbstractType implements ContainerAwareInterface
         };
 
         $resolver->setRequired(array(
+            'parameters',
             'caller',
             'repository',
         ));
 
         $resolver->setDefaults(array(
+            'parameters' => array(),
             'choice_loader' => $choiceLoader,
             'choices' => null,
         ));
