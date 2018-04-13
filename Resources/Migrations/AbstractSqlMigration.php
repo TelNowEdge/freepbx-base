@@ -52,4 +52,37 @@ abstract class AbstractSqlMigration extends AbstractMigration
 
         return true;
     }
+
+    public function uninstall()
+    {
+        parent::uninstall();
+
+        $error = false;
+        $methods = $this->getOrderedUninstall();
+        $this->connection->beginTransaction();
+
+        foreach ($methods as $key => $method) {
+            if (false === $this->alreadyMigrate($key, static::class)) {
+                continue;
+            }
+
+            try {
+                $this->connection->executeUpdate($method->invoke($this));
+                $this->removeMigration($key, static::class);
+            } catch (\Exception $e) {
+                outn($e->getMessage());
+                $error = true;
+            }
+        }
+
+        if (true === $error) {
+            $this->connection->rollBack();
+
+            return false;
+        }
+
+        $this->connection->commit();
+
+        return true;
+    }
 }

@@ -43,4 +43,28 @@ abstract class AbstractPhpMigration extends AbstractMigration
 
         return true === $error ? false : true;
     }
+
+    public function uninstall()
+    {
+        parent::uninstall();
+
+        $error = false;
+        $methods = $this->getOrderedUninstall();
+
+        foreach ($methods as $key => $method) {
+            if (false === $this->alreadyMigrate($key, static::class)) {
+                continue;
+            }
+
+            try {
+                $method->invoke($this);
+                $this->removeMigration($key, static::class);
+            } catch (\Exception $e) {
+                outn($e->getMessage());
+                $error = true;
+            }
+        }
+
+        return true === $error ? false : true;
+    }
 }

@@ -38,6 +38,74 @@ abstract class AbstractMigration implements MigrationInterface
         $this->checkDb();
     }
 
+    public function uninstall()
+    {
+        $this->checkDb();
+    }
+
+    public function needReinstall()
+    {
+        $this->checkDb();
+
+        $error = false;
+        $methods = $this->getOrderedMigration();
+        $this->connection->beginTransaction();
+
+        foreach ($methods as $key => $method) {
+            if (1 !== preg_match('/^migration(\d{10})$/', $method->name)) {
+                continue;
+            }
+
+            $parameters = $method->getParameters();
+
+            foreach ($parameters as $parameter) {
+                if ('reinstall' !== $parameter->getName()) {
+                    continue;
+                }
+
+                if (true !== $parameter->getDefaultValue()) {
+                    continue;
+                }
+
+                try {
+                    $this->removeMigration($key, static::class);
+                } catch (\Exception $e) {
+                    outn($e->getMessage());
+                    $error = true;
+                }
+            }
+        }
+
+        if (true === $error) {
+            $this->connection->rollBack();
+
+            return false;
+        }
+
+        $this->connection->commit();
+
+        return true;
+    }
+
+    protected function getOrderedUninstall()
+    {
+        $reflector = new \ReflectionClass(static::class);
+        $methods = $reflector->getMethods();
+        $temp = array();
+
+        arsort($methods);
+
+        foreach ($methods as $method) {
+            if (1 !== preg_match('/^uninstall(\d{10})$/', $method->name, $match)) {
+                continue;
+            }
+
+            $temp[$match[1]] = $method;
+        }
+
+        return $temp;
+    }
+
     protected function getOrderedMigration()
     {
         $reflector = new \ReflectionClass(static::class);
@@ -91,6 +159,17 @@ CREATE
     {
         $this->connection->executeQuery(
             'INSERT INTO `tne_migrations` VALUES (?, ?, NOW())',
+            array(
+                $version,
+                $module,
+            )
+        );
+    }
+
+    protected function removeMigration($version, $module)
+    {
+        $this->connection->executeQuery(
+            'DELETE FROM `tne_migrations` WHERE id = ? AND module = ?',
             array(
                 $version,
                 $module,
