@@ -1,0 +1,7 @@
+<script type="text/javascript">
+ $(document).ready(() => {
+   {% for label, messages in flashes %}
+   fpbxToast('{{ messages|join(',') }}', '{{ label }}', '{{ label }}');
+   {% endfor %}
+ });
+</script>
