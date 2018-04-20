@@ -52,6 +52,10 @@ abstract class AbstractDbHandler
             'host' => true === $ampConfManager->exists('AMPDBHOST') ? $ampConfManager->get('AMPDBHOST') : 'localhost',
             'driver' => 'pdo_mysql',
             'port' => true === $ampConfManager->get('AMPDBPORT') ? $ampConfManager->get('AMPDBPORT') : 3306,
+            'charset' => 'utf8',
+            'driverOptions' => array(
+                1002 => 'SET NAMES utf8',
+            ),
         );
 
         $this->connection = DriverManager::getConnection($connectionParams, $config);
