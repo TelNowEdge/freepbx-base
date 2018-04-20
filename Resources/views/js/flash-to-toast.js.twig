@@ -1,7 +1,17 @@
 <script type="text/javascript">
  $(document).ready(() => {
+   let time = 0;
    {% for label, messages in flashes %}
-   fpbxToast('{{ messages|join(',') }}', '{{ label }}', '{{ label }}');
+
+   {% if label is not same as('provision') %}
+   {% for message in messages %}
+   setTimeout(() => {
+     fpbxToast('{{ message }}', '{{ label }}', '{{ label }}');
+   }, time);
+
+   time += 2000;
+   {% endfor %}
+   {% endif %}
    {% endfor %}
  });
 </script>
