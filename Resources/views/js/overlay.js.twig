@@ -1,0 +1,23 @@
+<script type="text/javascript">
+ const displayOverlay = (bool) => {
+   if (bool === true) {
+     $('#tne-overlay')
+       .show();
+   }
+
+   if (bool === false) {
+     $('#tne-overlay')
+       .hide();
+   }
+ }
+
+ $('body')
+   .append(
+     $('<div />', {
+       id: 'tne-overlay',
+       class: 'tne-overlay',
+     }).html('<i class="fa fa-spinner fa-spin"></i>')
+   );
+
+ displayOverlay(false);
+</script>
