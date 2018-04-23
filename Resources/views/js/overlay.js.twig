@@ -3,11 +3,17 @@
    if (bool === true) {
      $('#tne-overlay')
        .show();
+
+     $('#action-bar')
+       .hide('slow');
    }
 
    if (bool === false) {
      $('#tne-overlay')
        .hide();
+
+     $('#action-bar')
+       .show('fast');
    }
  }
 
