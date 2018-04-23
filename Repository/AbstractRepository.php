@@ -19,6 +19,7 @@
 namespace TelNowEdge\FreePBX\Base\Repository;
 
 use Doctrine\DBAL\Connection;
+use TelNowEdge\FreePBX\Base\Exception\NoResultException;
 
 abstract class AbstractRepository
 {
