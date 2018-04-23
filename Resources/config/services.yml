@@ -19,7 +19,8 @@ services:
     calls:
       - method: setConnection
         arguments:
-          - '@FreePBX\Database'
+          - '@default_connection'
+          - '@cdr_connection'
 
   TelNowEdge\FreePBX\Base\Repository\AbstractAsteriskRepository:
     abstract: true
@@ -40,7 +41,8 @@ services:
     calls:
       - method: setConnection
         arguments:
-          - '@TelNowEdge\FreePBX\Base\Manager\AmpConfManager'
+          - '@default_connection'
+          - '@cdr_connection'
       - method: setEventDispatcher
         arguments:
           - '@event_dispatcher'
@@ -85,10 +87,13 @@ services:
 
   TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractMigration:
     abstract: true
+    arguments:
+      $annotationReader: '@annotation.reader'
     calls:
       - method: setConnection
         arguments:
-          - '@FreePBX\Database'
+          - '@default_connection'
+          - '@cdr_connection'
 
   TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractSqlMigration:
     abstract: true

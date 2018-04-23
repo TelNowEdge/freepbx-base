@@ -27,13 +27,13 @@ abstract class AbstractPhpMigration extends AbstractMigration
         $error = false;
         $methods = $this->getOrderedMigration();
 
-        foreach ($methods as $key => $method) {
+        foreach ($methods as $key => $res) {
             if (true === $this->alreadyMigrate($key, static::class)) {
                 continue;
             }
 
             try {
-                $method->invoke($this);
+                $res['method']->invoke($this);
                 $this->markAsMigrated($key, static::class);
             } catch (\Exception $e) {
                 outn($e->getMessage());
@@ -51,13 +51,13 @@ abstract class AbstractPhpMigration extends AbstractMigration
         $error = false;
         $methods = $this->getOrderedUninstall();
 
-        foreach ($methods as $key => $method) {
+        foreach ($methods as $key => $res) {
             if (false === $this->alreadyMigrate($key, static::class)) {
                 continue;
             }
 
             try {
-                $method->invoke($this);
+                $res['method']->invoke($this);
                 $this->removeMigration($key, static::class);
             } catch (\Exception $e) {
                 outn($e->getMessage());

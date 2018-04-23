@@ -18,9 +18,7 @@
 
 namespace TelNowEdge\FreePBX\Base\Handler;
 
-use Doctrine\DBAL\Configuration;
-use Doctrine\DBAL\DriverManager;
-use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
+use Doctrine\DBAL\Connection;
 
 abstract class AbstractDbHandler
 {
@@ -36,34 +34,10 @@ abstract class AbstractDbHandler
 
     protected $eventDispatcher;
 
-    public function setConnection(AmpConfManager $ampConfManager)
+    public function setConnection(Connection $connection, Connection $cdrConnection)
     {
-        /**
-         * Reinit Doctrine connection to inherit of Doctrine instead of FreePBX\DataBase.
-         * When I use FreePBX\Database->getDoctrineConnection(), the underlaying class is
-         * not manage by doctrine by she is an instance of FreePBX\Database that extends
-         * \PDO. So all useful Doctrine\Exceptions aren't available.
-         */
-        $config = new Configuration();
-        $connectionParams = array(
-            'dbname' => true === $ampConfManager->exists('AMPDBNAME') ? $ampConfManager->get('AMPDBNAME') : 'asterisk',
-            'user' => $ampConfManager->get('AMPDBUSER'),
-            'password' => $ampConfManager->get('AMPDBPASS'),
-            'host' => true === $ampConfManager->exists('AMPDBHOST') ? $ampConfManager->get('AMPDBHOST') : 'localhost',
-            'driver' => 'pdo_mysql',
-            'port' => true === $ampConfManager->get('AMPDBPORT') ? $ampConfManager->get('AMPDBPORT') : 3306,
-            'charset' => 'utf8',
-            'driverOptions' => array(
-                1002 => 'SET NAMES utf8',
-            ),
-        );
-
-        $this->connection = DriverManager::getConnection($connectionParams, $config);
-        $this->connection->setFetchMode(\PDO::FETCH_OBJ);
-
-        $connectionParams['dbname'] = true === $ampConfManager->exists('AMPDBCDRNAME') ? $ampConfManager->get('AMPDBCDRNAME') : 'asteriskcdrdb';
-        $this->cdrConnection = DriverManager::getConnection($connectionParams, $config);
-        $this->cdrConnection->setFetchMode(\PDO::FETCH_OBJ);
+        $this->connection = $connection;
+        $this->cdrConnection = $cdrConnection;
 
         return $this;
     }

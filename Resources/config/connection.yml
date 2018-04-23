@@ -1,0 +1,17 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: false
+    public: true
+
+  TelNowEdge\FreePBX\Base\Connection\ConnectionFactory:
+    arguments:
+      $ampConfManager: '@TelNowEdge\FreePBX\Base\Manager\AmpConfManager'
+
+  default_connection:
+    class: Doctrine\DBAL\Connection
+    factory: ['@TelNowEdge\FreePBX\Base\Connection\ConnectionFactory', 'getDefaultConnection']
+
+  cdr_connection:
+    class: Doctrine\DBAL\Connection
+    factory: ['@TelNowEdge\FreePBX\Base\Connection\ConnectionFactory', 'getCdrConnection']

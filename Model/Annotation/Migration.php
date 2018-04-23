@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright [2016] [TelNowEdge]
+ * Copyright [2018] [TelNowEdge]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,14 @@
  * limitations under the License.
  */
 
-namespace TelNowEdge\FreePBX\Base\Resources\Migrations;
+namespace TelNowEdge\FreePBX\Base\Model\Annotation;
 
-use Doctrine\DBAL\Connection;
-
-interface MigrationInterface
+/**
+ * @Annotation
+ */
+class Migration
 {
-    public function setConnection(Connection $connection, Connection $defaultConnection);
+    public $reinstall = false;
 
-    public function migrate();
+    public $connection = 'connection';
 }

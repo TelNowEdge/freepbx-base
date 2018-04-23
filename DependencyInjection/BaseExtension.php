@@ -42,6 +42,7 @@ class BaseExtension extends Extension
             ->registerSessionConfiguration($config, $container, $loader)
             ->registerTemplateEngineConfiguration($config, $container, $loader)
             ->registerValidatorConfiguration($config, $container, $loader)
+            ->registerConnectionConfiguration($config, $container, $loader)
             ;
 
         $loader->load('services.yml');
@@ -106,6 +107,13 @@ class BaseExtension extends Extension
     private function registerEventDispatcherConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
     {
         $loader->load('event_dispatcher.yml');
+
+        return $this;
+    }
+
+    private function registerConnectionConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
+    {
+        $loader->load('connection.yml');
 
         return $this;
     }

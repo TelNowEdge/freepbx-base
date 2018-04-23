@@ -18,19 +18,35 @@
 
 namespace TelNowEdge\FreePBX\Base\Resources\Migrations;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 
 abstract class AbstractMigration implements MigrationInterface
 {
     /**
-     * \FreePBX\Database.
+     * \Doctrine\DBAL\Connection.
      */
     protected $connection;
 
-    public function setConnection(\FreePBX\Database $database)
+    /**
+     * \Doctrine\DBAL\Connection.
+     */
+    protected $cdrConnection;
+
+    protected $annotationReader;
+
+    public function __construct(AnnotationReader $annotationReader)
     {
-        $this->connection = $database->getDoctrineConnection();
-        $this->connection->setFetchMode(\PDO::FETCH_OBJ);
+        $this->annotationReader = $annotationReader;
+    }
+
+    public function setConnection(Connection $defaultConnection, Connection $cdrConnection)
+    {
+        $this->connection = $defaultConnection;
+        $this->cdrConnection = $cdrConnection;
+
+        return $this;
     }
 
     public function migrate()
@@ -51,22 +67,12 @@ abstract class AbstractMigration implements MigrationInterface
         $methods = $this->getOrderedMigration();
         $this->connection->beginTransaction();
 
-        foreach ($methods as $key => $method) {
-            if (1 !== preg_match('/^migration(\d{10})$/', $method->name)) {
+        foreach ($methods as $key => $res) {
+            if (1 !== preg_match('/^migration(\d{10})$/', $res['method']->name)) {
                 continue;
             }
 
-            $parameters = $method->getParameters();
-
-            foreach ($parameters as $parameter) {
-                if ('reinstall' !== $parameter->getName()) {
-                    continue;
-                }
-
-                if (true !== $parameter->getDefaultValue()) {
-                    continue;
-                }
-
+            if (true === $res['annotation'][0]->reinstall) {
                 try {
                     $this->removeMigration($key, static::class);
                 } catch (\Exception $e) {
@@ -119,7 +125,10 @@ abstract class AbstractMigration implements MigrationInterface
                 continue;
             }
 
-            $temp[$match[1]] = $method;
+            $temp[$match[1]] = array(
+                'annotation' => $this->annotationReader->getMethodAnnotations($method),
+                'method' => $method,
+            );
         }
 
         return $temp;

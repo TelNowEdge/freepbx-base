@@ -18,7 +18,7 @@
 
 namespace TelNowEdge\FreePBX\Base\Repository;
 
-use TelNowEdge\FreePBX\Base\Exception\NoResultException;
+use Doctrine\DBAL\Connection;
 
 abstract class AbstractRepository
 {
@@ -27,10 +27,17 @@ abstract class AbstractRepository
      */
     protected $connection;
 
-    public function setConnection(\FreePBX\Database $database)
+    /**
+     * \Doctrine\DBAL\Connection.
+     */
+    protected $cdrConnection;
+
+    protected $eventDispatcher;
+
+    public function setConnection(Connection $connection, Connection $cdrConnection)
     {
-        $this->connection = $database->getDoctrineConnection();
-        $this->connection->setFetchMode(\PDO::FETCH_OBJ);
+        $this->connection = $connection;
+        $this->cdrConnection = $cdrConnection;
 
         return $this;
     }

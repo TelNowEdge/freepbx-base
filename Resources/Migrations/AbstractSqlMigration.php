@@ -27,14 +27,15 @@ abstract class AbstractSqlMigration extends AbstractMigration
         $error = false;
         $methods = $this->getOrderedMigration();
         $this->connection->beginTransaction();
+        $this->cdrConnection->beginTransaction();
 
-        foreach ($methods as $key => $method) {
+        foreach ($methods as $key => $res) {
             if (true === $this->alreadyMigrate($key, static::class)) {
                 continue;
             }
 
             try {
-                $this->connection->executeUpdate($method->invoke($this));
+                $this->{$res['annotation'][0]->connection}->executeUpdate($res['method']->invoke($this));
                 $this->markAsMigrated($key, static::class);
             } catch (\Exception $e) {
                 outn($e->getMessage());
@@ -44,11 +45,13 @@ abstract class AbstractSqlMigration extends AbstractMigration
 
         if (true === $error) {
             $this->connection->rollBack();
+            $this->cdrConnection->rollBack();
 
             return false;
         }
 
         $this->connection->commit();
+        $this->cdrConnection->commit();
 
         return true;
     }
@@ -61,13 +64,13 @@ abstract class AbstractSqlMigration extends AbstractMigration
         $methods = $this->getOrderedUninstall();
         $this->connection->beginTransaction();
 
-        foreach ($methods as $key => $method) {
+        foreach ($methods as $key => $res) {
             if (false === $this->alreadyMigrate($key, static::class)) {
                 continue;
             }
 
             try {
-                $this->connection->executeUpdate($method->invoke($this));
+                $this->connection->executeUpdate($res['method']->invoke($this));
                 $this->removeMigration($key, static::class);
             } catch (\Exception $e) {
                 outn($e->getMessage());
