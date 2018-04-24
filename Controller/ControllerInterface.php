@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright [2016] [TelNowEdge]
+ * Copyright [2018] [TelNowEdge]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,13 @@
 
 namespace TelNowEdge\FreePBX\Base\Controller;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-abstract class AbstractController implements ContainerAwareInterface, ControllerInterface
+interface ControllerInterface
 {
-    use ControllerTrait;
+    public function setContainer(ContainerInterface $container = null);
 
-    protected $container;
+    public static function getViewsDir();
 
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
+    public static function getViewsNamespace();
 }
