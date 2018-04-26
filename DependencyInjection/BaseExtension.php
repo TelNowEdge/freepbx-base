@@ -43,6 +43,7 @@ class BaseExtension extends Extension
             ->registerTemplateEngineConfiguration($config, $container, $loader)
             ->registerValidatorConfiguration($config, $container, $loader)
             ->registerConnectionConfiguration($config, $container, $loader)
+            ->registerLoggerConfiguration($config, $container, $loader)
             ;
 
         $loader->load('services.yml');
@@ -114,6 +115,13 @@ class BaseExtension extends Extension
     private function registerConnectionConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
     {
         $loader->load('connection.yml');
+
+        return $this;
+    }
+
+    private function registerLoggerConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
+    {
+        $loader->load('logger.yml');
 
         return $this;
     }

@@ -1,0 +1,13 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: false
+    public: true
+
+  TelNowEdge\FreePBX\Base\Logger\LoggerFactory:
+    arguments:
+      $ampConfManager: '@TelNowEdge\FreePBX\Base\Manager\AmpConfManager'
+
+  logger:
+    class: Monolog\Logger
+    factory: ['@TelNowEdge\FreePBX\Base\Logger\LoggerFactory', 'createLogger']
