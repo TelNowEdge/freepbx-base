@@ -20,6 +20,7 @@ namespace TelNowEdge\FreePBX\Base\Connection;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
+use Symfony\Component\Ldap\Ldap;
 use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 
 class ConnectionFactory
@@ -85,5 +86,23 @@ class ConnectionFactory
         $connection->setFetchMode(\PDO::FETCH_OBJ);
 
         return $connection;
+    }
+
+    public function getLdapDefaultConnection()
+    {
+        $ldap = Ldap::create('ext_ldap', array(
+            'host' => $this->ampConfManager->get('TNE_LDAPIP') ?: '127.0.0.1',
+            'encryption' => 'yes' === $this->ampConfManager->get('TNE_LDAP_STARTTLS') ? 'tls' : 'none',
+        ));
+
+        $dn = sprintf(
+            '%s,%s',
+            $this->ampConfManager->get('TNE_LDAPADMIN'),
+            $this->ampConfManager->get('TNE_LDAPDN')
+        );
+
+        $ldap->bind($dn, $this->ampConfManager->get('TNE_LDAPPWD'));
+
+        return $ldap;
     }
 }
