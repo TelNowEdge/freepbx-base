@@ -29,7 +29,21 @@ services:
         arguments:
           - '@AsteriskManager'
 
+  TelNowEdge\FreePBX\Base\Repository\AbstractFileSystemRepository:
+    abstract: true
+    calls:
+      - method: setAmpConfManager
+        arguments:
+          - '@TelNowEdge\FreePBX\Base\Manager\AmpConfManager'
+
   TelNowEdge\FreePBX\Base\DialPlan\Generator\AbstractGenerator:
+    abstract: true
+    calls:
+      - method: setContainer
+        arguments:
+          - '@service_container'
+
+  TelNowEdge\FreePBX\Base\DialPlan\File\AbstractFile:
     abstract: true
     calls:
       - method: setContainer
@@ -53,6 +67,16 @@ services:
       - method: setConnection
         arguments:
           - '@AsteriskManager'
+      - method: setEventDispatcher
+        arguments:
+          - '@event_dispatcher'
+
+  TelNowEdge\FreePBX\Base\Handler\AbstractFileSystemHandler:
+    abstract: true
+    calls:
+      - method: setAmpConfManager
+        arguments:
+          - '@TelNowEdge\FreePBX\Base\Manager\AmpConfManager'
       - method: setEventDispatcher
         arguments:
           - '@event_dispatcher'
