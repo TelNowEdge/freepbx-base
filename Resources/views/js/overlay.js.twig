@@ -1,3 +1,22 @@
+<style type="text/css">
+ #tne-overlay {
+   position: fixed;
+   width: 100%;
+   height: 100%;
+   top: 0;
+   left: 0;
+   z-index: 501;               /*500 is FreePBX max z-index*/
+   cursor: wait;
+   background-color: rgba(0,0,0, 0.2);
+   display: flex;
+ }
+
+ #tne-overlay > i {
+   margin: auto;
+   font-size: 50px;
+ }
+</style>
+
 <script type="text/javascript">
  const displayOverlay = (bool) => {
    if (bool === true) {
