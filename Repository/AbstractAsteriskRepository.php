@@ -55,7 +55,7 @@ abstract class AbstractAsteriskRepository
         $key = \Doctrine\Common\Util\Inflector::camelize($array[0]);
 
         if (1 === count($array)) {
-            $value = true === empty($value) ? null : $value;
+            $value = '' === $value ? null : $value;
 
             return array($key => $value);
         }
