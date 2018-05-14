@@ -68,6 +68,12 @@ class TemplateEngine implements TemplateEngineInterface
 
     public function addRegisterPath($path, $namespace = \Twig_Loader_Filesystem::MAIN_NAMESPACE)
     {
+        $paths = $this->twig->getLoader()->getPaths($namespace);
+
+        if (true === in_array($path, $paths, true)) {
+            return $this;
+        }
+
         $this->twig->getLoader()->addPath($path, $namespace);
 
         return $this;
