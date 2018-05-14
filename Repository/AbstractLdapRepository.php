@@ -67,7 +67,8 @@ abstract class AbstractLdapRepository
             }
         }
 
-        $dnMapping = reset($this->getMapping('dn'));
+        $mappings = $this->getMapping('dn');
+        $dnMapping = reset($mappings);
         $out[key($dnMapping)][reset($dnMapping)] = $entry->getDn();
 
         return $out;
