@@ -182,3 +182,15 @@ services:
   TelNowEdge\FreePBX\Base\Helper\DestinationHelper: ~
 
   TelNowEdge\FreePBX\Base\Manager\AmpConfManager: ~
+
+  TelNowEdge\FreePBX\Base\Manager\UserEventManagerFactory:
+    calls:
+      - method: setUserEventManager
+        arguments:
+          - '@TelNowEdge\FreePBX\Base\Manager\UserEventManager'
+
+  TelNowEdge\FreePBX\Base\Manager\UserEventManager:
+    calls:
+      - method: setConnection
+        arguments:
+          - '@AsteriskManager'
