@@ -18,15 +18,28 @@
 
 namespace TelNowEdge\FreePBX\Base\Manager;
 
+use TelNowEdge\FreePBX\Base\Builder\HintBuilder;
 use TelNowEdge\FreePBX\Base\Builder\UserEventBuilder;
 
-class UserEventManagerFactory
+class ManagerFactory
 {
+    protected $hintManager;
+
     protected $userEventManager;
+
+    public function setHintManager(HintManager $hintManager)
+    {
+        $this->hintManager = $hintManager;
+    }
 
     public function setUserEventManager(UserEventManager $userEventManager)
     {
         $this->userEventManager = $userEventManager;
+    }
+
+    public function createHintBuilder()
+    {
+        return new HintBuilder($this->hintManager);
     }
 
     public function createUserEventBuilder()

@@ -183,13 +183,22 @@ services:
 
   TelNowEdge\FreePBX\Base\Manager\AmpConfManager: ~
 
-  TelNowEdge\FreePBX\Base\Manager\UserEventManagerFactory:
+  TelNowEdge\FreePBX\Base\Manager\ManagerFactory:
     calls:
       - method: setUserEventManager
         arguments:
           - '@TelNowEdge\FreePBX\Base\Manager\UserEventManager'
+      - method: setHintManager
+        arguments:
+          - '@TelNowEdge\FreePBX\Base\Manager\HintManager'
 
   TelNowEdge\FreePBX\Base\Manager\UserEventManager:
+    calls:
+      - method: setConnection
+        arguments:
+          - '@AsteriskManager'
+
+  TelNowEdge\FreePBX\Base\Manager\HintManager:
     calls:
       - method: setConnection
         arguments:
