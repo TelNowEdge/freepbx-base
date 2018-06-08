@@ -61,7 +61,7 @@ class ContainerBuilderFactory
 
             $classLoader = preg_replace('/\\\\/', '/', $match[1]);
 
-            require 'modules/'.$classLoader.'.php';
+            require sprintf('%s/../../../../../../modules/%s.php', __DIR__, $classLoader);
         });
     }
 
