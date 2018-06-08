@@ -32,6 +32,18 @@ abstract class AbstractAsteriskRepository
         $this->connection = $connection;
     }
 
+    public function getByFamily($family)
+    {
+        $res = $this->connection
+            ->database_show($family);
+
+        if (true === empty($res)) {
+            throw new NoResultException();
+        }
+
+        return $res;
+    }
+
     public function show($family, $key)
     {
         $request = sprintf('%s/%d', $family, $key);
@@ -65,7 +77,7 @@ abstract class AbstractAsteriskRepository
         return $out;
     }
 
-    public function sqlToArray(array $res, $idName = 'id')
+    public function sqlToArray(array $res)
     {
         $temp = array();
         $out = array();
@@ -74,6 +86,10 @@ abstract class AbstractAsteriskRepository
             $key = strtolower($key);
 
             $tld = preg_split('#/#', $key, 3, PREG_SPLIT_NO_EMPTY);
+
+            if (false === isset($tld[2])) {
+                continue;
+            }
 
             $x = $this->linearize($tld[2], $child);
 
