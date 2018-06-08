@@ -203,3 +203,9 @@ services:
       - method: setConnection
         arguments:
           - '@AsteriskManager'
+
+  TelNowEdge\FreePBX\Base\Manager\SipNotifyManager:
+    calls:
+      - method: setConnection
+        arguments:
+          - '@AsteriskManager'
