@@ -64,4 +64,9 @@ abstract class Module extends \FreePBX_Helpers
         $this->freepbx = $freepbx;
         $this->container = ContainerBuilderFactory::getInstance();
     }
+
+    public function getContainer()
+    {
+        return $this->container;
+    }
 }
