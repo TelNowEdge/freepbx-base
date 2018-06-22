@@ -18,11 +18,18 @@
 
 namespace TelNowEdge\FreePBX\Base\Controller;
 
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+
 trait ControllerTrait
 {
     protected function createForm($type, $data = null, array $options = array())
     {
         return $this->get('form_factory')->create($type, $data, $options);
+    }
+
+    protected function createNamedFormBuilder($name, $data = null, array $options = array())
+    {
+        return $this->get('form_factory')->createNamedBuilder($name, FormType::class, $data, $options);
     }
 
     protected function render($template, $data = array())
