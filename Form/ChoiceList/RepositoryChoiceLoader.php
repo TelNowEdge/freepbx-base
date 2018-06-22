@@ -26,6 +26,8 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
 {
     private $collection;
 
+    private $choiceList;
+
     public function __construct(ArrayCollection $collection)
     {
         $this->collection = $collection;
