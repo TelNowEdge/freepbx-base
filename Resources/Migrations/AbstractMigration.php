@@ -75,8 +75,9 @@ abstract class AbstractMigration implements MigrationInterface
             if (true === $res['annotation'][0]->reinstall) {
                 try {
                     $this->removeMigration($key, static::class);
+                    $this->out(sprintf('%s marked for reinstall', $key));
                 } catch (\Exception $e) {
-                    outn($e->getMessage());
+                    $this->out($e->getMessage());
                     $error = true;
                 }
             }
@@ -184,5 +185,16 @@ CREATE
                 $module,
             )
         );
+    }
+
+    protected function out($msg)
+    {
+        $separator = '<br />';
+
+        if ('cli' === PHP_SAPI) {
+            $separator = "\n";
+        }
+
+        outn(sprintf('%s%s', $msg, $separator));
     }
 }

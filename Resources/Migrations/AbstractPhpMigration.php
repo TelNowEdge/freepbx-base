@@ -29,14 +29,16 @@ abstract class AbstractPhpMigration extends AbstractMigration
 
         foreach ($methods as $key => $res) {
             if (true === $this->alreadyMigrate($key, static::class)) {
+                $this->out(sprintf('%s already migrate. Nothing todo', $key));
                 continue;
             }
 
             try {
                 $res['method']->invoke($this);
                 $this->markAsMigrated($key, static::class);
+                $this->out(sprintf('Apply migration %s', $key));
             } catch (\Exception $e) {
-                outn($e->getMessage());
+                $this->out($e->getMessage());
                 $error = true;
             }
         }
@@ -53,14 +55,16 @@ abstract class AbstractPhpMigration extends AbstractMigration
 
         foreach ($methods as $key => $res) {
             if (false === $this->alreadyMigrate($key, static::class)) {
+                $this->out(sprintf('%s not currently present. Nothing todo', $key));
                 continue;
             }
 
             try {
                 $res['method']->invoke($this);
                 $this->removeMigration($key, static::class);
+                $this->out(sprintf('Uninstall %s', $key));
             } catch (\Exception $e) {
-                outn($e->getMessage());
+                $this->out($e->getMessage());
                 $error = true;
             }
         }

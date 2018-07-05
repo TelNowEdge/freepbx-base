@@ -31,14 +31,18 @@ abstract class AbstractSqlMigration extends AbstractMigration
 
         foreach ($methods as $key => $res) {
             if (true === $this->alreadyMigrate($key, static::class)) {
+                $this->out(sprintf('%s already migrate. Nothing todo', $key));
+
                 continue;
             }
 
             try {
-                $this->{$res['annotation'][0]->connection}->executeUpdate($res['method']->invoke($this));
+                $sql = $res['method']->invoke($this);
+                $this->{$res['annotation'][0]->connection}->executeUpdate($sql);
                 $this->markAsMigrated($key, static::class);
+                $this->out(sprintf('Apply migration %s: [%s]', $key, $sql));
             } catch (\Exception $e) {
-                outn($e->getMessage());
+                $this->out($e->getMessage());
                 $error = true;
             }
         }
@@ -66,14 +70,17 @@ abstract class AbstractSqlMigration extends AbstractMigration
 
         foreach ($methods as $key => $res) {
             if (false === $this->alreadyMigrate($key, static::class)) {
+                $this->out(sprintf('%s not currently present. Nothing todo', $key));
                 continue;
             }
 
             try {
-                $this->connection->executeUpdate($res['method']->invoke($this));
+                $sql = $res['method']->invoke($this);
+                $this->connection->executeUpdate($sql);
                 $this->removeMigration($key, static::class);
+                $this->out(sprintf('Uninstall %s: [%s]', $key, $sql));
             } catch (\Exception $e) {
-                outn($e->getMessage());
+                $this->out($e->getMessage());
                 $error = true;
             }
         }
