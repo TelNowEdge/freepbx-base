@@ -144,9 +144,13 @@ abstract class AbstractMigration implements MigrationInterface
 CREATE
     TABLE
         tne_migrations (
-            `id` INT PRIMARY KEY
-            ,`module` VARCHAR(255) NOT NULL
+            `id` INT
+            ,`module` VARCHAR (255) NOT NULL
             ,created_at DATETIME NOT NULL
+            ,PRIMARY KEY (
+                `id`
+                ,`module`
+            )
         )
             ');
         }
