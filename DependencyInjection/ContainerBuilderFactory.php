@@ -110,8 +110,14 @@ class ContainerBuilderFactory
 
     private static function registerModuleExtension(BaseContainerBuilder $container)
     {
+        $modules = \FreePBX::Modules()->getActiveModules(true);
+
         foreach (new \DirectoryIterator(__DIR__.'/../../../../../../modules/') as $child) {
             if (false === $child->isDir()) {
+                continue;
+            }
+
+            if (false === isset($modules[$child->getFilename()])) {
                 continue;
             }
 
