@@ -117,7 +117,12 @@ class ContainerBuilderFactory
                 continue;
             }
 
-            if (false === isset($modules[$child->getFilename()])) {
+            if (
+                false === isset($modules[$child->getFilename()])
+                && PHP_SAPI !== 'cli'
+                && 'modules' !== $_GET['display']
+                && 'process' !== $_GET['action']
+            ) {
                 continue;
             }
 
