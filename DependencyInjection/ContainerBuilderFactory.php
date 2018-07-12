@@ -117,13 +117,14 @@ class ContainerBuilderFactory
                 continue;
             }
 
+            $display = false === isset($_GET['display']) ? null : $_GET['display'];
+            $action = false === isset($_GET['action']) ? null : $_GET['action'];
+
             if (
                 false === isset($modules[$child->getFilename()])
                 && PHP_SAPI !== 'cli'
-                && true === isset($_GET['display'])
-                && 'modules' !== $_GET['display']
-                && true === isset($_GET['action'])
-                && 'process' !== $_GET['action']
+                && 'modules' !== $display
+                && 'process' !== $action
             ) {
                 continue;
             }
