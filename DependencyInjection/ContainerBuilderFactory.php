@@ -120,7 +120,9 @@ class ContainerBuilderFactory
             if (
                 false === isset($modules[$child->getFilename()])
                 && PHP_SAPI !== 'cli'
+                && true === isset($_GET['display'])
                 && 'modules' !== $_GET['display']
+                && true === isset($_GET['action'])
                 && 'process' !== $_GET['action']
             ) {
                 continue;
