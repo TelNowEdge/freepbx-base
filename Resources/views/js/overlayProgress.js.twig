@@ -1,0 +1,67 @@
+<style type="text/css">
+ #tne-progress-overlay {
+   position: fixed;
+   width: 100%;
+   height: 100%;
+   top: 0;
+   left: 0;
+   z-index: 501;               /*500 is FreePBX max z-index*/
+   cursor: wait;
+   background-color: rgba(0,0,0, 0.8);
+   display: flex;
+ }
+
+ #tne-progress-overlay > div {
+   margin: auto;
+   width: 60%;
+ }
+</style>
+
+<script id="template-progress" type="text/template">
+  <div class="progress">
+    <div class="progress-bar" role="progressbar" style="width: __percent__%;" aria-valuenow="__percent__" aria-valuemin="0" aria-valuemax="100">
+      __text__
+    </div>
+  </div>
+</script>
+
+<script type="text/javascript">
+ const displayProgressOverlay = (bool) => {
+   if (bool === true) {
+     $('#tne-progress-overlay')
+       .show();
+
+     $('#action-bar')
+       .hide('slow');
+   }
+
+   if (bool === false) {
+     $('#tne-progress-overlay')
+       .empty()
+       .hide();
+
+     $('#action-bar')
+       .show('fast');
+   }
+ }
+
+ const updateProgressOverlay = (percent, text) => {
+   const html = $('#template-progress')
+     .html()
+     .replace(/__percent__/, percent)
+     .replace(/__text__/, text)
+   ;
+
+   $('#tne-progress-overlay').html(html);
+ }
+
+ $('body')
+   .append(
+     $('<div />', {
+       id: 'tne-progress-overlay',
+       class: 'tne-progress-overlay',
+     })
+   );
+
+ displayProgressOverlay(false);
+</script>
