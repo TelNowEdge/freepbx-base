@@ -56,6 +56,26 @@ abstract class AbstractLdapHandler
         return $this->ampConfManager->get('TNE_LDAPDN');
     }
 
+    protected function getUserSchemaName()
+    {
+        return $this->ampConfManager->get('TNE_LDAP_SCHEMA_USER');
+    }
+
+    protected function getGroupSchemaName()
+    {
+        return $this->ampConfManager->get('TNE_LDAP_SCHEMA_GROUP');
+    }
+
+    protected function getDirectorySchemaName()
+    {
+        return $this->ampConfManager->get('TNE_LDAP_SCHEMA_DIRECTORY');
+    }
+
+    protected function getPrivateDirectorySchemaName()
+    {
+        return $this->ampConfManager->get('TNE_LDAP_SCHEMA_PRIVATE_DIRECTORY');
+    }
+
     protected function getEntryManager()
     {
         return $this->connection->getEntryManager();
