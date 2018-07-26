@@ -31,11 +31,14 @@ class CompoundUnique extends Constraint
 
     public $service;
 
+    public $compare;
+
     public function getRequiredOptions()
     {
         return array(
             'fields',
             'service',
+            'compare',
         );
     }
 

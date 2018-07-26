@@ -49,6 +49,15 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
                     return;
                 }
 
+                // Compare that update the same object
+                if ($this->getClassCompare($class, $constraint)
+                    === $this->getClassCompare($valid, $constraint)
+                    && $this->getClassValues($class, $constraint)
+                    === $this->getClassValues($valid, $constraint)
+                ) {
+                    return;
+                }
+
                 $errors = array();
                 $i = 0;
 
@@ -85,9 +94,29 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
             $property = $reflector->getProperty($field);
             $property->setAccessible(true);
 
-            $values[$field] = $property->getValue($class);
+            $values[$field] = is_object($property->getValue($class))
+                ? $property->getValue($class)->getId()
+                : $property->getValue($class)
+                ;
         }
 
         return $values;
+    }
+
+    public function getClassCompare($class, Constraint $constraint)
+    {
+        $reflector = new \ReflectionClass($class);
+
+        if (false === $reflector->hasProperty($constraint->compare)) {
+            $this->context->addViolation(sprintf("%s::%s isn't a property", $reflector->name, $constraint->compare));
+        }
+
+        /*
+         * If the property is private
+         */
+        $property = $reflector->getProperty($constraint->compare);
+        $property->setAccessible(true);
+
+        return $property->getValue($class);
     }
 }
