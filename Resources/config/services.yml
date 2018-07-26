@@ -125,6 +125,13 @@ services:
           - '@service_container'
     tags: [validator.constraint_validator]
 
+  TelNowEdge\FreePBX\Base\Validator\Constraints\CompoundUniqueValidator:
+    calls:
+      - method: setContainer
+        arguments:
+          - '@service_container'
+    tags: [validator.constraint_validator]
+
   TelNowEdge\FreePBX\Base\Validator\Constraints\ValidExtensionValidator:
     calls:
       - method: setContainer
