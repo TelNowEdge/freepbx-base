@@ -62,4 +62,9 @@ class AbstractUncontrolledModel
     {
         return $this->storage->get('keys');
     }
+
+    public function setKeys(\Doctrine\Common\Collections\ArrayCollection $keys)
+    {
+        return $this->storage->set('keys', $keys);
+    }
 }
