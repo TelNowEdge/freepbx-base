@@ -59,6 +59,10 @@ class DestinationHelper
             return $this;
         }
 
+        if (null === $destination->getDestination()) {
+            return $this;
+        }
+
         $this->destinations['Error'] = array(
             array(
                 'destination' => $destination->getDestination(),
