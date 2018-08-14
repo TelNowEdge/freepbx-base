@@ -91,6 +91,7 @@
    }
 
    $(category)
+     .unbind()
      .on('change', (e) => {
        const val = $(e.currentTarget).val();
 
