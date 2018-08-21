@@ -86,6 +86,10 @@ class DestinationHelper
 
     public function getFlatDestinationsByCategory($category)
     {
+        if (null === $category) {
+            return array();
+        }
+
         return array_map(function ($x) {
             return $x['destination'];
         }, $this->destinations[$category]);
