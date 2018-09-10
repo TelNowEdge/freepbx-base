@@ -15,7 +15,7 @@
       {% if child.vars.label_attr.fpbx_help is defined %}
       <div class="row">
         <div class="col-md-12">
-          <span id="{{child.vars.id}}-help" class="help-block fpbx-help-block">{{ child.vars.label_attr.fpbx_help|fpbxtrans }}</span>
+          <span id="{{child.vars.id}}-help" class="help-block fpbx-help-block">{{ child.vars.label_attr.fpbx_help|fpbxtrans|raw }}</span>
         </div>
       </div>
       {% endif %}
