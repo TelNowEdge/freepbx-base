@@ -10,9 +10,16 @@
     {{- form_row(child) -}}
     {% if loop.last != true %}
       </div>
+      </div>
+      </div>
+      {% if child.vars.label_attr.fpbx_help is defined %}
+      <div class="row">
+        <div class="col-md-12">
+          <span id="{{child.vars.id}}-help" class="help-block fpbx-help-block">{{ child.vars.label_attr.fpbx_help|fpbxtrans }}</span>
         </div>
-          </div>
-            </div>
+      </div>
+      {% endif %}
+      </div>
 
       <div class="element-container">
         <div class="row">
@@ -28,7 +35,7 @@
       <div class="row">
         <div class="col-md-10">
           {{- form_label(form) -}}
-          <i class="fa fa-question-circle fpbx-help-icon" data-for="emergency_cid"></i>
+          <i class="fa fa-question-circle fpbx-help-icon" data-for="{{form.vars.id}}"></i>
         </div>
       </div>
     </div>
