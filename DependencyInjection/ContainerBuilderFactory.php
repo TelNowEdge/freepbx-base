@@ -26,8 +26,10 @@
 
 namespace TelNowEdge\FreePBX\Base\DependencyInjection;
 
+use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder as BaseContainerBuilder;
+use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 
 class ContainerBuilderFactory
 {
@@ -35,16 +37,16 @@ class ContainerBuilderFactory
 
     private $container;
 
-    public function __construct()
+    public function __construct($debug = false)
     {
         static::autoloadTelNowEdgeModule();
-        $this->container = static::startContainer();
+        $this->container = static::startContainer($debug);
     }
 
-    public static function getInstance()
+    public static function getInstance($debug = false)
     {
         if (false === isset(static::$instance)) {
-            static::$instance = new static();
+            static::$instance = new static($debug);
         }
 
         return static::$instance->container;
@@ -65,39 +67,53 @@ class ContainerBuilderFactory
         });
     }
 
-    private static function startContainer()
+    private static function startContainer($debug)
     {
-        $container = new BaseContainerBuilder();
+        $file = sprintf('%s/../../../../../../assets/cache/container.php', __DIR__);
 
-        static::registerSelf($container);
-        static::registerModuleExtension($container);
+        $containerConfigCache = new ConfigCache($file, $debug);
 
-        $container
-            ->addCompilerPass(
-                new \Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass(),
-                PassConfig::TYPE_BEFORE_OPTIMIZATION,
-                0
-            )
-            ->addCompilerPass(
-                new \Symfony\Component\Form\DependencyInjection\FormPass(),
-                PassConfig::TYPE_BEFORE_OPTIMIZATION,
-                0
-            )
-            ->addCompilerPass(
-                new \TelNowEdge\FreePBX\Base\DependencyInjection\Compiler\ControllerPass(),
-                PassConfig::TYPE_BEFORE_OPTIMIZATION,
-                0
-            )
-            ->addCompilerPass(
-                new \Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass(),
-                PassConfig::TYPE_BEFORE_OPTIMIZATION,
-                0
-            )
-            ;
+        if (!$containerConfigCache->isFresh()) {
+            $container = new BaseContainerBuilder();
 
-        $container->compile();
+            static::registerSelf($container);
+            static::registerModuleExtension($container);
 
-        return $container;
+            $container
+                ->addCompilerPass(
+                    new \Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass(),
+                    PassConfig::TYPE_BEFORE_OPTIMIZATION,
+                    0
+                )
+                ->addCompilerPass(
+                    new \Symfony\Component\Form\DependencyInjection\FormPass(),
+                    PassConfig::TYPE_BEFORE_OPTIMIZATION,
+                    0
+                )
+                ->addCompilerPass(
+                    new \TelNowEdge\FreePBX\Base\DependencyInjection\Compiler\ControllerPass(),
+                    PassConfig::TYPE_BEFORE_OPTIMIZATION,
+                    0
+                )
+                ->addCompilerPass(
+                    new \Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass(),
+                    PassConfig::TYPE_BEFORE_OPTIMIZATION,
+                    0
+                )
+                ;
+
+            $container->compile();
+
+            $dumper = new PhpDumper($container);
+            $containerConfigCache->write(
+                $dumper->dump(array('class' => 'TelNowEdgeCachedContainer')),
+                $container->getResources()
+            );
+        }
+
+        require $file;
+
+        return new \TelNowEdgeCachedContainer();
     }
 
     private static function registerSelf(BaseContainerBuilder $container)
