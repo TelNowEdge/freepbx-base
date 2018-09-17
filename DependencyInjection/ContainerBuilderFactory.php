@@ -69,15 +69,36 @@ class ContainerBuilderFactory
 
     private static function startContainer($debug)
     {
+        $action = false === isset($_GET['action']) ? null : $_GET['action'];
+        $forceLoading = false;
+        $display = false === isset($_GET['display']) ? null : $_GET['display'];
         $file = sprintf('%s/../../../../../../assets/cache/container.php', __DIR__);
 
         $containerConfigCache = new ConfigCache($file, $debug);
 
-        if (!$containerConfigCache->isFresh()) {
+        /*
+         * Module installation.
+         * So disable filter by active else I can't load module NS to install it.
+         */
+        if (
+            (PHP_SAPI === 'cli' && $_SERVER['argv'][1] === 'ma')
+            || ('modules' === $display && 'process' === $action)
+        ) {
+            if (true === file_exists($containerConfigCache->getPath())) {
+                unlink($containerConfigCache->getPath());
+            }
+
+            $forceLoading = true;
+        }
+
+        if (
+            false === $containerConfigCache->isFresh()
+            || true === $forceLoading
+        ) {
             $container = new BaseContainerBuilder();
 
             static::registerSelf($container);
-            static::registerModuleExtension($container);
+            static::registerModuleExtension($container, $forceLoading);
 
             $container
                 ->addCompilerPass(
@@ -104,6 +125,10 @@ class ContainerBuilderFactory
 
             $container->compile();
 
+            if (true === $forceLoading) {
+                return $container;
+            }
+
             $dumper = new PhpDumper($container);
             $containerConfigCache->write(
                 $dumper->dump(array('class' => 'TelNowEdgeCachedContainer')),
@@ -124,8 +149,10 @@ class ContainerBuilderFactory
         $container->loadFromExtension($c->getAlias());
     }
 
-    private static function registerModuleExtension(BaseContainerBuilder $container)
-    {
+    private static function registerModuleExtension(
+        BaseContainerBuilder $container,
+        $forceLoading = false
+    ) {
         $modules = \FreePBX::Modules()->getActiveModules(true);
 
         foreach (new \DirectoryIterator(__DIR__.'/../../../../../../modules/') as $child) {
@@ -133,15 +160,7 @@ class ContainerBuilderFactory
                 continue;
             }
 
-            $display = false === isset($_GET['display']) ? null : $_GET['display'];
-            $action = false === isset($_GET['action']) ? null : $_GET['action'];
-
-            if (
-                false === isset($modules[$child->getFilename()])
-                && PHP_SAPI !== 'cli'
-                && 'modules' !== $display
-                && 'process' !== $action
-            ) {
+            if (false === $forceLoading && false === isset($modules[$child->getFilename()])) {
                 continue;
             }
 
