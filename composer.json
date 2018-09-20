@@ -17,6 +17,7 @@
     "doctrine/annotations": "^1.4",
     "doctrine/cache": "^1.6",
     "monolog/monolog": "^1.23",
+    "symfony/cache": "^3.4",
     "symfony/config": "^3.3.3",
     "symfony/dependency-injection": "^3.3.3",
     "symfony/event-dispatcher": "^3.3.0",
