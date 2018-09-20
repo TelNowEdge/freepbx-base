@@ -190,6 +190,14 @@ services:
 
   TelNowEdge\FreePBX\Base\Manager\AmpConfManager: ~
 
+  memcached_default_connection:
+    class: Memcached
+    factory: 'TelNowEdge\FreePBX\Base\Manager\MemcachedFactory:createMemcachedManager'
+    arguments:
+      - 'default'
+
+  TelNowEdge\FreePBX\Base\Manager\MemcachedFactory: ~
+
   TelNowEdge\FreePBX\Base\Manager\ManagerFactory:
     calls:
       - method: setUserEventManager
@@ -218,6 +226,12 @@ services:
           - '@AsteriskManager'
 
   TelNowEdge\FreePBX\Base\Manager\DevStateManager:
+    calls:
+      - method: setConnection
+        arguments:
+          - '@AsteriskManager'
+
+  TelNowEdge\FreePBX\Base\Manager\SendRequestManager:
     calls:
       - method: setConnection
         arguments:
