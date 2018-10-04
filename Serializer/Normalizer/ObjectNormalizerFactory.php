@@ -18,13 +18,17 @@
 
 namespace TelNowEdge\FreePBX\Base\Serializer\Normalizer;
 
+use Doctrine\Common\Annotations\Reader;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class ObjectNormalizerFactory
 {
-    public function getObjectNormalizer()
+    public function getObjectNormalizer(Reader $reader)
     {
-        $normalizer = new ObjectNormalizer();
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader($reader));
+        $normalizer = new ObjectNormalizer($classMetadataFactory);
         $normalizer->setCircularReferenceLimit(2);
         $normalizer->setCircularReferenceHandler(function ($object) {
             return $object->getId();

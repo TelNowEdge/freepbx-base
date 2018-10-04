@@ -41,6 +41,7 @@ class BaseExtension extends Extension
             ->registerSerializerConfiguration($config, $container, $loader)
             ->registerSessionConfiguration($config, $container, $loader)
             ->registerTemplateEngineConfiguration($config, $container, $loader)
+            ->registerAnnotationConfiguration($config, $container, $loader)
             ->registerValidatorConfiguration($config, $container, $loader)
             ->registerConnectionConfiguration($config, $container, $loader)
             ->registerLoggerConfiguration($config, $container, $loader)
@@ -59,6 +60,13 @@ class BaseExtension extends Extension
     private function registerSecurityCsrfConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
     {
         $loader->load('security_csrf.yml');
+
+        return $this;
+    }
+
+    private function registerAnnotationConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
+    {
+        $loader->load('annotation.yml');
 
         return $this;
     }

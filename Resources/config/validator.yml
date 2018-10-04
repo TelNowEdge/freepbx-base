@@ -38,18 +38,3 @@ services:
     tags:
       - {name:validator.constraint_validator, alias:Symfony\Component\Validator\Constraints\EmailValidator}
     arguments: ~
-
-  annotation.reader:
-    class: Doctrine\Common\Annotations\AnnotationReader
-    calls:
-      - method: addGlobalIgnoredName
-        arguments:
-          - 'required'
-          # dummy arg to register class_exists as annotation loader only when required
-          - '@Doctrine\Common\Annotations\AnnotationRegistry'
-
-  Doctrine\Common\Annotations\AnnotationRegistry:
-    calls:
-      - method: registerLoader
-        arguments:
-         - class_exists
