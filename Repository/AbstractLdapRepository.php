@@ -82,6 +82,12 @@ abstract class AbstractLdapRepository
 
             foreach ($mapping as $i => $map) {
                 foreach ($map as $model => $attr) {
+                    if (1 < count($attribute)) {
+                        $out[$model][$attr] = $attribute;
+
+                        continue;
+                    }
+
                     $out[$model][$attr] = $attribute[$i];
                 }
             }
