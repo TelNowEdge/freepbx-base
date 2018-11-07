@@ -109,14 +109,16 @@ abstract class AbstractMigration implements MigrationInterface
                 continue;
             }
 
-            if (true === $res['annotation'][0]->reinstall) {
-                try {
-                    $this->removeMigration($key, static::class);
-                    $this->out(sprintf('%s marked for reinstall', $key));
-                } catch (\Exception $e) {
-                    $this->out($e->getMessage());
-                    $error = true;
-                }
+            if (true !== $res['annotation'][0]->reinstall) {
+                continue;
+            }
+
+            try {
+                $this->removeMigration($key, static::class);
+                $this->out(sprintf('%s marked for reinstall', $key));
+            } catch (\Exception $e) {
+                $this->out($e->getMessage());
+                $error = true;
             }
         }
 
