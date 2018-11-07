@@ -23,6 +23,8 @@ namespace TelNowEdge\FreePBX\Base\Model\Annotation;
  */
 class Migration
 {
+    public $playAgain = false;
+
     public $reinstall = false;
 
     public $connection = 'connection';

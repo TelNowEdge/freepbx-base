@@ -59,6 +59,43 @@ abstract class AbstractMigration implements MigrationInterface
         $this->checkDb();
     }
 
+    public function playAgain()
+    {
+        $this->checkDb();
+
+        $error = false;
+        $methods = $this->getOrderedMigration();
+        $this->connection->beginTransaction();
+
+        foreach ($methods as $key => $res) {
+            if (1 !== preg_match('/^migration(\d{10})$/', $res['method']->name)) {
+                continue;
+            }
+
+            if (true !== $res['annotation'][0]->playAgain) {
+                continue;
+            }
+
+            try {
+                $this->removeMigration($key, static::class);
+                $this->out(sprintf('%s marked for playAgain', $key));
+            } catch (\Exception $e) {
+                $this->out($e->getMessage());
+                $error = true;
+            }
+        }
+
+        if (true === $error) {
+            $this->connection->rollBack();
+
+            return false;
+        }
+
+        $this->connection->commit();
+
+        return true;
+    }
+
     public function needReinstall()
     {
         $this->checkDb();
