@@ -11,7 +11,11 @@
         data-html="true"
         data-content='{{ self.content(array) }}'
       >
-        {{ 'Destination is used by ' ~ array|length | fpbxtrans }}
+        {% if array|length is same as (0) %}
+          Is not used by any module
+        {% else %}
+          {{ 'Is used by ' | fpbxtrans }} {{ self.count(array, 'destination') }} destinations on {{ self.count(array, 'module') }} modules
+        {% endif %}
       </button>
     </div>
   </div>
@@ -32,4 +36,22 @@
       </ul>
     {% endfor %}
   </ul>
+{% endmacro %}
+
+{% macro count(array, wanted) %}
+  {% set counter = 0 %}
+
+  {% for modules in array %}
+    {% if wanted == 'module' %}
+      {% set counter = counter + 1 %}
+    {% endif %}
+
+    {% for x in modules %}
+      {% if wanted == 'destination' %}
+        {% set counter = counter + 1 %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+
+  {{ counter }}
 {% endmacro %}
