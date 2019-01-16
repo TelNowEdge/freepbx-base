@@ -42,7 +42,10 @@
      $('<option />', {
        selected: actual === x.destination ? true : '',
        text: x.description,
-       value: x.destination
+       value: x.destination,
+       attr: {
+         'data-link': x.edit_url,
+       },
      }).appendTo(selector);
    });
  };
@@ -113,6 +116,5 @@
 
        appendDestinationByCategory(destination, val);
      });
-
  }
 </script>
