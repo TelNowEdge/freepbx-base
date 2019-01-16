@@ -14,7 +14,7 @@
         {% if array|length is same as (0) %}
           Is not used by any module
         {% else %}
-          {{ 'Is used by ' | fpbxtrans }} {{ self.count(array, 'destination') }} destinations on {{ self.count(array, 'module') }} modules
+          {{ 'Used by ' | fpbxtrans }} {{ self.count(array, 'destination') }} objects on {{ self.count(array, 'module') }} modules
         {% endif %}
       </button>
     </div>
