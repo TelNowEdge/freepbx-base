@@ -69,7 +69,13 @@ class DependsValidator extends ConstraintValidator implements ContainerAwareInte
         $dependsMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($constraint->depends)));
         $fieldMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($constraint->field)));
 
-        if (false === in_array($fieldMethod->invoke($obj), $method->invoke($service, $dependsMethod->invoke($obj)), true)) {
+        $field = $fieldMethod->invoke($obj);
+
+        if (true === is_object($field)) {
+            $field = $field->getId();
+        }
+
+        if (false === in_array($field, $method->invoke($service, $dependsMethod->invoke($obj)), true)) {
             $this->context
                 ->buildViolation($constraint->message)
                 ->atPath($constraint->field)
