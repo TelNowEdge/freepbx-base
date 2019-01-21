@@ -21,19 +21,25 @@
  const displayOverlay = (bool) => {
    if (bool === true) {
      $('#tne-overlay')
-       .show();
-
-     $('#action-bar')
-       .hide('slow');
+       .show(0, () => {
+         $('#action-bar')
+           .hide('slow');
+       });
    }
 
    if (bool === false) {
+     $('#action-bar')
+       .show('fast', () => {
+         $('#tne-overlay')
+           .hide();
+       });
+   }
+
+   // Fallback if action-bar.hide() failed
+   setTimeout(() => {
      $('#tne-overlay')
        .hide();
-
-     $('#action-bar')
-       .show('fast');
-   }
+   }, 1500);
  }
 
  $('body')
