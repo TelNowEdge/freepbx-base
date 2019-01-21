@@ -33,13 +33,13 @@
          $('#tne-overlay')
            .hide();
        });
-   }
 
-   // Fallback if action-bar.hide() failed
-   setTimeout(() => {
-     $('#tne-overlay')
-       .hide();
-   }, 1500);
+     // Fallback if action-bar.hide() failed
+     setTimeout(() => {
+       $('#tne-overlay')
+         .hide();
+     }, 1000);
+   }
  }
 
  $('body')
