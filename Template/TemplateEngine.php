@@ -39,7 +39,9 @@ class TemplateEngine implements TemplateEngineInterface
         $twig = new \Twig_Environment(new \Twig_Loader_Filesystem(array(
             $vendorTwigBridgeDir.'/Resources/views/Form',
             __DIR__.'/../Resources/views/Form',
-        )));
+        )), array(
+            'cache' => sprintf('%s/../../../../../../assets/cache/twig/', __DIR__),
+        ));
 
         $twig->getLoader()->addPath(__DIR__.'/../Resources/views', 'telnowedge');
 
