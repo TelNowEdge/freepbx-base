@@ -3,44 +3,45 @@
 {# Big ack because FPBX gui_html create the parent whole structure #}
 {%- block form_rows -%}
   {% for child in form %}
-    <div class="element-container">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="row">
-            {{- form_row(child) -}}
-          </div>
-        </div>
-      </div>
-      {% if child.vars.label_attr.fpbx_help is defined %}
-      <div class="row">
-        <div class="col-md-12">
-	  <span id="{{child.vars.id}}-help" class="help-block fpbx-help-block">{{ child.vars.label_attr.fpbx_help|fpbxtrans|raw }}</span>
-        </div>
-      </div>
-      {% endif %}      
-    </div>
+    {{- form_row(child) -}}
   {% endfor %}
 {%- endblock form_rows -%}
 
 {%- block form_row -%}
-  <div class="form-group">
-    {% if form_label(form) is not empty %}
-      <div class="col-md-3">
-        {{- form_label(form) -}}
-        <i class="fa fa-question-circle fpbx-help-icon" data-for="{{form.vars.id}}"></i>
+  <div class="element-container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+
+          <div class="form-group">
+            {% if form_label(form) is not empty %}
+              <div class="col-md-3">
+                {{- form_label(form) -}}
+                <i class="fa fa-question-circle fpbx-help-icon" data-for="{{form.vars.id}}"></i>
+              </div>
+              <div class="col-md-9 control-item">
+                {{- form_widget(form) -}}
+              </div>
+              <div class="col-md-9 col-md-push-4">
+                {{- form_errors(form) -}}
+              </div>
+            {% else %}
+              <div class="col-md-12 control-item">
+                {{- form_widget(form) -}}
+              </div>
+              <div class="col-md-12 col-md-push-4">
+                {{- form_errors(form) -}}
+              </div>
+            {% endif %}
+          </div>
+        </div>
       </div>
-      <div class="col-md-9 control-item">
-        {{- form_widget(form) -}}
-      </div>
-      <div class="col-md-9 col-md-push-4">
-        {{- form_errors(form) -}}
-      </div>
-    {% else %}
-      <div class="col-md-12 control-item">
-        {{- form_widget(form) -}}
-      </div>
-      <div class="col-md-12 col-md-push-4">
-        {{- form_errors(form) -}}
+    </div>
+    {% if form.vars.label_attr.fpbx_help is defined %}
+      <div class="row">
+        <div class="col-md-12">
+	  <span id="{{form.vars.id}}-help" class="help-block fpbx-help-block">{{ form.vars.label_attr.fpbx_help|fpbxtrans|raw }}</span>
+        </div>
       </div>
     {% endif %}
   </div>
