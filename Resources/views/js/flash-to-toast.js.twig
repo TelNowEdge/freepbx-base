@@ -3,10 +3,10 @@
    let time = 0;
    {% for label, messages in flashes %}
 
-   {% if label is not same as('provision') %}
+   {% if label is not same as('provision', 'noToast') %}
    {% for message in messages %}
    setTimeout(() => {
-     fpbxToast('{{ message }}', '{{ label }}', '{{ label }}');
+     fpbxToast('{{ message|e('js') }}', '{{ label }}', '{{ label }}');
    }, time);
 
    time += 1000;
