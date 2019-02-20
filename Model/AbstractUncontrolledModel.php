@@ -53,6 +53,11 @@ class AbstractUncontrolledModel
         }
     }
 
+    public function getAsObject()
+    {
+        return $this->storage;
+    }
+
     public function getAll()
     {
         return $this->storage->toArray();
