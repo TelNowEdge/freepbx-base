@@ -72,4 +72,9 @@ class AbstractUncontrolledModel
     {
         return $this->storage->set('keys', $keys);
     }
+
+    public function __clone()
+    {
+        $this->storage = clone $this->storage;
+    }
 }
