@@ -20,6 +20,95 @@ namespace TelNowEdge\FreePBX\Base\Resources\Migrations;
 
 abstract class AbstractPhpMigration extends AbstractMigration
 {
+    public function migrateOne($id, array $res)
+    {
+        parent::migrateOne($id, $res);
+
+        if (true === $this->alreadyMigrate($id, static::class)) {
+            $this->out(sprintf(
+                '[OK]           [%s::%s] Already migrated.',
+                $res['method']->class,
+                $res['method']->name
+            ));
+
+            return true;
+        }
+
+        try {
+            $this->out(sprintf(
+                '[PROCESS]      [%s::%s]',
+                $res['method']->class,
+                $res['method']->name
+            ));
+
+            $res['method']->invoke($this);
+            $this->markAsMigrated($id, static::class);
+
+            $this->out(sprintf(
+                '[OK]           [%s::%s]',
+                $res['method']->class,
+                $res['method']->name
+            ));
+        } catch (\Exception $e) {
+            $this->out(sprintf(
+                '[ERROR]        [%s::%s]: [%s]',
+                $res['method']->class,
+                $res['method']->name,
+                $e->getMessage()
+            ));
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public function uninstallOne($id, array $res)
+    {
+        parent::uninstallOne($id, $res);
+
+        if (false === $this->alreadyMigrate($key, static::class)) {
+            $this->out(sprintf(
+                '[OK]           [%s::%s] Already uninstalled.',
+                $res['method']->class,
+                $res['method']->name
+            ));
+
+            return true;
+        }
+
+        try {
+            $this->out(sprintf(
+                '[PROCESS]      [%s::%s]',
+                $res['method']->class,
+                $res['method']->name
+            ));
+
+            $res['method']->invoke($this);
+            $this->removeMigration($key, static::class);
+
+            $this->out(sprintf(
+                '[OK]           [%s::%s]',
+                $res['method']->class,
+                $res['method']->name
+            ));
+        } catch (\Exception $e) {
+            $this->out(sprintf(
+                '[ERROR]        [%s::%s]: [%s]',
+                $res['method']->class,
+                $res['method']->name,
+                $e->getMessage()
+            ));
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /*
+     * Deprecated
+     */
     public function migrate()
     {
         parent::migrate();
@@ -46,6 +135,9 @@ abstract class AbstractPhpMigration extends AbstractMigration
         return true === $error ? false : true;
     }
 
+    /*
+     * Deprecated
+     */
     public function uninstall()
     {
         parent::uninstall();

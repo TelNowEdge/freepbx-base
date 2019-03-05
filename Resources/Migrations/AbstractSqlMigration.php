@@ -20,6 +20,117 @@ namespace TelNowEdge\FreePBX\Base\Resources\Migrations;
 
 abstract class AbstractSqlMigration extends AbstractMigration
 {
+    public function migrateOne($id, array $res)
+    {
+        parent::migrateOne($id, $res);
+
+        $this->connection->beginTransaction();
+        $this->cdrConnection->beginTransaction();
+
+        if (true === $this->alreadyMigrate($id, static::class)) {
+            $this->out(sprintf(
+                '[OK]           [%s::%s] Already migrated.',
+                $res['method']->class,
+                $res['method']->name
+            ));
+
+            return true;
+        }
+
+        try {
+            $sql = $res['method']->invoke($this);
+            $this->out(sprintf(
+                '[PROCESS]      [%s::%s]: [%s]',
+                $res['method']->class,
+                $res['method']->name,
+                $sql
+            ));
+
+            $this->{$res['annotation'][0]->connection}->executeUpdate($sql);
+            $this->markAsMigrated($id, static::class);
+
+            $this->out(sprintf(
+                '[OK]           [%s::%s]',
+                $res['method']->class,
+                $res['method']->name
+            ));
+        } catch (\Exception $e) {
+            $this->out(sprintf(
+                '[ERROR]        [%s::%s]: [%s]',
+                $res['method']->class,
+                $res['method']->name,
+                $e->getMessage()
+            ));
+
+            $this->connection->rollBack();
+            $this->cdrConnection->rollBack();
+
+            return false;
+        }
+
+        $this->connection->commit();
+        $this->cdrConnection->commit();
+
+        return true;
+    }
+
+    public function uninstallOne($id, array $res)
+    {
+        parent::uninstallOne($id, $res);
+
+        $this->connection->beginTransaction();
+        $this->cdrConnection->beginTransaction();
+
+        if (false === $this->alreadyMigrate($key, static::class)) {
+            $this->out(sprintf(
+                '[OK]           [%s::%s] Already uninstalled.',
+                $res['method']->class,
+                $res['method']->name
+            ));
+
+            return true;
+        }
+
+        try {
+            $sql = $res['method']->invoke($this);
+            $this->out(sprintf(
+                '[PROCESS]      [%s::%s]: [%s]',
+                $res['method']->class,
+                $res['method']->name,
+                $sql
+            ));
+
+            $this->{$res['annotation'][0]->connection}->executeUpdate($sql);
+            $this->removeMigration($key, static::class);
+
+            $this->out(sprintf(
+                '[OK]           [%s::%s]',
+                $res['method']->class,
+                $res['method']->name
+            ));
+        } catch (\Exception $e) {
+            $this->out(sprintf(
+                '[ERROR]        [%s::%s]: [%s]',
+                $res['method']->class,
+                $res['method']->name,
+                $e->getMessage()
+            ));
+
+            $this->connection->rollBack();
+            $this->cdrConnection->rollBack();
+
+            return false;
+        }
+
+        $this->connection->commit();
+        $this->cdrConnection->commit();
+
+        return true;
+    }
+
+    /*
+     * Deprecated
+     */
     public function migrate()
     {
         parent::migrate();
@@ -60,6 +171,9 @@ abstract class AbstractSqlMigration extends AbstractMigration
         return true;
     }
 
+    /*
+     * Deprecated
+     */
     public function uninstall()
     {
         parent::uninstall();

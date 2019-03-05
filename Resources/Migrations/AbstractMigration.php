@@ -22,7 +22,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 
-abstract class AbstractMigration implements MigrationInterface
+abstract class AbstractMigration
 {
     /**
      * \Doctrine\DBAL\Connection.
@@ -49,18 +49,97 @@ abstract class AbstractMigration implements MigrationInterface
         return $this;
     }
 
+    public function migrateOne($id, array $res)
+    {
+        $this->checkDb();
+    }
+
+    public function uninstallOne($id, array $res)
+    {
+        $this->checkDb();
+    }
+
+    public function playAgainOne($id, array $res)
+    {
+        if (true !== $res['annotation'][0]->playAgain) {
+            return true;
+        }
+
+        try {
+            $this->out(sprintf(
+                '[PLAYAGAIN]    [%s::%s]',
+                $res['method']->class,
+                $res['method']->name
+            ));
+
+            $this->removeMigration($id, static::class);
+        } catch (\Exception $e) {
+            $this->out(sprintf(
+                '[ERROR]        [%s::%s]: [%s]',
+                $res['method']->class,
+                $res['method']->name,
+                $e->getMessage()
+            ));
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public function needReinstallOne($id, array $res)
+    {
+        if (true !== $res['annotation'][0]->reinstall) {
+            return true;
+        }
+
+        try {
+            $this->out(sprintf(
+                '[REINSTALL]    [%s::%s]',
+                $res['method']->class,
+                $res['method']->name
+            ));
+
+            $this->removeMigration($id, static::class);
+        } catch (\Exception $e) {
+            $this->out(sprintf(
+                '[ERROR]        [%s::%s]: [%s]',
+                $res['method']->class,
+                $res['method']->name,
+                $e->getMessage()
+            ));
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /*
+     * Deprecated
+     */
     public function migrate()
     {
+        @trigger_error('Remove in new version', E_USER_DEPRECATED);
         $this->checkDb();
     }
 
+    /*
+     * Deprecated
+     */
     public function uninstall()
     {
+        @trigger_error('Remove in new version', E_USER_DEPRECATED);
         $this->checkDb();
     }
 
+    /*
+     * Deprecated
+     */
     public function playAgain()
     {
+        @trigger_error('Remove in new version', E_USER_DEPRECATED);
+
         $this->checkDb();
 
         $error = false;
@@ -96,8 +175,13 @@ abstract class AbstractMigration implements MigrationInterface
         return true;
     }
 
+    /*
+     * Deprecated
+     */
     public function needReinstall()
     {
+        @trigger_error('Remove in new version', E_USER_DEPRECATED);
+
         $this->checkDb();
 
         $error = false;
@@ -133,26 +217,7 @@ abstract class AbstractMigration implements MigrationInterface
         return true;
     }
 
-    protected function getOrderedUninstall()
-    {
-        $reflector = new \ReflectionClass(static::class);
-        $methods = $reflector->getMethods();
-        $temp = array();
-
-        arsort($methods);
-
-        foreach ($methods as $method) {
-            if (1 !== preg_match('/^uninstall(\d{10})$/', $method->name, $match)) {
-                continue;
-            }
-
-            $temp[$match[1]] = $method;
-        }
-
-        return $temp;
-    }
-
-    protected function getOrderedMigration()
+    public function getOrderedMigration()
     {
         $reflector = new \ReflectionClass(static::class);
         $methods = $reflector->getMethods();
@@ -162,6 +227,33 @@ abstract class AbstractMigration implements MigrationInterface
 
         foreach ($methods as $method) {
             if (1 !== preg_match('/^migration(\d{10})$/', $method->name, $match)) {
+                continue;
+            }
+
+            $temp[$match[1]] = array(
+                'annotation' => $this->annotationReader->getMethodAnnotations($method),
+                'method' => $method,
+            );
+        }
+
+        return $temp;
+    }
+
+    /*
+     * Deprecated
+     */
+    protected function getOrderedUninstall()
+    {
+        @trigger_error('Remove in new version', E_USER_DEPRECATED);
+
+        $reflector = new \ReflectionClass(static::class);
+        $methods = $reflector->getMethods();
+        $temp = array();
+
+        arsort($methods);
+
+        foreach ($methods as $method) {
+            if (1 !== preg_match('/^uninstall(\d{10})$/', $method->name, $match)) {
                 continue;
             }
 
