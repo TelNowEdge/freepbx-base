@@ -45,7 +45,7 @@ class MigrationBuilder
 
     /*
      * Order migrations by date.
-     * For same date don't the order of input array is the reference.
+     * For same date the order of input array is the reference.
      */
     public function install()
     {
