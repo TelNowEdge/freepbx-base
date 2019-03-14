@@ -21,6 +21,7 @@ namespace TelNowEdge\FreePBX\Base\Resources\Migrations;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\TableNotFoundException;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 abstract class AbstractMigration
 {
@@ -36,9 +37,12 @@ abstract class AbstractMigration
 
     protected $annotationReader;
 
+    protected $output;
+
     public function __construct(AnnotationReader $annotationReader)
     {
         $this->annotationReader = $annotationReader;
+        $this->output = new ConsoleOutput();
     }
 
     public function setConnection(Connection $defaultConnection, Connection $cdrConnection)
@@ -312,7 +316,7 @@ CREATE
 
     protected function removeMigration($version, $module)
     {
-        $this->connection->prepare('DELETE FROM `tne_migrations` WHERE id = ? AND module = ?');
+        $stmt = $this->connection->prepare('DELETE FROM `tne_migrations` WHERE id = ? AND module = ?');
 
         $stmt->bindValue(1, $version);
         $stmt->bindValue(2, $module);
@@ -322,12 +326,31 @@ CREATE
 
     protected function out($msg)
     {
-        $separator = '<br />';
-
         if ('cli' === PHP_SAPI) {
-            $separator = "\n";
+            $mapping = array(
+                'OK' => 'info',
+                'ERROR' => 'error',
+                'PROCESS' => 'comment',
+                'PLAYAGAIN' => 'comment',
+            );
+
+            if (1 !== preg_match('/^\[([^\]]+)\]/', $msg, $match)) {
+                $this->output->writeln($msg);
+            }
+
+            $pattern = sprintf('/%s/', $match[1]);
+            $replacement = false === isset($mapping[$match[1]])
+                ? sprintf('<question>%s</question>', $match[1])
+                : sprintf('<%1$s>%2$s</%1$s>', $mapping[$match[1]], $match[1])
+                ;
+
+            $msg = preg_replace($pattern, $replacement, $msg);
+
+            $this->output->writeln($msg);
+
+            return;
         }
 
-        outn(sprintf('%s%s', $msg, $separator));
+        outn(sprintf('%s<br/>', $msg));
     }
 }
