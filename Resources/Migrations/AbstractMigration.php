@@ -302,24 +302,22 @@ CREATE
 
     protected function markAsMigrated($version, $module)
     {
-        $this->connection->executeQuery(
-            'INSERT INTO `tne_migrations` VALUES (?, ?, NOW())',
-            array(
-                $version,
-                $module,
-            )
-        );
+        $stmt = $this->connection->prepare('INSERT INTO `tne_migrations` VALUES (?, ?, NOW())');
+
+        $stmt->bindValue(1, $version);
+        $stmt->bindValue(2, $module);
+
+        $stmt->execute();
     }
 
     protected function removeMigration($version, $module)
     {
-        $this->connection->executeQuery(
-            'DELETE FROM `tne_migrations` WHERE id = ? AND module = ?',
-            array(
-                $version,
-                $module,
-            )
-        );
+        $this->connection->prepare('DELETE FROM `tne_migrations` WHERE id = ? AND module = ?');
+
+        $stmt->bindValue(1, $version);
+        $stmt->bindValue(2, $module);
+
+        $stmt->execute();
     }
 
     protected function out($msg)

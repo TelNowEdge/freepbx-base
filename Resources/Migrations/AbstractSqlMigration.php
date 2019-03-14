@@ -24,9 +24,6 @@ abstract class AbstractSqlMigration extends AbstractMigration
     {
         parent::migrateOne($id, $res);
 
-        $this->connection->beginTransaction();
-        $this->cdrConnection->beginTransaction();
-
         if (true === $this->alreadyMigrate($id, static::class)) {
             $this->out(sprintf(
                 '[OK]           [%s::%s] Already migrated.',
@@ -37,6 +34,9 @@ abstract class AbstractSqlMigration extends AbstractMigration
             return true;
         }
 
+        $this->connection->beginTransaction();
+        $this->cdrConnection->beginTransaction();
+
         try {
             $sql = $res['method']->invoke($this);
             $this->out(sprintf(
@@ -46,7 +46,9 @@ abstract class AbstractSqlMigration extends AbstractMigration
                 $sql
             ));
 
-            $this->{$res['annotation'][0]->connection}->executeUpdate($sql);
+            $stmt = $this->{$res['annotation'][0]->connection}->prepare($sql);
+            $stmt->execute();
+
             $this->markAsMigrated($id, static::class);
 
             $this->out(sprintf(
