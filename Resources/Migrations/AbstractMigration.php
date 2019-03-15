@@ -326,26 +326,56 @@ CREATE
 
     protected function out($msg)
     {
+        $mapping = array(
+            'OK' => array(
+                'console' => 'info',
+                'web' => 'green',
+            ),
+            'ERROR' => array(
+                'console' => 'error',
+                'web' => 'red',
+            ),
+            'PROCESS' => array(
+                'console' => 'comment',
+                'web' => 'orange',
+            ),
+            'PLAYAGAIN' => array(
+                'console' => 'comment',
+                'web' => 'orange',
+            ),
+        );
+
+        $mode = 'cli' === PHP_SAPI
+            ? 'console'
+            : 'web'
+            ;
+
+        if (1 !== preg_match('/^\[([^\]]+)\]/', $msg, $match)) {
+            $this->write($msg);
+        }
+
+        if (false === isset($mapping[$match[1]][$mode])) {
+            $this->write($msg);
+
+            return;
+        }
+
+        $pattern = sprintf('/%s/', $match[1]);
+        $subject = 'console' === $mode
+            ? '<%1$s>%2$s</%1$s>'
+            : '<span style="font-weight: bold; color:%1$s;">%2$s</span>'
+            ;
+
+        $replacement = sprintf($subject, $mapping[$match[1]][$mode], $match[1]);
+
+        $msg = preg_replace($pattern, $replacement, $msg);
+
+        $this->write($msg);
+    }
+
+    private function write($msg)
+    {
         if ('cli' === PHP_SAPI) {
-            $mapping = array(
-                'OK' => 'info',
-                'ERROR' => 'error',
-                'PROCESS' => 'comment',
-                'PLAYAGAIN' => 'comment',
-            );
-
-            if (1 !== preg_match('/^\[([^\]]+)\]/', $msg, $match)) {
-                $this->output->writeln($msg);
-            }
-
-            $pattern = sprintf('/%s/', $match[1]);
-            $replacement = false === isset($mapping[$match[1]])
-                ? sprintf('<question>%s</question>', $match[1])
-                : sprintf('<%1$s>%2$s</%1$s>', $mapping[$match[1]], $match[1])
-                ;
-
-            $msg = preg_replace($pattern, $replacement, $msg);
-
             $this->output->writeln($msg);
 
             return;
