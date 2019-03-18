@@ -48,6 +48,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
 
             $stmt = $this->{$res['annotation'][0]->connection}->prepare($sql);
             $stmt->execute();
+            $stmt->closeCursor();
 
             $this->markAsMigrated($id, static::class);
 
@@ -102,7 +103,10 @@ abstract class AbstractSqlMigration extends AbstractMigration
                 $sql
             ));
 
-            $this->{$res['annotation'][0]->connection}->executeUpdate($sql);
+            $stmt = $this->{$res['annotation'][0]->connection}->prepare($sql);
+            $stmt->execute();
+            $stmt->closeCursor();
+
             $this->removeMigration($key, static::class);
 
             $this->out(sprintf(
