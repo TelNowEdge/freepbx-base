@@ -16,6 +16,10 @@ services:
     class: Doctrine\DBAL\Connection
     factory: ['@TelNowEdge\FreePBX\Base\Connection\ConnectionFactory', 'getCdrConnection']
 
+  addons_connection:
+    class: Doctrine\DBAL\Connection
+    factory: ['@TelNowEdge\FreePBX\Base\Connection\ConnectionFactory', 'getAddonsConnection']
+
   ldap_default_connection:
     class: Symfony\Component\Ldap\Ldap
     factory: ['@TelNowEdge\FreePBX\Base\Connection\ConnectionFactory', 'getLdapDefaultConnection']

@@ -88,6 +88,34 @@ class ConnectionFactory
         return $connection;
     }
 
+    public function getAddonsConnection()
+    {
+        /**
+         * Reinit Doctrine connection to inherit of Doctrine instead of FreePBX\DataBase.
+         * When I use FreePBX\Database->getDoctrineConnection(), the underlaying class is
+         * not manage by doctrine by she is an instance of FreePBX\Database that extends
+         * \PDO. So all useful Doctrine\Exceptions aren't available.
+         */
+        $config = new Configuration();
+        $connectionParams = array(
+            'dbname' => true === $this->ampConfManager->exists('TNE_DBQUEUEMEMBERS') ? $this->ampConfManager->get('TNE_DBQUEUEMEMBERS') : 'tneaddons',
+            'user' => $this->ampConfManager->get('AMPDBUSER'),
+            'password' => $this->ampConfManager->get('AMPDBPASS'),
+            'host' => true === $this->ampConfManager->exists('AMPDBHOST') ? $this->ampConfManager->get('AMPDBHOST') : 'localhost',
+            'driver' => 'pdo_mysql',
+            'port' => true === $this->ampConfManager->get('AMPDBPORT') ? $this->ampConfManager->get('AMPDBPORT') : 3306,
+            'charset' => 'utf8',
+            'driverOptions' => array(
+                1002 => 'SET NAMES utf8',
+            ),
+        );
+
+        $connection = DriverManager::getConnection($connectionParams, $config);
+        $connection->setFetchMode(\PDO::FETCH_OBJ);
+
+        return $connection;
+    }
+
     public function getLdapDefaultConnection()
     {
         $ldap = Ldap::create('ext_ldap', array(

@@ -21,6 +21,7 @@ services:
         arguments:
           - '@default_connection'
           - '@cdr_connection'
+          - '@addons_connection'
 
   TelNowEdge\FreePBX\Base\Repository\AbstractAsteriskRepository:
     abstract: true
@@ -67,6 +68,7 @@ services:
         arguments:
           - '@default_connection'
           - '@cdr_connection'
+          - '@addons_connection'
       - method: setEventDispatcher
         arguments:
           - '@event_dispatcher'

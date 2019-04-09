@@ -33,12 +33,21 @@ abstract class AbstractRepository
      */
     protected $cdrConnection;
 
+    /**
+     * \Doctrine\DBAL\Connection.
+     */
+    protected $addonsConnection;
+
     protected $eventDispatcher;
 
-    public function setConnection(Connection $connection, Connection $cdrConnection)
-    {
+    public function setConnection(
+        Connection $connection,
+        Connection $cdrConnection,
+        Connection $addonsConnection
+    ) {
         $this->connection = $connection;
         $this->cdrConnection = $cdrConnection;
+        $this->addonsConnection = $addonsConnection;
 
         return $this;
     }

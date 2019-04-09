@@ -32,12 +32,21 @@ abstract class AbstractDbHandler
      */
     protected $cdrConnection;
 
+    /**
+     * \Doctrine\DBAL\Connection.
+     */
+    protected $addonsConnection;
+
     protected $eventDispatcher;
 
-    public function setConnection(Connection $connection, Connection $cdrConnection)
-    {
-        $this->connection = $connection;
+    public function setConnection(
+        Connection $connection,
+        Connection $cdrConnection,
+        Connection $addonsConnection
+    ) {
+        $this->addonsConnection = $addonsConnection;
         $this->cdrConnection = $cdrConnection;
+        $this->connection = $connection;
 
         return $this;
     }
