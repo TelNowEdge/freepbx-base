@@ -4,10 +4,12 @@
   "license": "Apache-2.0",
   "authors": [
     {
-      "name": "Boris Morel <TelNowEdge>"
+      "name": "Boris Morel",
+      "email": "boris.morel@telnowedge.com"
     },
     {
-      "name": "Bernard Merindol <TelNowEdge>"
+      "name": "Bernard Merindol",
+      "email": "bernard.merindol@telnowedge.com"
     }
   ],
   "autoload": {
