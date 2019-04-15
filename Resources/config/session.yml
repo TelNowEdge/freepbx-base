@@ -5,11 +5,12 @@ services:
     public: true
 
   session:
-    class: Symfony\Component\HttpFoundation\Session\Session
+    class: TelNowEdge\FreePBX\Base\Session\Session
     arguments:
       - '@session.storage'
       - '@session.attribute_bag'
       - '@session.flash_bag'
+      - '@session.auto_expire_bag'
 
   Symfony\Component\HttpFoundation\Session\SessionInterface:
     alias: session
@@ -22,6 +23,9 @@ services:
 
   session.flash_bag:
     class: Symfony\Component\HttpFoundation\Session\Flash\FlashBag
+
+  session.auto_expire_bag:
+    class: TelNowEdge\FreePBX\Base\Session\AutoExpireBag
 
   session.storage.native:
     class: Symfony\Component\HttpFoundation\Session\Storage\PhpBridgeSessionStorage
