@@ -1,0 +1,9 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: false
+    public: true
+
+  TelNowEdge\FreePBX\Base\Client\RestApiClientFactory:
+    arguments:
+      $ampConfManager: '@TelNowEdge\FreePBX\Base\Manager\AmpConfManager'

@@ -44,6 +44,7 @@ class BaseExtension extends Extension
             ->registerAnnotationConfiguration($config, $container, $loader)
             ->registerValidatorConfiguration($config, $container, $loader)
             ->registerConnectionConfiguration($config, $container, $loader)
+            ->registerClientConfiguration($config, $container, $loader)
             ->registerLoggerConfiguration($config, $container, $loader)
             ;
 
@@ -123,6 +124,13 @@ class BaseExtension extends Extension
     private function registerConnectionConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
     {
         $loader->load('connection.yml');
+
+        return $this;
+    }
+
+    private function registerClientConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
+    {
+        $loader->load('client.yml');
 
         return $this;
     }
