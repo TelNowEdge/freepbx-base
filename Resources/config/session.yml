@@ -10,8 +10,6 @@ services:
       - '@session.storage'
       - '@session.attribute_bag'
       - '@session.flash_bag'
-    calls:
-      - method: migrate
 
   Symfony\Component\HttpFoundation\Session\SessionInterface:
     alias: session
@@ -26,7 +24,7 @@ services:
     class: Symfony\Component\HttpFoundation\Session\Flash\FlashBag
 
   session.storage.native:
-    class: Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage
+    class: Symfony\Component\HttpFoundation\Session\Storage\PhpBridgeSessionStorage
 
   session.storage:
     alias: session.storage.native
