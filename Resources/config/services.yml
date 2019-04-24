@@ -164,6 +164,10 @@ services:
     autowire: true
     autoconfigure: false
     public: true
+    calls:
+      - method: setApplication
+        arguments:
+          - '@freepbx_application'
 
   TelNowEdge\FreePBX\Base\Controller\AbstractController:
     abstract: true
@@ -238,3 +242,13 @@ services:
       - method: setConnection
         arguments:
           - '@AsteriskManager'
+
+  TelNowEdge\FreePBX\Base\Console\ApplicationFactory:
+    calls:
+      - method: setContainer
+        arguments:
+          - '@service_container'
+
+  freepbx_application:
+    class: Symfony\Component\Console\Application
+    factory: 'TelNowEdge\FreePBX\Base\Console\ApplicationFactory:createApplication'

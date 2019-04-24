@@ -18,8 +18,17 @@
 
 namespace TelNowEdge\FreePBX\Base\Resources\Migrations;
 
+use Symfony\Component\Console\Application;
+
 abstract class AbstractPhpMigration extends AbstractMigration
 {
+    protected $application;
+
+    public function setApplication(Application $application)
+    {
+        $this->application = $application;
+    }
+
     public function migrateOne($id, array $res)
     {
         parent::migrateOne($id, $res);
