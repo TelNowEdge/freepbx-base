@@ -46,7 +46,7 @@ abstract class AbstractAsteriskRepository
 
     public function show($family, $key)
     {
-        $request = sprintf('%s/%d', $family, $key);
+        $request = sprintf('%s/%s', $family, $key);
 
         $res = $this->connection
             ->database_show($request);
