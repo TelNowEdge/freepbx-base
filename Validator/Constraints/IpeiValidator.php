@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright [2016] [TelNowEdge]
+ * Copyright 2016 TelNowEdge
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,12 +29,15 @@ class IpeiValidator extends ConstraintValidator
             return true;
         }
 
-        if (0 === preg_match('/^\d{12}[0-9\*]$/', $value)) {
+        if ((0 === preg_match('/^\d{12}[0-9\*]$/', $value)) && (0 === preg_match('/^0[0-9a-fA-F]{9}$/', $value))) {
             $this->context->addViolation($consraint->message);
         }
 
-        if ($this->calculCrc($value) !== $value) {
-            $this->context->addViolation($consraint->message);
+        if (1 === preg_match('/^\d{12}[0-9\*]$/', $value)) {
+            // C'est un ipei
+            if ($this->calculCrc($value) !== $value) {
+                $this->context->addViolation($consraint->message);
+            }
         }
 
         return true;

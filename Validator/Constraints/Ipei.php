@@ -25,5 +25,5 @@ use Symfony\Component\Validator\Constraint;
  */
 class Ipei extends Constraint
 {
-    public $message = 'The value is not a valid Ipei.';
+    public $message = 'The value is not a valid IPEI or IPUI.';
 }
