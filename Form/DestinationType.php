@@ -57,6 +57,7 @@ class DestinationType extends AbstractType implements ContainerAwareInterface
                     'choices' => $destinationHelper->getDestinations(),
                     'attr' => array(
                         'data-prototype' => $this->container->get('serializer')->serialize($destinationHelper->getRaw(), 'json'),
+                        'data-type' => 'tne-destination',
                     ),
                     'placeholder' => '-',
                 ))
