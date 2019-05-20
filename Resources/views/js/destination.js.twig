@@ -15,7 +15,7 @@
  };
 
  const getCategoryByDestination = (destSelector, categorySelector, destination) => {
-   const prototype = $(destSelector).data('prototype');
+   const prototype = JSON.parse($(destSelector).attr('data-prototype'));
 
    return new Promise((resolve, reject) => {
      Object.keys(prototype).forEach((x) => {
@@ -33,7 +33,7 @@
  };
 
  const appendDestinationByCategory = (selector, category) => {
-   const prototype = $(selector).data('prototype');
+   const prototype = JSON.parse($(selector).attr('data-prototype'));
 
    const actual = $(selector).val();
    clearDestination(selector, false);
