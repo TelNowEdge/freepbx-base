@@ -37,16 +37,16 @@ class ContainerBuilderFactory
 
     private $container;
 
-    public function __construct($debug = false)
+    public function __construct($debug = false, $disabledCache = false)
     {
         static::autoloadTelNowEdgeModule();
-        $this->container = static::startContainer($debug);
+        $this->container = static::startContainer($debug, $disabledCache);
     }
 
-    public static function getInstance($debug = false)
+    public static function getInstance($debug = false, $disabledCache = false)
     {
         if (false === isset(static::$instance)) {
-            static::$instance = new static($debug);
+            static::$instance = new static($debug, $disabledCache);
         }
 
         return static::$instance->container;
@@ -67,7 +67,7 @@ class ContainerBuilderFactory
         });
     }
 
-    private static function startContainer($debug)
+    private static function startContainer($debug, $disabledCache)
     {
         $action = false === isset($_GET['action']) ? null : $_GET['action'];
         $forceLoading = false;
@@ -80,6 +80,7 @@ class ContainerBuilderFactory
             ? $_SERVER['argv']
             : array()
             ;
+
         /*
          * Module installation.
          * So disable filter "by active" else I can't load module NS to install it.
@@ -129,7 +130,7 @@ class ContainerBuilderFactory
 
             $container->compile();
 
-            if (true === $forceLoading) {
+            if (true === $forceLoading || true === $disabledCache) {
                 return $container;
             }
 
