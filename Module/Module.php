@@ -68,6 +68,11 @@ abstract class Module extends \FreePBX_Helpers
         );
     }
 
+    public static function dropCache()
+    {
+        ContainerBuilderFactory::dropCache();
+    }
+
     public function getContainer()
     {
         return $this->container;

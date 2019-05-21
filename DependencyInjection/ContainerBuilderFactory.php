@@ -52,6 +52,17 @@ class ContainerBuilderFactory
         return static::$instance->container;
     }
 
+    public static function dropCache()
+    {
+        $file = sprintf('%s/../../../../../../assets/cache/container.php', __DIR__);
+
+        if (false === file_exists($file)) {
+            return true;
+        }
+
+        return unlink($file);
+    }
+
     private static function autoloadTelNowEdgeModule()
     {
         // SearchHelper: TelNowEdge\Module
