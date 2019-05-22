@@ -18,6 +18,7 @@
   "require": {
     "doctrine/annotations": "^1.4",
     "doctrine/cache": "^1.6",
+    "guzzlehttp/guzzle": "~6.0",
     "monolog/monolog": "^1.23",
     "symfony/cache": "^3.4",
     "symfony/config": "^3.3.3",
@@ -26,12 +27,12 @@
     "symfony/form": "^3.3.10",
     "symfony/http-foundation": "^3.0.9",
     "symfony/ldap": "^3.4",
+    "symfony/property-access": "^3.4.27",
     "symfony/security-csrf": "^3.3.10",
     "symfony/serializer": "^3.0.3",
     "symfony/twig-bridge": "^3.3.10",
     "symfony/validator": "^3.0.9",
-    "symfony/yaml": "^3.0.3",
-    "guzzlehttp/guzzle": "~6.0"
+    "symfony/yaml": "^3.0.3"
   },
   "require-dev": {
     "phpro/grumphp": "^0.12.0",
