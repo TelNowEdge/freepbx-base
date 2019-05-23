@@ -2,9 +2,26 @@
 
 ## Version
 
+* 2018/05/23 <1.0>: Stable release
+  * Container caching
+  * Template caching
+  * Form helper to append Destination block on form
+  * Helper to send UserEvent
+  * New Verb forn asterisk dialplan
+
 - 2017/11/28 <0.1>: First available working version
 
 ## Install
+
+### Dependencies requirements
+
+Currently FreePBX® come with a [symfony/property-access:3.4.19](https://github.com/symfony/property-access) on this version a major bug is known [#29340](https://github.com/symfony/symfony/issues/29340).
+So, to install this module you must update your packages.
+
+```bash
+cd /var/www/admin/libraries/Composer
+composer update
+```
 
 ### With `composer require`
 
@@ -40,6 +57,12 @@ And finally run
 composer.phar dump-autoload
 ```
 
+## To known
+
+1. Cache system
+
+All cached files was written on `rootFreePBX`/assets/cache/. Please take care with the rights.
+
 ## Overview
 
 This FreepbxBase *bundle* provide an easy way to write FreePBX® modules like an MVC project. He works alone without any modification of FreePBX® core files except composer.json.
@@ -55,7 +78,8 @@ FreepbxBase *bundle* provide too the Symfony® **Form** component to validate yo
 Before start using it, you need to understand namespace and the Symfony base development concepts.
 
 ## Acme example module
-[Modfagi](https://github.com/TelNowEdge/modfagi)
+* [Modfagi](https://github.com/TelNowEdge/modfagi)
+* [TimeCondition](https://github.com/TelNowEdge/tnetc)
 
 ## Coding standard
 
@@ -134,15 +158,21 @@ To check the `coding standard` please include on your module GrumPHP.
 
 1. [doctrine/annotations](https://github.com/doctrine/annotations)
 1. [doctrine/cache](https://github.com/doctrine/cache)
+1. [guzzlehttp/guzzle](https://github.com/guzzle/guzzle)
+1. [monolog/monolog](https://github.com/Seldaek/monolog)
+1. [symfony/cache](https://github.com/symfony/cache)
 1. [symfony/config](https://github.com/symfony/config)
 1. [symfony/dependency-injection](https://github.com/symfony/dependency-injection)
+1. [symfony/event-dispatcher](https://github.com/symfony/event-dispatcher)
 1. [symfony/form](https://github.com/symfony/form)
 1. [symfony/http-foundation](https://github.com/symfony/http-foundation)
+1. [symfony/ldap](https://github.com/symfony/ldap)
+1. [symfony/property-access](https://github.com/symfony/property-access)
 1. [symfony/security-csrf](https://github.com/symfony/security-csrf)
+1. [symfony/serializer](https://github.com/symfony/serializer)
 1. [symfony/twig-bridge](https://github.com/symfony/twig-bridge)
 1. [symfony/validator](https://github.com/symfony/validator)
 1. [symfony/yaml](https://github.com/symfony/yaml)
-1. [symfony/serializer](https://github.com/symfony/serializer)
 
 ## How to use
 
@@ -459,4 +489,4 @@ This component is used exactly like Symfony does.
 
 ## Todo
 
-1. Increase security in service.yml with publc / private service
+1. Increase security in service.yml with public / private service
