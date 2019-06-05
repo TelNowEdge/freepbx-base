@@ -28,7 +28,7 @@ services:
     class: TelNowEdge\FreePBX\Base\Session\AutoExpireBag
 
   session.storage.native:
-    class: Symfony\Component\HttpFoundation\Session\Storage\PhpBridgeSessionStorage
+    class: TelNowEdge\FreePBX\Base\Session\Storage\SpecialPhpBridgeSessionStorage
 
   session.storage:
     alias: session.storage.native
