@@ -93,10 +93,11 @@ abstract class AbstractRepository
         return $res;
     }
 
-    protected function objectFromArray($fqn, array $array)
+    protected function objectFromArray($fqn, array $array, $params = array())
     {
         $reflector = new \ReflectionClass($fqn);
-        $class = $reflector->newInstance();
+
+        $class = $reflector->newInstanceArgs($params);
 
         foreach ($array as $prop => $value) {
             $method = sprintf('set%s', ucfirst($prop));
@@ -111,10 +112,10 @@ abstract class AbstractRepository
         return $class;
     }
 
-    protected function uncontrolledObjectFromArray($fqdn, array $array)
+    protected function uncontrolledObjectFromArray($fqdn, array $array, $params = array())
     {
         $reflector = new \ReflectionClass($fqdn);
-        $class = $reflector->newInstance();
+        $class = $reflector->newInstanceArgs($params);
 
         foreach ($array as $prop => $value) {
             $method = sprintf('set%s', ucfirst($prop));
