@@ -107,6 +107,11 @@ class ContainerBuilderFactory
             $forceLoading = true;
         }
 
+        global $no_auth;
+        if (true === $no_auth) {
+            $forceLoading = true;
+        }
+
         if (
             false === $containerConfigCache->isFresh()
             || true === $forceLoading
