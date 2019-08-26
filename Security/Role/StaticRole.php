@@ -38,6 +38,10 @@ class StaticRole
                 'role' => 'ROLE_MOBILE_APP',
                 'name' => 'Mobile application',
             ),
+            8 => array(
+                'role' => 'ROLE_WEBSOFTKEY_ADMIN',
+                'name' => 'WebSoftKey administrator',
+            ),
         );
     }
 
