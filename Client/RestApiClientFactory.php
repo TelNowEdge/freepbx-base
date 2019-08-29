@@ -33,14 +33,20 @@ class RestApiClientFactory
         $this->ampConfManager = $ampConfManager;
     }
 
-    public function createClient($apiKey)
+    public function createClient($apiKey, $timeout = 15)
     {
-        if (null !== $uri = $this->ampConfManager->get('TNE_API_URI')) {
-            if (1 !== preg_match('/\/$/', $uri)) {
-                $uri = sprintf('%s/', $uri);
-            }
+        $uri = 'https://localhost/api/v1/';
+
+        if ('yes' === $this->ampConfManager->get('TNE_API_URI_LOCALHOST')) {
+            $uri = 'http://localhost/api/v1/';
+        } elseif ('yes+debug' === $this->ampConfManager->get('TNE_API_URI_LOCALHOST')) {
+            $uri = 'http://localhost/api/v1/app_dev.php/';
         } else {
-            $uri = 'https://localhost/api/v1/';
+            if (null !== $uri = $this->ampConfManager->get('TNE_API_URI')) {
+                if (1 !== preg_match('/\/$/', $uri)) {
+                    $uri = sprintf('%s/', $uri);
+                }
+            }
         }
 
         $stack = new HandlerStack();
@@ -51,7 +57,7 @@ class RestApiClientFactory
         return new Client(array(
             'base_uri' => $uri,
             'handler' => $stack,
-            'timeout' => 10.0,
+            'timeout' => $timeout,
         ));
     }
 
