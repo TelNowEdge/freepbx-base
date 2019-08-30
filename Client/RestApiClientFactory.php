@@ -65,8 +65,7 @@ class RestApiClientFactory
     {
         return function (callable $handler) use ($apiKey) {
             return function (RequestInterface $request, array $options) use ($handler, $apiKey) {
-                $uri = $request->getUri()->withQuery(sprintf('apikey=%s', $apiKey));
-                $request = $request->withUri($uri);
+                $request = $request->withHeader('x-api-key', $apiKey);
 
                 return $handler($request, $options);
             };
