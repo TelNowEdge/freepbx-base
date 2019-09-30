@@ -29,7 +29,7 @@ class MacAddressValidator extends ConstraintValidator
             return true;
         }
 
-        if (1 === preg_match('/^(?:all\:)?(?:[0-9A-Fa-f]{12})|(?:(?:[0-9A-Fa-f]{2}(?::|-)){5}[0-9A-Fa-f]{2})|(?:[0-9A-Fa-f]{6}-[0-9A-Fa-f]{6})$/', $value)) {
+        if (1 === preg_match('/^(?:(?:all\:)?(?:[0-9A-Fa-f]{12})|(?:(?:[0-9A-Fa-f]{2}(?::|-)){5}[0-9A-Fa-f]{2})|(?:[0-9A-Fa-f]{6}-[0-9A-Fa-f]{6}))$/', $value)) {
             return true;
         }
 
