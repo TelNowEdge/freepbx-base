@@ -46,14 +46,14 @@ class DestinationType extends AbstractType implements ContainerAwareInterface
             }
 
             $form
-                ->add('Category', ChoiceType::class, array(
+                ->add('category', ChoiceType::class, array(
                     'choices' => array_combine(
                         $destinationHelper->getCategories(),
                         $destinationHelper->getCategories()
                     ),
                     'placeholder' => '-',
                 ))
-                ->add('Destination', ChoiceType::class, array(
+                ->add('destination', ChoiceType::class, array(
                     'choices' => $destinationHelper->getDestinations(),
                     'attr' => array(
                         'data-prototype' => $this->container->get('serializer')->serialize($destinationHelper->getRaw(), 'json'),
