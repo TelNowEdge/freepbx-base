@@ -49,8 +49,7 @@ class RestApiClientFactory
             }
         }
 
-        $stack = new HandlerStack();
-        $stack->setHandler(new CurlMultiHandler());
+        $stack = HandlerStack::create(new CurlMultiHandler());
         $stack->push(self::addApiKey($apiKey));
         $stack->push(self::addContentType());
 
