@@ -133,4 +133,19 @@ class ConnectionFactory
 
         return $ldap;
     }
+
+    public function getAsteriskConnection()
+    {
+        $config = new Configuration();
+        $connectionParams = array(
+            'memory' => false,
+            'driver' => 'pdo_sqlite',
+            'path' => sprintf('%s/astdb.sqlite3', $this->ampConfManager->get('ASTVARLIBDIR')),
+        );
+
+        $connection = DriverManager::getConnection($connectionParams, $config);
+        $connection->setFetchMode(\PDO::FETCH_OBJ);
+
+        return $connection;
+    }
 }

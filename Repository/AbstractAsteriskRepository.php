@@ -18,18 +18,35 @@
 
 namespace TelNowEdge\FreePBX\Base\Repository;
 
+use Doctrine\DBAL\Connection;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
 
 abstract class AbstractAsteriskRepository
 {
+    const SQL = '
+SELECT
+        a.key a__key
+        ,a.value a__value
+    FROM
+        astdb a
+';
+
     /**
      * class AGI_AsteriskManager (libraries/php-asmanager.php).
      */
     protected $connection;
 
-    public function setConnection(\AGI_AsteriskManager $connection)
-    {
+    /**
+     * \Doctrine\DBAL\Connection.
+     */
+    protected $asteriskConnection;
+
+    public function setConnection(
+        \AGI_AsteriskManager $connection,
+        Connection $asteriskConnection
+    ) {
         $this->connection = $connection;
+        $this->asteriskConnection = $asteriskConnection;
     }
 
     public function getByFamily($family)
@@ -77,6 +94,17 @@ abstract class AbstractAsteriskRepository
         return $out;
     }
 
+    public function sqliteToArray(array $res)
+    {
+        $out = array();
+
+        foreach ($res as $x) {
+            $out[$x->a__key] = $x->a__value;
+        }
+
+        return $this->sqlToArray($out);
+    }
+
     public function sqlToArray(array $res)
     {
         $temp = array();
@@ -100,6 +128,26 @@ abstract class AbstractAsteriskRepository
         }
 
         return $out;
+    }
+
+    protected function fetch(\Doctrine\DBAL\Statement $statment)
+    {
+        if (false === $res = $statment->fetch()) {
+            throw new NoResultException();
+        }
+
+        return $res;
+    }
+
+    protected function fetchAll(\Doctrine\DBAL\Statement $statment)
+    {
+        $res = $statment->fetchAll();
+
+        if (true === empty($res)) {
+            throw new NoResultException();
+        }
+
+        return $res;
     }
 
     protected function objectFromArray($fqn, array $array)

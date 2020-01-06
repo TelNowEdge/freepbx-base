@@ -23,3 +23,7 @@ services:
   ldap_default_connection:
     class: Symfony\Component\Ldap\Ldap
     factory: ['@TelNowEdge\FreePBX\Base\Connection\ConnectionFactory', 'getLdapDefaultConnection']
+
+  asterisk_connection:
+    class: Doctrine\DBAL\Connection
+    factory: ['@TelNowEdge\FreePBX\Base\Connection\ConnectionFactory', 'getAsteriskConnection']

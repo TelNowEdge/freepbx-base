@@ -29,6 +29,7 @@ services:
       - method: setConnection
         arguments:
           - '@AsteriskManager'
+          - '@asterisk_connection'
 
   TelNowEdge\FreePBX\Base\Repository\AbstractFileSystemRepository:
     abstract: true
