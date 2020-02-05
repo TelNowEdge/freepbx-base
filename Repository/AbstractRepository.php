@@ -125,4 +125,9 @@ abstract class AbstractRepository
 
         return $class;
     }
+
+    public function setEventDispatcher(\Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
 }
