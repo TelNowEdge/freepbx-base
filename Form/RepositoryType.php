@@ -59,7 +59,7 @@ class RepositoryType extends AbstractType implements ContainerAwareInterface
             }
 
             try {
-                $collection = call_user_func_array(
+                $collection = \call_user_func_array(
                     array($this->container->get($options['repository']), $options['caller']),
                     $options['parameters']
                 );

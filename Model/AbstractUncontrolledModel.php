@@ -53,6 +53,11 @@ class AbstractUncontrolledModel
         }
     }
 
+    public function __clone()
+    {
+        $this->storage = clone $this->storage;
+    }
+
     public function getAsObject()
     {
         return $this->storage;
@@ -71,10 +76,5 @@ class AbstractUncontrolledModel
     public function setKeys(\Doctrine\Common\Collections\ArrayCollection $keys)
     {
         return $this->storage->set('keys', $keys);
-    }
-
-    public function __clone()
-    {
-        $this->storage = clone $this->storage;
     }
 }

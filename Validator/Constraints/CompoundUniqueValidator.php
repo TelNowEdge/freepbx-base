@@ -64,7 +64,7 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
                 foreach ($values as $key => $val) {
                     ++$i;
 
-                    $errors['{{ '.$i.' }}'] = true === is_object($val) ? sprintf('%s__%s', $key, $val->getId()) : sprintf('%s__%s', $key, $val);
+                    $errors['{{ '.$i.' }}'] = true === \is_object($val) ? sprintf('%s__%s', $key, $val->getId()) : sprintf('%s__%s', $key, $val);
                 }
 
                 $constraint->message = sprintf($constraint->message, implode(',', $errors));
@@ -94,7 +94,7 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
             $property = $reflector->getProperty($field);
             $property->setAccessible(true);
 
-            $values[$field] = is_object($property->getValue($class))
+            $values[$field] = \is_object($property->getValue($class))
                 ? $property->getValue($class)->getId()
                 : $property->getValue($class)
                 ;

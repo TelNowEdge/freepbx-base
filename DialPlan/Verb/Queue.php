@@ -42,7 +42,7 @@ class Queue implements VerbInterface
     public function output()
     {
         $cmdend = '';
-        if ($this->position !== -1) {
+        if (-1 !== $this->position) {
             $cmdend = ','.$this->position;
         }
 

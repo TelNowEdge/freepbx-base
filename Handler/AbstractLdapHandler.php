@@ -85,7 +85,7 @@ abstract class AbstractLdapHandler
     {
         return preg_replace(
             '/(?|(,)|(\\\)|(\#)|(\+)|(\<)|(\>)|(\;)|(\")|(=))/',
-            "\\\\$1",
+            '\\\$1',
             $string
         );
     }

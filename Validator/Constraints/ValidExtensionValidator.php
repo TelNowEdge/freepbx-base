@@ -80,7 +80,7 @@ class ValidExtensionValidator extends ConstraintValidator implements ContainerAw
 
         $exts = framework_get_extmap();
 
-        if (false === array_key_exists($fieldValue, $exts)) {
+        if (false === \array_key_exists($fieldValue, $exts)) {
             return;
         }
 

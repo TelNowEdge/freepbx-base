@@ -34,7 +34,7 @@ class ChoiceValidator extends BaseChoiceValidator implements ContainerAwareInter
 
     public function validate($value, Constraint $consraint)
     {
-        if (true === is_array($consraint->service)) {
+        if (true === \is_array($consraint->service)) {
             if (true === $consraint->nullable) {
                 return true;
             }
@@ -61,7 +61,7 @@ class ChoiceValidator extends BaseChoiceValidator implements ContainerAwareInter
 
             $method = $reflector->getMethod($consraint->service[1]);
 
-            if (false === in_array($value, $method->invoke($service), true)) {
+            if (false === \in_array($value, $method->invoke($service), true)) {
                 $this->context->addViolation($consraint->message);
             }
 

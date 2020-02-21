@@ -71,11 +71,11 @@ class DependsValidator extends ConstraintValidator implements ContainerAwareInte
 
         $field = $fieldMethod->invoke($obj);
 
-        if (true === is_object($field)) {
+        if (true === \is_object($field)) {
             $field = $field->getId();
         }
 
-        if (false === in_array($field, $method->invoke($service, $dependsMethod->invoke($obj)), true)) {
+        if (false === \in_array($field, $method->invoke($service, $dependsMethod->invoke($obj)), true)) {
             $this->context
                 ->buildViolation($constraint->message)
                 ->atPath($constraint->field)

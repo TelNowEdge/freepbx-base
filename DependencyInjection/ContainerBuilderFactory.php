@@ -97,7 +97,7 @@ class ContainerBuilderFactory
          * So disable filter "by active" else I can't load module NS to install it.
          */
         if (
-            (PHP_SAPI === 'cli' && 0 !== count(array_intersect(array('ma', 'moduleadmin'), $argv)))
+            (\PHP_SAPI === 'cli' && 0 !== \count(array_intersect(array('ma', 'moduleadmin'), $argv)))
             || ('modules' === $display && 'process' === $action)
         ) {
             if (true === file_exists($containerConfigCache->getPath())) {

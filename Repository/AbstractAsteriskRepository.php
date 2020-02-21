@@ -83,7 +83,7 @@ SELECT
 
         $key = \Doctrine\Common\Util\Inflector::camelize($array[0]);
 
-        if (1 === count($array)) {
+        if (1 === \count($array)) {
             $value = '' === $value ? null : $value;
 
             return array($key => $value);

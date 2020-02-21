@@ -52,6 +52,11 @@ abstract class AbstractRepository
         return $this;
     }
 
+    public function setEventDispatcher(\Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     protected function fetch(\Doctrine\DBAL\Statement $statment)
     {
         if (false === $res = $statment->fetch()) {
@@ -120,14 +125,9 @@ abstract class AbstractRepository
         foreach ($array as $prop => $value) {
             $method = sprintf('set%s', ucfirst($prop));
 
-            call_user_func(array($class, $method), $value);
+            \call_user_func(array($class, $method), $value);
         }
 
         return $class;
-    }
-
-    public function setEventDispatcher(\Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher)
-    {
-        $this->eventDispatcher = $eventDispatcher;
     }
 }

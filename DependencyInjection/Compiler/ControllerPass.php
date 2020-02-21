@@ -35,8 +35,8 @@ class ControllerPass implements CompilerPassInterface
 
         foreach ($taggedServices as $id => $service) {
             $definition->addMethodCall('addRegisterPath', array(
-                call_user_func(array($id, 'getViewsDir')),
-                call_user_func(array($id, 'getViewsNamespace')),
+                \call_user_func(array($id, 'getViewsDir')),
+                \call_user_func(array($id, 'getViewsNamespace')),
             ));
         }
     }

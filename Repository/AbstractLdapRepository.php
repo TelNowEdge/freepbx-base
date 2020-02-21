@@ -82,7 +82,7 @@ abstract class AbstractLdapRepository
 
             foreach ($mapping as $i => $map) {
                 foreach ($map as $model => $attr) {
-                    if (1 < count($attribute)) {
+                    if (1 < \count($attribute)) {
                         $out[$model][$attr] = $attribute;
 
                         continue;
@@ -126,7 +126,7 @@ abstract class AbstractLdapRepository
         foreach ($array as $prop => $value) {
             $method = sprintf('set%s', ucfirst($prop));
 
-            call_user_func(array($class, $method), $value);
+            \call_user_func(array($class, $method), $value);
         }
 
         return $class;

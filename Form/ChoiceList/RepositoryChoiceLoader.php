@@ -60,17 +60,17 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
         $values = array();
 
         foreach ($choices as $i => $givenChoice) {
-            if (false === is_object($givenChoice)) {
+            if (false === \is_object($givenChoice)) {
                 continue;
             }
 
             if (null !== $value) {
-                $givenChoice = call_user_func($value, $givenChoice);
+                $givenChoice = \call_user_func($value, $givenChoice);
             }
 
             foreach ($this->collection as $val => $choice) {
                 if (null !== $value) {
-                    $val = call_user_func($value, $choice);
+                    $val = \call_user_func($value, $choice);
 
                     if ($val !== $givenChoice) {
                         continue;

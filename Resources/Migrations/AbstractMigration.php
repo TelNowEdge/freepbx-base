@@ -345,7 +345,7 @@ CREATE
             ),
         );
 
-        $mode = 'cli' === PHP_SAPI
+        $mode = 'cli' === \PHP_SAPI
             ? 'console'
             : 'web'
             ;
@@ -375,7 +375,7 @@ CREATE
 
     private function write($msg)
     {
-        if ('cli' === PHP_SAPI) {
+        if ('cli' === \PHP_SAPI) {
             $this->output->writeln($msg);
 
             return;
