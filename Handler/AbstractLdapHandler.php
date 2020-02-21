@@ -80,4 +80,13 @@ abstract class AbstractLdapHandler
     {
         return $this->connection->getEntryManager();
     }
+
+    protected function escape($string)
+    {
+        return preg_replace(
+            '/(?|(,)|(\\\)|(\#)|(\+)|(\<)|(\>)|(\;)|(\")|(=))/',
+            "\\\\$1",
+            $string
+        );
+    }
 }
