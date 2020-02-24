@@ -21,9 +21,12 @@ namespace TelNowEdge\FreePBX\Base\Repository;
 use Symfony\Component\Ldap\Entry;
 use Symfony\Component\Ldap\Ldap;
 use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
+use TelNowEdge\FreePBX\Base\Traits\LdapTrait;
 
 abstract class AbstractLdapRepository
 {
+    use LdapTrait;
+
     protected $connection;
 
     protected $ampConfManager;

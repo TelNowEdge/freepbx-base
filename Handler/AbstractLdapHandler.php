@@ -21,9 +21,12 @@ namespace TelNowEdge\FreePBX\Base\Handler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Ldap\Ldap;
 use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
+use TelNowEdge\FreePBX\Base\Traits\LdapTrait;
 
 abstract class AbstractLdapHandler
 {
+    use LdapTrait;
+
     protected $ampConfManager;
 
     protected $connection;
@@ -79,14 +82,5 @@ abstract class AbstractLdapHandler
     protected function getEntryManager()
     {
         return $this->connection->getEntryManager();
-    }
-
-    protected function escape($string)
-    {
-        return preg_replace(
-            '/(?|(,)|(\\\)|(\#)|(\+)|(\<)|(\>)|(\;)|(\")|(=))/',
-            '\\\$1',
-            $string
-        );
     }
 }
