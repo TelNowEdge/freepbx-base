@@ -22,10 +22,6 @@ trait LdapTrait
 {
     protected function escape($string)
     {
-        return preg_replace(
-            '/(?|(,)|(\\\)|(\#)|(\+)|(\<)|(\>)|(\;)|(\")|(=))/',
-            '\\\$1',
-            $string
-        );
+        return ldap_escape($string);
     }
 }
