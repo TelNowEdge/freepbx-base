@@ -21,6 +21,7 @@ namespace TelNowEdge\FreePBX\Base\Resources\Migrations;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\TableNotFoundException;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 abstract class AbstractMigration
@@ -43,6 +44,9 @@ abstract class AbstractMigration
     {
         $this->annotationReader = $annotationReader;
         $this->output = new ConsoleOutput();
+
+        $outputStyle = new OutputFormatterStyle('cyan');
+        $this->output->getFormatter()->setStyle('skipped', $outputStyle);
     }
 
     public function setConnection(Connection $defaultConnection, Connection $cdrConnection)
@@ -330,6 +334,10 @@ CREATE
             'OK' => array(
                 'console' => 'info',
                 'web' => 'green',
+            ),
+            'SKIPPED' => array(
+                'console' => 'skipped',
+                'web' => 'cyan',
             ),
             'ERROR' => array(
                 'console' => 'error',

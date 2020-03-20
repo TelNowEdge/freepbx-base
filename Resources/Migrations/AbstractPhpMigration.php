@@ -35,7 +35,7 @@ abstract class AbstractPhpMigration extends AbstractMigration
 
         if (true === $this->alreadyMigrate($id, static::class)) {
             $this->out(sprintf(
-                '[OK]           [%s::%s] Already migrated.',
+                '[SKIPPED]      [%s::%s] Already migrated.',
                 $res['method']->class,
                 $res['method']->name
             ));
@@ -78,7 +78,7 @@ abstract class AbstractPhpMigration extends AbstractMigration
 
         if (false === $this->alreadyMigrate($key, static::class)) {
             $this->out(sprintf(
-                '[OK]           [%s::%s] Already uninstalled.',
+                '[SKIPPED]      [%s::%s] Already uninstalled.',
                 $res['method']->class,
                 $res['method']->name
             ));
