@@ -33,7 +33,7 @@ class RestApiClientFactory
         $this->ampConfManager = $ampConfManager;
     }
 
-    public function createClient($apiKey, $timeout = 15)
+    public function createClient($apiKey = null, $timeout = 15)
     {
         $uri = 'https://localhost/api/v1/';
 
@@ -50,8 +50,11 @@ class RestApiClientFactory
         }
 
         $stack = HandlerStack::create(new CurlMultiHandler());
-        $stack->push(self::addApiKey($apiKey));
         $stack->push(self::addContentType());
+
+        if (null !== $apiKey) {
+            $stack->push(self::addApiKey($apiKey));
+        }
 
         return new Client(array(
             'base_uri' => $uri,
