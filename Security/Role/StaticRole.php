@@ -43,8 +43,8 @@ class StaticRole
                 'name' => 'WebSoftKey administrator',
             ),
             16 => array(
-                'role' => 'ROLE_AMDIN',
-                'name' => 'Api administrator',
+                'role' => 'ROLE_ADMIN',
+                'name' => 'API administrator',
             ),
         );
     }
