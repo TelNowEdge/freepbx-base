@@ -119,7 +119,7 @@ class ContainerBuilderFactory
             $container = new BaseContainerBuilder();
 
             static::registerSelf($container);
-            static::registerModuleExtension($container, $forceLoading);
+            static::registerModule($container, $forceLoading);
 
             $container
                 ->addCompilerPass(
@@ -170,7 +170,7 @@ class ContainerBuilderFactory
         $container->loadFromExtension($c->getAlias());
     }
 
-    private static function registerModuleExtension(
+    private static function registerModule(
         BaseContainerBuilder $container,
         $forceLoading = false
     ) {
@@ -193,15 +193,28 @@ class ContainerBuilderFactory
 
             $extension = new \SplFileInfo($filePath);
 
-            if (false === $extension->isReadable()) {
-                continue;
+            if (true === $extension->isReadable()) {
+                $fqdn = sprintf('\TelNowEdge\Module\%s\DependencyInjection\%sExtension', strtolower($child), ucfirst($child));
+
+                $instance = new $fqdn();
+                $container->registerExtension($instance);
+                $container->loadFromExtension($instance->getAlias());
             }
 
-            $fqdn = sprintf('\TelNowEdge\Module\%s\DependencyInjection\%sExtension', strtolower($child), ucfirst($child));
+            $filePath = sprintf(
+                '%s/DependencyInjection/%sBundle.php',
+                $child->getPathname(),
+                ucfirst($child->getFilename())
+            );
 
-            $instance = new $fqdn();
-            $container->registerExtension($instance);
-            $container->loadFromExtension($instance->getAlias());
+            $extension = new \SplFileInfo($filePath);
+
+            if (true === $extension->isReadable()) {
+                $fqdn = sprintf('\TelNowEdge\Module\%s\DependencyInjection\%sBundle', strtolower($child), ucfirst($child));
+
+                $instance = new $fqdn();
+                $instance->build($container);
+            }
         }
     }
 }
