@@ -72,6 +72,11 @@ abstract class AbstractLdapRepository
         return $this->ampConfManager->get('TNE_LDAP_SCHEMA_PRIVATE_DIRECTORY');
     }
 
+    protected function getShareSchemaName()
+    {
+        return $this->ampConfManager->get('TNE_LDAP_SCHEMA_SHARE');
+    }
+
     protected function ldapToArray(Entry $entry)
     {
         $out = array();
