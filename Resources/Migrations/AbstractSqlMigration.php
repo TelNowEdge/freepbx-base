@@ -25,7 +25,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
         parent::migrateOne($id, $res);
 
         if (true === $this->alreadyMigrate($id, static::class)) {
-            $this->out(sprintf(
+            $this->skipped->add(sprintf(
                 '[SKIPPED]      [%s::%s] Already migrated.',
                 $res['method']->class,
                 $res['method']->name

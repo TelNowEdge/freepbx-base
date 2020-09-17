@@ -19,6 +19,7 @@
 namespace TelNowEdge\FreePBX\Base\Resources\Migrations;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -40,10 +41,13 @@ abstract class AbstractMigration
 
     protected $output;
 
+    protected $skipped;
+
     public function __construct(AnnotationReader $annotationReader)
     {
         $this->annotationReader = $annotationReader;
         $this->output = new ConsoleOutput();
+        $this->skipped = new ArrayCollection();
 
         $outputStyle = new OutputFormatterStyle('cyan');
         $this->output->getFormatter()->setStyle('skipped', $outputStyle);
@@ -121,6 +125,18 @@ abstract class AbstractMigration
         }
 
         return true;
+    }
+
+    public function displaySkipped(ArrayCollection $collection)
+    {
+        $number = array_reduce($collection->getValues(), function ($acc, $x) {
+            return $acc + $x->skipped->count();
+        }, $i = 0);
+
+        $this->out(sprintf(
+            '[SKIPPED]      [%03d]',
+            $number
+        ));
     }
 
     /*

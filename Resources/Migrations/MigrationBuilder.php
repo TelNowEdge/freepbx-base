@@ -65,6 +65,9 @@ class MigrationBuilder
             return true;
         });
 
+        // Somme hack. Call the first object to have access to displaySkipped() method
+        $this->collection->first()->displaySkipped($this->collection);
+
         return $ok;
     }
 
