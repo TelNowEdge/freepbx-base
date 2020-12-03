@@ -272,7 +272,7 @@ abstract class AbstractMigration
             );
         }
 
-        return array_merge($temp, $last);
+        return $temp + $last;
     }
 
     /*
