@@ -28,4 +28,6 @@ class Migration
     public $reinstall = false;
 
     public $connection = 'connection';
+
+    public $doLast = false;
 }

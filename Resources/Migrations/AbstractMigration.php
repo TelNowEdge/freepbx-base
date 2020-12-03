@@ -246,6 +246,7 @@ abstract class AbstractMigration
         $reflector = new \ReflectionClass(static::class);
         $methods = $reflector->getMethods();
         $temp = array();
+        $last = array();
 
         asort($methods);
 
@@ -254,13 +255,24 @@ abstract class AbstractMigration
                 continue;
             }
 
+            $annotation = $this->annotationReader->getMethodAnnotations($method);
+
+            if (true === $annotation[0]->doLast) {
+                $last[$match[1]] = array(
+                    'annotation' => $annotation,
+                    'method' => $method,
+                );
+
+                continue;
+            }
+
             $temp[$match[1]] = array(
-                'annotation' => $this->annotationReader->getMethodAnnotations($method),
+                'annotation' => $annotation,
                 'method' => $method,
             );
         }
 
-        return $temp;
+        return array_merge($temp, $last);
     }
 
     /*
