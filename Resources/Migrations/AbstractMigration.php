@@ -258,7 +258,7 @@ abstract class AbstractMigration
             $annotation = $this->annotationReader->getMethodAnnotations($method);
 
             if (true === $annotation[0]->doLast) {
-                $last[$match[1]] = array(
+                $last[sprintf('99%s_doLast', $match[1])] = array(
                     'annotation' => $annotation,
                     'method' => $method,
                 );
@@ -325,6 +325,10 @@ CREATE
 
     protected function alreadyMigrate($version, $module)
     {
+        if (1 === preg_match('/^99(\d{10})_doLast$/', $version, $match)) {
+            $version = $match[1];
+        }
+
         $stmt = $this->connection->executeQuery(
             'SELECT * FROM tne_migrations WHERE id = ? AND module = ?',
             array(
@@ -338,6 +342,10 @@ CREATE
 
     protected function markAsMigrated($version, $module)
     {
+        if (1 === preg_match('/^99(\d{10})_doLast$/', $version, $match)) {
+            $version = $match[1];
+        }
+
         $stmt = $this->connection->prepare('INSERT INTO `tne_migrations` VALUES (?, ?, NOW())');
 
         $stmt->bindValue(1, $version);
@@ -348,6 +356,10 @@ CREATE
 
     protected function removeMigration($version, $module)
     {
+        if (1 === preg_match('/^99(\d{10})_doLast$/', $version, $match)) {
+            $version = $match[1];
+        }
+
         $stmt = $this->connection->prepare('DELETE FROM `tne_migrations` WHERE id = ? AND module = ?');
 
         $stmt->bindValue(1, $version);
