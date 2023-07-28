@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright [2018] [TelNowEdge]
+ * Copyright 2018- [TelNowEdge]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,10 +30,16 @@ class SipNotifyManager
         $this->connection = $connection;
     }
 
-    public function notify($event, $device)
+    public function notify($event, $device, $tech='sip')
     {
+        $cmd=sprintf('sip notify %s %d', $event, (int) $device);
+
+        if ('pjsip' === $tech ){
+            $cmd=sprintf('pjsip send notify %s endpoint %d', $event, (int) $device);
+        }
+
         $command = array(
-            'Command' => sprintf('sip notify %s %d', $event, (int) $device),
+           'Command' => $cmd,
         );
 
         try {
