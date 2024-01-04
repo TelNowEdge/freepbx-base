@@ -29,10 +29,9 @@ class ObjectNormalizerFactory
     {
         $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader($reader));
         $normalizer = new ObjectNormalizer($classMetadataFactory);
-        $normalizer->setCircularReferenceLimit(2);
-        $normalizer->setCircularReferenceHandler(function ($object) {
-            return $object->getId();
-        });
+        // $normalizer->setCircularReferenceHandler(function ($object) {
+        //     return $object->getId();
+        // });
 
         return $normalizer;
     }

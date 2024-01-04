@@ -55,7 +55,6 @@ class ConnectionFactory
         );
 
         $connection = DriverManager::getConnection($connectionParams, $config);
-        $connection->setFetchMode(\PDO::FETCH_OBJ);
 
         return $connection;
     }
@@ -83,7 +82,6 @@ class ConnectionFactory
         );
 
         $connection = DriverManager::getConnection($connectionParams, $config);
-        $connection->setFetchMode(\PDO::FETCH_OBJ);
 
         return $connection;
     }
@@ -111,7 +109,6 @@ class ConnectionFactory
         );
 
         $connection = DriverManager::getConnection($connectionParams, $config);
-        $connection->setFetchMode(\PDO::FETCH_OBJ);
 
         return $connection;
     }
@@ -144,7 +141,6 @@ class ConnectionFactory
         );
 
         $connection = DriverManager::getConnection($connectionParams, $config);
-        $connection->setFetchMode(\PDO::FETCH_OBJ);
 
         return $connection;
     }

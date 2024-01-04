@@ -16,31 +16,22 @@
     "psr-4": { "TelNowEdge\\FreePBX\\Base\\": "" }
   },
   "require": {
-    "doctrine/annotations": "^1.4",
-    "doctrine/cache": "^1.6",
-    "guzzlehttp/guzzle": "~6.0",
-    "monolog/monolog": "^1.23",
-    "symfony/cache": "^3.4",
-    "symfony/config": "^3.3.3",
-    "symfony/dependency-injection": "^3.3.3",
-    "symfony/event-dispatcher": "^3.3.0",
-    "symfony/form": "^3.3.10",
-    "symfony/http-foundation": "^3.0.9",
-    "symfony/ldap": "^3.4",
-    "symfony/property-access": "^3.4.27",
-    "symfony/security-csrf": "^3.3.10",
-    "symfony/serializer": "^3.0.3",
-    "symfony/twig-bridge": "^3.3.10",
-    "symfony/validator": "^3.0.9",
-    "symfony/yaml": "^3.0.3"
+    "doctrine/annotations": "^2.0",
+    "symfony/cache": "^6.4",
+    "symfony/config": "^6.4",
+    "symfony/dependency-injection": "^6.4",
+    "symfony/event-dispatcher": "^6.4",
+    "symfony/form": "^6.4",
+    "symfony/http-foundation": "^6.4",
+    "symfony/ldap": "^6.4",
+    "symfony/property-access": "^6.4",
+    "symfony/security-csrf": "^6.4",
+    "symfony/serializer": "^6.4",
+    "symfony/twig-bridge": "^6.4",
+    "symfony/validator": "^6.4",
+    "symfony/yaml": "^6.4"
   },
   "require-dev": {
-    "phpro/grumphp": "^0.12.0",
-    "nikic/php-parser": "^3.1",
-    "friendsofphp/php-cs-fixer": "^2.8",
-    "jakub-onderka/php-parallel-lint": "^0.9.2",
-    "phpmd/phpmd": "^2.6",
-    "phpspec/phpspec": "^3.4",
-    "symfony/phpunit-bridge": "^3.4"
+
   }
 }

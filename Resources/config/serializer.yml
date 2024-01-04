@@ -10,7 +10,7 @@ services:
 
   object_normalizer:
     class: Symfony\Component\Serializer\Normalizer\ObjectNormalizer
-    factory: 'TelNowEdge\FreePBX\Base\Serializer\Normalizer\ObjectNormalizerFactory:getObjectNormalizer'
+    factory: [ '@TelNowEdge\FreePBX\Base\Serializer\Normalizer\ObjectNormalizerFactory', 'getObjectNormalizer' ]
     arguments:
       $reader: '@annotation.reader'
 

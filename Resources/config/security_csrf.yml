@@ -13,7 +13,7 @@ services:
   security.csrf.token_storage:
     class: Symfony\Component\Security\Csrf\TokenStorage\SessionTokenStorage
     arguments:
-      - '@session'
+      - '@request_stack'
 
   Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface:
     alias: security.csrf.token_storage
@@ -23,3 +23,4 @@ services:
     arguments:
       - '@security.csrf.token_generator'
       - '@security.csrf.token_storage'
+      - '@request_stack'

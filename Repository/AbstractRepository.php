@@ -66,9 +66,9 @@ abstract class AbstractRepository
         return $res;
     }
 
-    protected function fetchAll(\Doctrine\DBAL\Statement $statment)
+    protected function fetchAll(\Doctrine\DBAL\Result $statment)
     {
-        $res = $statment->fetchAll();
+        $res = $statment->fetchAllAssociative();
 
         if (true === empty($res)) {
             throw new NoResultException();

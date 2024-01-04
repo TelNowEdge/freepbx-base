@@ -25,8 +25,8 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('base_freepbx');
+        $treeBuilder = new TreeBuilder('base_freepbx');
+        // $treeBuilder->root('base_freepbx');
 
         return $treeBuilder;
     }

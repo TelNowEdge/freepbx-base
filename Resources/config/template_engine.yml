@@ -11,4 +11,4 @@ services:
 
   twig:
     class: Twig_Environment
-    factory: 'template_engine:getTemplateEngine'
+    factory: [ '@template_engine', 'getTemplateEngine' ]

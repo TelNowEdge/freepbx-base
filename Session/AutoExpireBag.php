@@ -33,7 +33,7 @@ class AutoExpireBag implements SessionBagInterface, \IteratorAggregate, \Countab
         $this->storageKey = $storageKey;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -107,17 +107,17 @@ class AutoExpireBag implements SessionBagInterface, \IteratorAggregate, \Countab
         $this->autoExpires = &$autoExpires;
     }
 
-    public function getStorageKey()
+    public function getStorageKey(): string
     {
         return $this->storageKey;
     }
 
-    public function clear()
+    public function clear(): ?string
     {
         $return = $this->attributes;
         $this->attributes = array();
 
-        return $return;
+        return null;
     }
 
     public function getIterator()

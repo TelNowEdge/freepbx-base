@@ -6,13 +6,13 @@ services:
 
   validator:
     class: Symfony\Component\Validator\Validator\ValidatorInterface
-    factory: 'validator.builder:getValidator'
+    factory: [ '@validator.builder', 'getValidator' ]
 
   Symfony\Component\Validator\Validator\ValidatorInterface:
     alias: validator
 
   validator.builder:
-    class: Symfony\Component\Validator\ValidatorBuilderInterface
+    class: Symfony\Component\Validator\ValidatorBuilder
     factory: ['Symfony\Component\Validator\Validation', createValidatorBuilder]
     calls:
       - method: enableAnnotationMapping
@@ -31,10 +31,10 @@ services:
   validator.expression:
     class: Symfony\Component\Validator\Constraints\ExpressionValidator
     tags:
-      - {name:validator.constraint_validator, alias:validator.expression}
+      - { name: validator.constraint_validator, alias: validator.expression }
 
   validator.email:
     class: Symfony\Component\Validator\Constraints\EmailValidator
     tags:
-      - {name:validator.constraint_validator, alias:Symfony\Component\Validator\Constraints\EmailValidator}
+      - { name: validator.constraint_validator, alias: Symfony\Component\Validator\Constraints\EmailValidator }
     arguments: ~

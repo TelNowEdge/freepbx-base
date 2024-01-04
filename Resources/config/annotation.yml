@@ -10,11 +10,3 @@ services:
       - method: addGlobalIgnoredName
         arguments:
           - 'required'
-          # dummy arg to register class_exists as annotation loader only when required
-          - '@Doctrine\Common\Annotations\AnnotationRegistry'
-
-  Doctrine\Common\Annotations\AnnotationRegistry:
-    calls:
-      - method: registerLoader
-        arguments:
-         - class_exists

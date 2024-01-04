@@ -18,6 +18,10 @@
 
 namespace TelNowEdge\FreePBX\Base\Resources\Migrations;
 
+/**
+ * Transactional error with DDL
+ * Please read https://www.doctrine-project.org/projects/doctrine-migrations/en/3.3/explanation/implicit-commits
+ */
 abstract class AbstractSqlMigration extends AbstractMigration
 {
     public function migrateOne($id, array $res)
@@ -34,8 +38,8 @@ abstract class AbstractSqlMigration extends AbstractMigration
             return true;
         }
 
-        $this->connection->beginTransaction();
-        $this->cdrConnection->beginTransaction();
+        // $this->connection->beginTransaction();
+        // $this->cdrConnection->beginTransaction();
 
         try {
             $sql = $res['method']->invoke($this);
@@ -47,8 +51,9 @@ abstract class AbstractSqlMigration extends AbstractMigration
             ));
 
             $stmt = $this->{$res['annotation'][0]->connection}->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+
+            $result = $stmt->execute();
+            $result->free();
 
             $this->markAsMigrated($id, static::class);
 
@@ -65,14 +70,14 @@ abstract class AbstractSqlMigration extends AbstractMigration
                 $e->getMessage()
             ));
 
-            $this->connection->rollBack();
-            $this->cdrConnection->rollBack();
+            // $this->connection->rollBack();
+            // $this->cdrConnection->rollBack();
 
             return false;
         }
 
-        $this->connection->commit();
-        $this->cdrConnection->commit();
+        // $this->connection->commit();
+        // $this->cdrConnection->commit();
 
         return true;
     }
@@ -104,8 +109,8 @@ abstract class AbstractSqlMigration extends AbstractMigration
             ));
 
             $stmt = $this->{$res['annotation'][0]->connection}->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $result = $stmt->execute();
+            $result->free();
 
             $this->removeMigration($key, static::class);
 

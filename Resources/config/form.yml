@@ -6,7 +6,7 @@ services:
 
   form_factory:
     class: Symfony\Component\Form\FormFactoryInterface
-    factory: 'form_factory.builder:getFormFactory'
+    factory: [ '@form_factory.builder', 'getFormFactory' ]
 
   form_factory.builder:
     class: Symfony\Component\Form\FormFactoryBuilderInterface

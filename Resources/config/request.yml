@@ -4,9 +4,15 @@ services:
     autoconfigure: false
     public: true
 
+  request_stack:
+    class: Symfony\Component\HttpFoundation\RequestStack
+
   request:
     class: Symfony\Component\HttpFoundation\Request
     factory: ['Symfony\Component\HttpFoundation\Request', createFromGlobals]
 
   Symfony\Component\HttpFoundation\Request:
     alias: 'request'
+
+  Symfony\Component\HttpFoundation\RequestStack:
+    alias: 'request_stack'

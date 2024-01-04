@@ -36,18 +36,18 @@ class TemplateEngine implements TemplateEngineInterface
         $appVariableReflection = new \ReflectionClass('\Symfony\Bridge\Twig\AppVariable');
         $vendorTwigBridgeDir = dirname($appVariableReflection->getFileName());
 
-        $twig = new \Twig_Environment(new \Twig_Loader_Filesystem(array(
+        $twig = new \Twig\Environment(new \Twig\Loader\FilesystemLoader(array(
             $vendorTwigBridgeDir.'/Resources/views/Form',
             __DIR__.'/../Resources/views/Form',
         )), array(
-            'cache' => sprintf('%s/../../../../../../assets/cache/twig/', __DIR__),
+            // 'cache' => sprintf('%s/../../../../../../assets/cache/twig/', __DIR__),
         ));
 
         $twig->getLoader()->addPath(__DIR__.'/../Resources/views', 'telnowedge');
 
         $formEngine = new TwigRendererEngine(array($defaultFormTheme), $twig);
 
-        $twig->addRuntimeLoader(new \Twig_FactoryRuntimeLoader(array(
+        $twig->addRuntimeLoader(new \Twig\RuntimeLoader\FactoryRuntimeLoader(array(
             FormRenderer::class => function () use ($formEngine, $csrfManager) {
                 return new FormRenderer($formEngine, $csrfManager);
             },
@@ -55,12 +55,12 @@ class TemplateEngine implements TemplateEngineInterface
 
         $twig->addExtension(new FormExtension());
 
-        $filter = new \Twig_SimpleFilter('fpbxtrans', function ($string) {
+        $filter = new \Twig\TwigFilter('fpbxtrans', function ($string) {
             return _($string);
         });
         $twig->addFilter($filter);
 
-        $filter = new \Twig_SimpleFilter('trans', function ($string) {
+        $filter = new \Twig\TwigFilter('trans', function ($string) {
             return _($string);
         });
         $twig->addFilter($filter);
@@ -68,8 +68,12 @@ class TemplateEngine implements TemplateEngineInterface
         $this->twig = $twig;
     }
 
-    public function addRegisterPath($path, $namespace = \Twig_Loader_Filesystem::MAIN_NAMESPACE)
+    public function addRegisterPath($path, $namespace = \Twig\Loader\FilesystemLoader::MAIN_NAMESPACE)
     {
+        if (true === empty($path) || true === empty($namespace)) {
+            return $this;
+        }
+
         $paths = $this->twig->getLoader()->getPaths($namespace);
 
         if (true === in_array($path, $paths, true)) {
@@ -81,7 +85,7 @@ class TemplateEngine implements TemplateEngineInterface
         return $this;
     }
 
-    public function setRegisterPaths(array $paths, $namespace = \Twig_Loader_Filesystem::MAIN_NAMESPACE)
+    public function setRegisterPaths(array $paths, $namespace = \Twig\Loader\FilesystemLoader::MAIN_NAMESPACE)
     {
         $this->twig->getLoader()->setPaths($paths, $namespace);
 
