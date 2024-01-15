@@ -20,10 +20,16 @@ namespace TelNowEdge\FreePBX\Base\Session\Storage;
 
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
+//TODO : MetadataBag was no found without that 'use'
+use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
+
+
 class SpecialPhpBridgeSessionStorage extends NativeSessionStorage
 {
     public function __construct($handler = null, MetadataBag $metaBag = null)
     {
+        // TODO : n'est pas appelé
+        // die('bridge php session');
         $this->setMetadataBag($metaBag);
         $this->setSaveHandler($handler);
     }

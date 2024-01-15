@@ -34,8 +34,10 @@ class Session extends BaseSession
         FlashBagInterface $flashes = null,
         SessionBagInterface $autoExpires = null
     ) {
+        //TODO : OK die('fbxp session.php');
+        // die('fbxp session.php');
         parent::__construct($storage, $attributes, $flashes);
-
+        
         $autoExpires = $autoExpires ?: new AutoExpireBag();
         $this->autoExpireName = $autoExpires->getName();
         $this->registerBag($autoExpires);

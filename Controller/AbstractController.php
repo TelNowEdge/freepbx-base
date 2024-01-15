@@ -21,6 +21,7 @@ namespace TelNowEdge\FreePBX\Base\Controller;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+// TODO : ContainerAwareInterface deprecated
 abstract class AbstractController implements ContainerAwareInterface, ControllerInterface
 {
     use ControllerTrait;

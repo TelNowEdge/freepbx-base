@@ -10,6 +10,13 @@ services:
   Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface:
     alias: security.csrf.token_generator
 
+  # request_stack:
+  #   class: Symfony\Component\HttpFoundation\RequestStack
+  #   calls:
+  #     - method: push
+  #       arguments:
+  #         - '@request'
+  # TODO : la request_stack est appelée mais le push n'est pas fait
   security.csrf.token_storage:
     class: Symfony\Component\Security\Csrf\TokenStorage\SessionTokenStorage
     arguments:

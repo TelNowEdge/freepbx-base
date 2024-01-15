@@ -28,7 +28,6 @@ class BaseExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
@@ -49,6 +48,10 @@ class BaseExtension extends Extension
             ;
 
         $loader->load('services.yml');
+        //TODO : appelé modfagi
+        // var_dump('session',$loader->load('session.yml'));
+        // die('fpbx load service');
+
     }
 
     private function registerSessionConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
