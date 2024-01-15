@@ -18,7 +18,10 @@
 
 namespace TelNowEdge\FreePBX\Base\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+//TODO : deprecated
+//use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
+
 
 class GuiHookEvent extends Event
 {
