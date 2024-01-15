@@ -6,6 +6,10 @@ services:
 
   request_stack:
     class: Symfony\Component\HttpFoundation\RequestStack
+    calls:
+      - method: push
+        arguments:
+          - '@request'
 
   request:
     class: Symfony\Component\HttpFoundation\Request
