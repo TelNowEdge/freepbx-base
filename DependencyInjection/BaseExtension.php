@@ -48,10 +48,6 @@ class BaseExtension extends Extension
             ;
 
         $loader->load('services.yml');
-        //TODO : appelé modfagi
-        // var_dump('session',$loader->load('session.yml'));
-        // die('fpbx load service');
-
     }
 
     private function registerSessionConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
