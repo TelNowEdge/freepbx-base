@@ -21,13 +21,15 @@ namespace TelNowEdge\FreePBX\Base\Serializer\Normalizer;
 use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Mapping\Loader\AttributeLoader;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class ObjectNormalizerFactory
 {
-    public function getObjectNormalizer(Reader $reader)
+    public function getObjectNormalizer(Reader $reader): ObjectNormalizer
     {
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader($reader));
+        // TODO AnnotationLoader.php is deprecated, use AttributeLoader instead
+        $classMetadataFactory = new ClassMetadataFactory(new AttributeLoader($reader));
         $normalizer = new ObjectNormalizer($classMetadataFactory);
         // $normalizer->setCircularReferenceHandler(function ($object) {
         //     return $object->getId();
