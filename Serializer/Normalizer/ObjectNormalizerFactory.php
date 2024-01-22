@@ -30,11 +30,10 @@ class ObjectNormalizerFactory
     {
         // TODO AnnotationLoader.php is deprecated, use AttributeLoader instead
         $classMetadataFactory = new ClassMetadataFactory(new AttributeLoader($reader));
-        $normalizer = new ObjectNormalizer($classMetadataFactory);
         // $normalizer->setCircularReferenceHandler(function ($object) {
         //     return $object->getId();
         // });
 
-        return $normalizer;
+        return new ObjectNormalizer($classMetadataFactory);
     }
 }
