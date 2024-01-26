@@ -33,7 +33,7 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
         $this->container = $container;
     }
 
-    public function validate($obj, Constraint $constraint)
+    public function validate($value, Constraint $constraint)
     {
         if (false === $this->container->has($constraint->service[0])) {
             $this->context
@@ -55,7 +55,7 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
                 ;
         }
 
-        $reflModel = new \ReflectionClass($obj);
+        $reflModel = new \ReflectionClass($value);
 
         if (false === $reflModel->hasMethod(sprintf('get%s', ucfirst($constraint->field)))) {
             $this->context
@@ -67,7 +67,7 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
 
         $method = $reflector->getMethod($constraint->service[1]);
         $fieldMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($constraint->field)));
-        $fieldValue = $fieldMethod->invoke($obj);
+        $fieldValue = $fieldMethod->invoke($value);
 
         if (true === \is_object($fieldValue)) {
             $fieldValue = $fieldValue->getId();
@@ -86,7 +86,7 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
         }
 
         // Update mode
-        if ($obj->getId() === $res->getId()) {
+        if ($value->getId() === $res->getId()) {
             return;
         }
 

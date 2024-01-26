@@ -32,7 +32,7 @@ class DependsValidator extends ConstraintValidator implements ContainerAwareInte
         $this->container = $container;
     }
 
-    public function validate($obj, Constraint $constraint)
+    public function validate($value, Constraint $constraint)
     {
         if (false === $this->container->has($constraint->service[0])) {
             $this->context
@@ -54,7 +54,7 @@ class DependsValidator extends ConstraintValidator implements ContainerAwareInte
                 ;
         }
 
-        $reflModel = new \ReflectionClass($obj);
+        $reflModel = new \ReflectionClass($value);
         if (false === $reflModel->hasMethod(sprintf('get%s', ucfirst($constraint->field)))
         || false === $reflModel->hasMethod(sprintf('get%s', ucfirst($constraint->depends)))
         ) {
@@ -69,13 +69,13 @@ class DependsValidator extends ConstraintValidator implements ContainerAwareInte
         $dependsMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($constraint->depends)));
         $fieldMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($constraint->field)));
 
-        $field = $fieldMethod->invoke($obj);
+        $field = $fieldMethod->invoke($value);
 
         if (true === \is_object($field)) {
             $field = $field->getId();
         }
 
-        if (false === \in_array($field, $method->invoke($service, $dependsMethod->invoke($obj)), true)) {
+        if (false === \in_array($field, $method->invoke($service, $dependsMethod->invoke($value)), true)) {
             $this->context
                 ->buildViolation($constraint->message)
                 ->atPath($constraint->field)

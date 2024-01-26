@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
 
-class ValidExtensionValidator extends ConstraintValidator implements ContainerAwareInterface
+class ValidExtensionValidator extends ConstraintValidator
 {
     private $container;
 
@@ -33,7 +33,7 @@ class ValidExtensionValidator extends ConstraintValidator implements ContainerAw
         $this->container = $container;
     }
 
-    public function validate($obj, Constraint $constraint)
+    public function validate($value, Constraint $constraint)
     {
         if (false === $this->container->has($constraint->service[0])) {
             $this->context
@@ -55,7 +55,7 @@ class ValidExtensionValidator extends ConstraintValidator implements ContainerAw
                 ;
         }
 
-        $reflModel = new \ReflectionClass($obj);
+        $reflModel = new \ReflectionClass($value);
 
         if (false === $reflModel->hasMethod(sprintf('get%s', ucfirst($constraint->field)))) {
             $this->context
@@ -67,12 +67,12 @@ class ValidExtensionValidator extends ConstraintValidator implements ContainerAw
 
         $method = $reflector->getMethod($constraint->service[1]);
         $fieldMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($constraint->field)));
-        $fieldValue = $fieldMethod->invoke($obj);
+        $fieldValue = $fieldMethod->invoke($value);
 
         try {
             $res = $method->invoke($service, $fieldValue);
 
-            if ($obj->getId() === $res->getId()) {
+            if ($value->getId() === $res->getId()) {
                 return;
             }
         } catch (NoResultException $e) {

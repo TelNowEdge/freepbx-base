@@ -30,6 +30,12 @@ use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder as BaseContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass;
+use Symfony\Component\Form\DependencyInjection\FormPass;
+use Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass;
+use TelNowEdge\FreePBX\Base\DependencyInjection\Compiler\ControllerPass;
+use TelNowEdgeCachedContainer;
+use function count;
 
 class ContainerBuilderFactory
 {
@@ -52,7 +58,7 @@ class ContainerBuilderFactory
         return static::$instance->container;
     }
 
-    public static function dropCache()
+    public static function dropCache(): bool
     {
         // $file = sprintf('%s/../../../../../../assets/cache/container.php', __DIR__);
 
@@ -65,7 +71,7 @@ class ContainerBuilderFactory
         return unlink($file);
     }
 
-    private static function autoloadTelNowEdgeModule()
+    private static function autoloadTelNowEdgeModule(): void
     {
         // SearchHelper: TelNowEdge\Module
         // Autoload to add my own NS starting by TelNowEdge\Module
@@ -81,7 +87,7 @@ class ContainerBuilderFactory
         });
     }
 
-    private static function startContainer($debug, $disabledCache)
+    private static function startContainer($debug, $disabledCache): BaseContainerBuilder|TelNowEdgeCachedContainer
     {
         $action = false === isset($_GET['action']) ? null : $_GET['action'];
         $forceLoading = false;
@@ -102,7 +108,7 @@ class ContainerBuilderFactory
          * So disable filter "by active" else I can't load module NS to install it.
          */
         if (
-            (\PHP_SAPI === 'cli' && 0 !== \count(array_intersect(array('ma', 'moduleadmin'), $argv)))
+            (\PHP_SAPI === 'cli' && 0 !== count(array_intersect(array('ma', 'moduleadmin'), $argv)))
             || ('modules' === $display && 'process' === $action)
         ) {
             if (true === file_exists($containerConfigCache->getPath())) {
@@ -128,22 +134,22 @@ class ContainerBuilderFactory
 
             $container
                 ->addCompilerPass(
-                    new \Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass(),
+                    new AddConstraintValidatorsPass(),
                     PassConfig::TYPE_BEFORE_OPTIMIZATION,
                     0
                 )
                 ->addCompilerPass(
-                    new \Symfony\Component\Form\DependencyInjection\FormPass(),
+                    new FormPass(),
                     PassConfig::TYPE_BEFORE_OPTIMIZATION,
                     0
                 )
                 ->addCompilerPass(
-                    new \TelNowEdge\FreePBX\Base\DependencyInjection\Compiler\ControllerPass(),
+                    new ControllerPass(),
                     PassConfig::TYPE_BEFORE_OPTIMIZATION,
                     0
                 )
                 ->addCompilerPass(
-                    new \Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass(),
+                    new RegisterListenersPass(),
                     PassConfig::TYPE_BEFORE_OPTIMIZATION,
                     0
                 )
@@ -164,12 +170,12 @@ class ContainerBuilderFactory
 
         require $file;
 
-        return new \TelNowEdgeCachedContainer();
+        return new TelNowEdgeCachedContainer();
     }
 
-    private static function registerSelf(BaseContainerBuilder $container)
+    private static function registerSelf(BaseContainerBuilder $container): void
     {
-        $c = new \TelNowEdge\FreePBX\Base\DependencyInjection\BaseExtension();
+        $c = new BaseExtension();
 
         $container->registerExtension($c);
         $container->loadFromExtension($c->getAlias());

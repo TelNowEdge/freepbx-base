@@ -19,50 +19,51 @@
 namespace TelNowEdge\FreePBX\Base\Form\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use TelNowEdge\FreePBX\Base\Helper\DestinationHelper;
 use TelNowEdge\FreePBX\Base\Validator\Constraints as TNEAssert;
-
-/**
- * @TNEAssert\Depends(
- *   field = "destination",
- *   depends = "category",
- *   service = {"TelNowEdge\FreePBX\Base\Helper\DestinationHelper", "getFlatDestinationsByCategory"}
- * )
- */
+///**
+// * @TNEAssert\Depends(
+// *   field = "destination",
+// *   depends = "category",
+// *   service = {"TelNowEdge\FreePBX\Base\Helper\DestinationHelper", "getFlatDestinationsByCategory"}
+// * )
+// */
+#[TNEAssert\Depends(
+    field : "destination",
+    depends : "category",
+    service : ["TelNowEdge\FreePBX\Base\Helper\DestinationHelper", "getFlatDestinationsByCategory"]
+)]
 class Destination
 {
-    /**
-     * @Assert\NotNull()
-     */
-    protected $category;
+    #[Assert\NotNull]
+    protected string $category;
 
-    /**
-     * @Assert\NotNull()
-     */
-    protected $destination;
+    #[Assert\NotNull]
+    protected string $destination;
 
     public function __toString()
     {
         return $this->destination;
     }
 
-    public function getDestination()
+    public function getDestination(): string
     {
         return $this->destination;
     }
 
-    public function setDestination($destination)
+    public function setDestination(string $destination): static
     {
         $this->destination = $destination;
 
         return $this;
     }
 
-    public function getCategory()
+    public function getCategory(): string
     {
         return $this->category;
     }
 
-    public function setCategory($category)
+    public function setCategory(string $category): static
     {
         $this->category = $category;
 
