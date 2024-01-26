@@ -18,19 +18,33 @@
 
 namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
+use Attribute;
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- */
+#[Attribute]
 class Depends extends Constraint
 {
-    public $field;
-    public $depends;
-    public $service;
-    public $message = 'The value you selected is not a valid choice.';
+    public string $field;
+    public string $depends;
+    public array $service;
+    public string $message = 'The value you selected is not a valid choice.';
 
-    public function getRequiredOptions()
+    public function __construct(
+        string $field,
+        string $depends,
+        array $service,
+        string $message = null,
+        array $groups = null,
+        mixed $payload = null,
+        array $options = [],
+    )
+    {
+        $options = array_merge(['field' => $field], ['depends' => $depends], ['service' => $service], $options);
+
+        parent::__construct($options,$groups,$payload);
+
+    }
+    public function getDefaultOption(): array
     {
         return array(
             'field',
@@ -39,7 +53,16 @@ class Depends extends Constraint
         );
     }
 
-    public function getTargets()
+    public function getRequiredOptions(): array
+    {
+        return array(
+            'field',
+            'depends',
+            'service',
+        );
+    }
+
+    public function getTargets(): array|string
     {
         return self::CLASS_CONSTRAINT;
     }
