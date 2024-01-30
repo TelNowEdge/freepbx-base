@@ -22,18 +22,26 @@ use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Mapping\Loader\AttributeLoader;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class ObjectNormalizerFactory
 {
-    public function getObjectNormalizer(Reader $reader): ObjectNormalizer
+    public function getObjectNormalizer(): ObjectNormalizer
     {
         // TODO AnnotationLoader.php is deprecated, use AttributeLoader instead
-        $classMetadataFactory = new ClassMetadataFactory(new AttributeLoader($reader));
+        // AttributeLoader : reader in constructor is deprecated. In future version, it's not in.
+        $classMetadataFactory = new ClassMetadataFactory(new AttributeLoader());
+        // Handle circular reference
+        $defaultContext = [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function (object $object, ?string $format, array $context): string {
+                return $object->getId();
+            },
+        ];
         // $normalizer->setCircularReferenceHandler(function ($object) {
         //     return $object->getId();
         // });
 
-        return new ObjectNormalizer($classMetadataFactory);
+        return new ObjectNormalizer($classMetadataFactory,null, null, null, null, null, $defaultContext);
     }
 }
