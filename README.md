@@ -3,11 +3,11 @@
 ## Version
 
 * 2018/05/23 <1.0>: Stable release
-  * Container caching
-  * Template caching
-  * Form helper to append Destination block on form
-  * Helper to send UserEvent
-  * New Verb forn asterisk dialplan
+    * Container caching
+    * Template caching
+    * Form helper to append Destination block on form
+    * Helper to send UserEvent
+    * New Verb forn asterisk dialplan
 
 - 2017/11/28 <0.1>: First available working version
 
@@ -15,7 +15,8 @@
 
 ### Dependencies requirements
 
-Currently FreePBX® come with a [symfony/property-access:3.4.19](https://github.com/symfony/property-access) on this version a major bug is known [#29340](https://github.com/symfony/symfony/issues/29340).
+Currently FreePBX® come with a [symfony/property-access:3.4.19](https://github.com/symfony/property-access) on this
+version a major bug is known [#29340](https://github.com/symfony/symfony/issues/29340).
 So, to install this module you must update your packages.
 
 ```bash
@@ -24,7 +25,6 @@ composer update
 ```
 
 ### With `composer require`
-
 
 ```bash
 cd /var/www/admin/libraries/Composer/composer.json
@@ -65,19 +65,23 @@ All cached files was written on `rootFreePBX`/assets/cache/. Please take care wi
 
 ## Overview
 
-This FreepbxBase *bundle* provide an easy way to write FreePBX® modules like an MVC project. He works alone without any modification of FreePBX® core files except composer.json.
+This FreepbxBase *bundle* provide an easy way to write FreePBX® modules like an MVC project. He works alone without any
+modification of FreePBX® core files except composer.json.
 
 FreepbxBase *bundle* use Symfony® components to improve security, accessibility and support.
 
 It register its own namespace to give access on the different components through several helpers.
 
-FreepbxBase *bundle* introduce in FreePBX® the **Dependency Injection** concept with the Symfony® component. This component is very useful to prevent any `singleton` and share easily your object through your own code.
+FreepbxBase *bundle* introduce in FreePBX® the **Dependency Injection** concept with the Symfony® component. This
+component is very useful to prevent any `singleton` and share easily your object through your own code.
 
-FreepbxBase *bundle* provide too the Symfony® **Form** component to validate your form on the server side before to save it on your sql storage.
+FreepbxBase *bundle* provide too the Symfony® **Form** component to validate your form on the server side before to save
+it on your sql storage.
 
 Before start using it, you need to understand namespace and the Symfony base development concepts.
 
 ## Acme example module
+
 * [Modfagi](https://github.com/TelNowEdge/modfagi)
 * [TimeCondition](https://github.com/TelNowEdge/tnetc)
 
@@ -178,7 +182,8 @@ To check the `coding standard` please include on your module GrumPHP.
 
 ### Start a new FreePBX® module
 
-Start a new FreePBX® module like FreePBX® [practices](https://wiki.freepbx.org/display/FOP/FreePBX+Development) and change only the `extends` class to `TelNowEdge\FreePBX\Base\Module\Module`.
+Start a new FreePBX® module like FreePBX® [practices](https://wiki.freepbx.org/display/FOP/FreePBX+Development) and
+change only the `extends` class to `TelNowEdge\FreePBX\Base\Module\Module`.
 
 ```php
 <?php
@@ -193,12 +198,15 @@ class Foo extends Module implements \BMO
 }
 ```
 
-This extends start and bridge all Symfony® components and register a new namespace. Now you can use a PSR4 namespace inside your module.
+This extends start and bridge all Symfony® components and register a new namespace. Now you can use a PSR4 namespace
+inside your module.
 
-The new register namespace is `\TelNowEdge\Module`. He is registered with `./modules` base directory. So now you can use `\TelNowEdge\Module\foo` namespace.
+The new register namespace is `\TelNowEdge\Module`. He is registered with `./modules` base directory. So now you can
+use `\TelNowEdge\Module\foo` namespace.
 
 **Note:**
-> Take care with the case of your module name. Your class can be Foo.class.php but the folder is ./modules/foo. So the namespace is \TelNowEdge\Module\foo.
+> Take care with the case of your module name. Your class can be Foo.class.php but the folder is ./modules/foo. So the
+> namespace is \TelNowEdge\Module\foo.
 
 ### Use FreePBX® class like an entry point
 
@@ -306,7 +314,7 @@ mixed function get(string $service);
 
 1. [render()](https://symfony.com/doc/current/quick_tour/the_view.html)
 
-    Render return the compile html from the template. Append on FreePBX® with the FreePBX® practices.
+   Render return the compile html from the template. Append on FreePBX® with the FreePBX® practices.
 
     ```php
     $html = $this->render('foo.html.twig', array(
@@ -328,7 +336,6 @@ mixed function get(string $service);
 `Model` is the Database representation. This class must not extends anything.
 
 On each properties, you can add a validator.
-
 
 ```php
 <?php
@@ -393,14 +400,14 @@ Model objectFromArray(string $modelClass, array $sqlToArrayRes);
 1. sqlToArray()
    Transform sql results set to an array for `objectFromArray()`
 
-    `sqlToArray()` need a formatted input.
+   `sqlToArray()` need a formatted input.
 
     ```sql
     SELECT t.id t__id, t.name t__name, t.long_name t__long_name, t2.id t2__id
     FROM table t INNER JOIN table2 t2 ON (t2.id = t1.id)
     ```
 
-    `sqlToArray()` return an associative array like:
+   `sqlToArray()` return an associative array like:
 
     ```php
     array(
@@ -409,8 +416,8 @@ Model objectFromArray(string $modelClass, array $sqlToArrayRes);
     )
     ```
 
-    **Note:**
-    > The __ was remove to create table key and _ was camel case.
+   **Note:**
+   > The __ was remove to create table key and _ was camel case.
 
 1. objectFromArray()
    Map the `sqlToArray()` to the model. On each properties, he try to call the setter.
