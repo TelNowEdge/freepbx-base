@@ -18,18 +18,55 @@
 
 namespace TelNowEdge\FreePBX\Base\Controller;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Service\Attribute\Required;
 
 // TODO : ContainerAwareInterface deprecated
-abstract class AbstractController implements ContainerAwareInterface, ControllerInterface
+abstract class AbstractController implements ControllerInterface
 {
-    use ControllerTrait;
+    protected ContainerInterface $container;
+    protected Request $request;
 
-    protected $container;
-
-    public function setContainer(ContainerInterface $container = null)
+    // SYMFONY CODE SOURCE 6.4
+    #[Required]
+    public function setContainer(ContainerInterface $container = null): ?ContainerInterface
     {
+        $previous = $this->container ?? null;
         $this->container = $container;
+
+        return $previous;
+    }
+
+    // Controller Interface
+    public function setRequest(Request $request): void
+    {
+        $this->request = $request;
+    }
+
+    /**
+     * Creates and returns a Form instance from the type of the form.
+     */
+    protected function createForm(string $type, mixed $data = null, array $options = []): FormInterface
+    {
+        return $this->container->get('form_factory')->create($type, $data, $options);
+    }
+
+    /**
+     * Creates and returns a form builder instance.
+     */
+    protected function createFormBuilder(mixed $data = null, array $options = []): FormBuilderInterface
+    {
+        return $this->container->get('form_factory')->createBuilder(FormType::class, $data, $options);
+    }
+
+    protected function render($template, $data = [])
+    {
+        $nsTemplate = sprintf('@%s/%s', static::getViewsNamespace(), $template);
+
+        return $this->container->get('twig')->render($nsTemplate, $data);
     }
 }

@@ -19,12 +19,15 @@
 namespace TelNowEdge\FreePBX\Base\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 interface ControllerInterface
 {
-    public function setContainer(ContainerInterface $container = null);
-
     public static function getViewsDir();
 
     public static function getViewsNamespace();
+
+    public function setContainer(ContainerInterface $container = null);
+
+    public function setRequest(Request $request);
 }
