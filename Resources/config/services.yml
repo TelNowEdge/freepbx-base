@@ -5,7 +5,7 @@ services:
     public: true
 
 
-
+  # Asterisk *************************************************************
   TelNowEdge\FreePBX\Base\Manager\AsteriskManagerFactory: ~
 
   AsteriskManager:
@@ -16,6 +16,7 @@ services:
     arguments:
       - 'mysql:host=localhost;dbname=asterisk;charset=utf8'
 
+  # Repositories *************************************************************
   TelNowEdge\FreePBX\Base\Repository\AbstractRepository:
     abstract: true
     calls:
@@ -53,6 +54,7 @@ services:
         arguments:
           - '@TelNowEdge\FreePBX\Base\Manager\AmpConfManager'
 
+  # DialPlans *************************************************************
   TelNowEdge\FreePBX\Base\DialPlan\Generator\AbstractGenerator:
     abstract: true
     calls:
@@ -67,6 +69,7 @@ services:
         arguments:
           - '@service_container'
 
+  #Handlers *************************************************************
   TelNowEdge\FreePBX\Base\Handler\AbstractDbHandler:
     abstract: true
     calls:
@@ -112,6 +115,7 @@ services:
         arguments:
           - '@event_dispatcher'
 
+  #Constraints ***************************************************
   TelNowEdge\FreePBX\Base\Validator\Constraints\ChoiceValidator:
     calls:
       - method: setContainer
@@ -147,6 +151,7 @@ services:
           - '@service_container'
     tags: [ validator.constraint_validator ]
 
+  # Migrations *************************************************************
   TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractMigration:
     abstract: true
     arguments:
@@ -175,6 +180,7 @@ services:
         arguments:
           - '@freepbx_application'
 
+  # Controller *************************************************************
   TelNowEdge\FreePBX\Base\Controller\AbstractController:
     abstract: true
     calls:
@@ -185,6 +191,7 @@ services:
         arguments:
           - '@request'
 
+  # Forms *************************************************************
   TelNowEdge\FreePBX\Base\Form\DestinationType:
     calls:
       - method: setContainer
@@ -201,8 +208,10 @@ services:
     tags:
       - "form.type"
 
+  # Helper *************************************************************
   TelNowEdge\FreePBX\Base\Helper\DestinationHelper: ~
 
+  # Managers *************************************************************
   TelNowEdge\FreePBX\Base\Manager\AmpConfManager: ~
 
   memcached_default_connection:
@@ -252,6 +261,7 @@ services:
         arguments:
           - '@AsteriskManager'
 
+  # Consoles *************************************************************
   TelNowEdge\FreePBX\Base\Console\ApplicationFactory:
     calls:
       - method: setContainer
