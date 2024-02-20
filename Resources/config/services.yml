@@ -1,8 +1,10 @@
 services:
   _defaults:
     autowire: true
-    autoconfigure: false
+    autoconfigure: true
     public: true
+
+
 
   TelNowEdge\FreePBX\Base\Manager\AsteriskManagerFactory: ~
 
@@ -115,35 +117,35 @@ services:
       - method: setContainer
         arguments:
           - '@service_container'
-    tags: [validator.constraint_validator]
+    tags: [ validator.constraint_validator ]
 
   TelNowEdge\FreePBX\Base\Validator\Constraints\DependsValidator:
     calls:
       - method: setContainer
         arguments:
           - '@service_container'
-    tags: [validator.constraint_validator]
+    tags: [ validator.constraint_validator ]
 
   TelNowEdge\FreePBX\Base\Validator\Constraints\UniqueIdValidator:
     calls:
       - method: setContainer
         arguments:
           - '@service_container'
-    tags: [validator.constraint_validator]
+    tags: [ validator.constraint_validator ]
 
   TelNowEdge\FreePBX\Base\Validator\Constraints\CompoundUniqueValidator:
     calls:
       - method: setContainer
         arguments:
           - '@service_container'
-    tags: [validator.constraint_validator]
+    tags: [ validator.constraint_validator ]
 
   TelNowEdge\FreePBX\Base\Validator\Constraints\ValidExtensionValidator:
     calls:
       - method: setContainer
         arguments:
           - '@service_container'
-    tags: [validator.constraint_validator]
+    tags: [ validator.constraint_validator ]
 
   TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractMigration:
     abstract: true
@@ -179,6 +181,9 @@ services:
       - method: setContainer
         arguments:
           - '@service_container'
+      - method: setRequest
+        arguments:
+          - '@request'
 
   TelNowEdge\FreePBX\Base\Form\DestinationType:
     calls:
