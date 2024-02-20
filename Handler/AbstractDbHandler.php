@@ -19,6 +19,7 @@
 namespace TelNowEdge\FreePBX\Base\Handler;
 
 use Doctrine\DBAL\Connection;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 abstract class AbstractDbHandler
 {
@@ -43,7 +44,8 @@ abstract class AbstractDbHandler
         Connection $connection,
         Connection $cdrConnection,
         Connection $addonsConnection
-    ) {
+    )
+    {
         $this->addonsConnection = $addonsConnection;
         $this->cdrConnection = $cdrConnection;
         $this->connection = $connection;
@@ -51,7 +53,7 @@ abstract class AbstractDbHandler
         return $this;
     }
 
-    public function setEventDispatcher(\Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher)
+    public function setEventDispatcher(EventDispatcher $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
     }

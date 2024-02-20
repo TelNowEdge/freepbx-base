@@ -18,9 +18,15 @@
 
 namespace TelNowEdge\FreePBX\Base\Template;
 
+use ReflectionClass;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Bridge\Twig\Form\TwigRendererEngine;
 use Symfony\Component\Form\FormRenderer;
+use Symfony\Component\Security\Csrf\CsrfTokenManager;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use Twig\RuntimeLoader\FactoryRuntimeLoader;
+use Twig\TwigFilter;
 
 class TemplateEngine implements TemplateEngineInterface
 {
@@ -29,38 +35,37 @@ class TemplateEngine implements TemplateEngineInterface
      */
     private $twig;
 
-    public function __construct(\Symfony\Component\Security\Csrf\CsrfTokenManager $csrfManager)
+    public function __construct(CsrfTokenManager $csrfManager)
     {
         $defaultFormTheme = 'freepbx_layout_page.html.twig';
 
-        $appVariableReflection = new \ReflectionClass('\Symfony\Bridge\Twig\AppVariable');
+        $appVariableReflection = new ReflectionClass('\Symfony\Bridge\Twig\AppVariable');
         $vendorTwigBridgeDir = dirname($appVariableReflection->getFileName());
 
-        $twig = new \Twig\Environment(new \Twig\Loader\FilesystemLoader(array(
-            $vendorTwigBridgeDir.'/Resources/views/Form',
-            __DIR__.'/../Resources/views/Form',
-        )), array(
-            // 'cache' => sprintf('%s/../../../../../../assets/cache/twig/', __DIR__),
-        ));
+        $twig = new Environment(new FilesystemLoader([
+            $vendorTwigBridgeDir . '/Resources/views/Form',
+            __DIR__ . '/../Resources/views/Form',
+        ]), [// 'cache' => sprintf('%s/../../../../../../assets/cache/twig/', __DIR__),
+        ]);
 
-        $twig->getLoader()->addPath(__DIR__.'/../Resources/views', 'telnowedge');
+        $twig->getLoader()->addPath(__DIR__ . '/../Resources/views', 'telnowedge');
 
-        $formEngine = new TwigRendererEngine(array($defaultFormTheme), $twig);
+        $formEngine = new TwigRendererEngine([$defaultFormTheme], $twig);
 
-        $twig->addRuntimeLoader(new \Twig\RuntimeLoader\FactoryRuntimeLoader(array(
+        $twig->addRuntimeLoader(new FactoryRuntimeLoader([
             FormRenderer::class => function () use ($formEngine, $csrfManager) {
                 return new FormRenderer($formEngine, $csrfManager);
             },
-        )));
+        ]));
 
         $twig->addExtension(new FormExtension());
 
-        $filter = new \Twig\TwigFilter('fpbxtrans', function ($string) {
+        $filter = new TwigFilter('fpbxtrans', function ($string) {
             return _($string);
         });
         $twig->addFilter($filter);
 
-        $filter = new \Twig\TwigFilter('trans', function ($string) {
+        $filter = new TwigFilter('trans', function ($string) {
             return _($string);
         });
         $twig->addFilter($filter);
@@ -68,7 +73,7 @@ class TemplateEngine implements TemplateEngineInterface
         $this->twig = $twig;
     }
 
-    public function addRegisterPath($path, $namespace = \Twig\Loader\FilesystemLoader::MAIN_NAMESPACE)
+    public function addRegisterPath($path, $namespace = FilesystemLoader::MAIN_NAMESPACE): static
     {
         if (true === empty($path) || true === empty($namespace)) {
             return $this;
@@ -85,7 +90,7 @@ class TemplateEngine implements TemplateEngineInterface
         return $this;
     }
 
-    public function setRegisterPaths(array $paths, $namespace = \Twig\Loader\FilesystemLoader::MAIN_NAMESPACE)
+    public function setRegisterPaths(array $paths, $namespace = FilesystemLoader::MAIN_NAMESPACE)
     {
         $this->twig->getLoader()->setPaths($paths, $namespace);
 

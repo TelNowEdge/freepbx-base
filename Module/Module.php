@@ -18,9 +18,10 @@
 
 namespace TelNowEdge\FreePBX\Base\Module;
 
+use FreePBX_Helpers;
 use TelNowEdge\FreePBX\Base\DependencyInjection\ContainerBuilderFactory;
 
-abstract class Module extends \FreePBX_Helpers
+abstract class Module extends FreePBX_Helpers
 {
     use ModuleTrait;
 
