@@ -1,3 +1,11 @@
+#parameters:
+#  base_validator_classes:
+#    - ChoiceValidator
+#    - DependsValidator
+#    - UniqueIdValidator
+#    - CompoundUniqueValidator
+#    - ValidExtensionValidator
+
 services:
   _defaults:
     autowire: true
@@ -116,6 +124,15 @@ services:
           - '@event_dispatcher'
 
   #Constraints ***************************************************
+
+  #  validators:
+  #    class: TelNowEdge\FreePBX\Base\Validator\Constraints\{base_validator_classes}
+  #    calls:
+  #      - method: setContainer
+  #        arguments:
+  #          - '@service_container'
+  #    tags: [ validator.constraint_validator ]
+
   TelNowEdge\FreePBX\Base\Validator\Constraints\ChoiceValidator:
     calls:
       - method: setContainer
@@ -165,16 +182,10 @@ services:
   TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractSqlMigration:
     abstract: true
     parent: TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractMigration
-    autowire: true
-    autoconfigure: false
-    public: true
 
   TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractPhpMigration:
     abstract: true
     parent: TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractMigration
-    autowire: true
-    autoconfigure: false
-    public: true
     calls:
       - method: setApplication
         arguments:
@@ -231,35 +242,49 @@ services:
         arguments:
           - '@TelNowEdge\FreePBX\Base\Manager\HintManager'
 
-  TelNowEdge\FreePBX\Base\Manager\UserEventManager:
-    calls:
-      - method: setConnection
-        arguments:
-          - '@AsteriskManager'
+  # Managers Auto-Registering *************************************************************
 
-  TelNowEdge\FreePBX\Base\Manager\HintManager:
+  TelNowEdge\FreePBX\Base\Manager\:
+    resource: '../../Manager/'
     calls:
       - method: setConnection
         arguments:
           - '@AsteriskManager'
+    exclude:
+      - '../../Manager/AmpConfManager.php'
+      - '../../Manager/AsteriskManagerFactory.php'
+      - '../../Manager/ManagerFactory.php'
+      - '../../Manager/MemcachedFactory.php'
 
-  TelNowEdge\FreePBX\Base\Manager\SipNotifyManager:
-    calls:
-      - method: setConnection
-        arguments:
-          - '@AsteriskManager'
-
-  TelNowEdge\FreePBX\Base\Manager\DevStateManager:
-    calls:
-      - method: setConnection
-        arguments:
-          - '@AsteriskManager'
-
-  TelNowEdge\FreePBX\Base\Manager\SendRequestManager:
-    calls:
-      - method: setConnection
-        arguments:
-          - '@AsteriskManager'
+  #  TelNowEdge\FreePBX\Base\Manager\UserEventManager:
+  #    calls:
+  #      - method: setConnection
+  #        arguments:
+  #          - '@AsteriskManager'
+  #
+  #  TelNowEdge\FreePBX\Base\Manager\HintManager:
+  #    calls:
+  #      - method: setConnection
+  #        arguments:
+  #          - '@AsteriskManager'
+  #
+  #  TelNowEdge\FreePBX\Base\Manager\SipNotifyManager:
+  #    calls:
+  #      - method: setConnection
+  #        arguments:
+  #          - '@AsteriskManager'
+  #
+  #  TelNowEdge\FreePBX\Base\Manager\DevStateManager:
+  #    calls:
+  #      - method: setConnection
+  #        arguments:
+  #          - '@AsteriskManager'
+  #
+  #  TelNowEdge\FreePBX\Base\Manager\SendRequestManager:
+  #    calls:
+  #      - method: setConnection
+  #        arguments:
+  #          - '@AsteriskManager'
 
   # Consoles *************************************************************
   TelNowEdge\FreePBX\Base\Console\ApplicationFactory:
@@ -271,3 +296,36 @@ services:
   freepbx_application:
     class: Symfony\Component\Console\Application
     factory: [ '@TelNowEdge\FreePBX\Base\Console\ApplicationFactory', 'createApplication' ]
+
+  # Globals *************************************************************
+  controllers:
+    namespace: TelNowEdge\Module\
+    resource: '/../../../var/www/admin/modules/*/Controller/'
+    parent: TelNowEdge\FreePBX\Base\Controller\AbstractController
+    tags:
+      - "telnowedge.controller"
+
+  repositories:
+    namespace: TelNowEdge\Module\
+    resource: '/../../../var/www/admin/modules/*/Repository/'
+    parent: TelNowEdge\FreePBX\Base\Repository\AbstractRepository
+
+  handlers:
+    namespace: TelNowEdge\Module\
+    resource: '/../../../var/www/admin/modules/*/Handler/'
+    parent: TelNowEdge\FreePBX\Base\Handler\AbstractDbHandler
+
+  managers:
+    namespace: TelNowEdge\Module\
+    resource: '/../../../var/www/admin/modules/*/Manager/'
+
+  migrations:
+    namespace: TelNowEdge\Module\
+    resource: '/../../../var/www/admin/modules/*/Resources/Migrations/'
+    parent: TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractSqlMigration
+
+  event_subscriber:
+    namespace: TelNowEdge\Module\
+    resource: '/../../../var/www/admin/modules/*/EventSubscriber/'
+    tags:
+      - "kernel.event_subscriber"
