@@ -19,6 +19,7 @@
 namespace TelNowEdge\FreePBX\Base\Builder;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Exception;
 use TelNowEdge\FreePBX\Base\Manager\UserEventManager;
 
 class UserEventBuilder
@@ -80,20 +81,23 @@ class UserEventBuilder
         return $this->values;
     }
 
-    public function setValues($values)
+    public function setValues($values): static
     {
         $this->values = new ArrayCollection($values);
 
         return $this;
     }
 
-    public function addValue($key, $val)
+    public function addValue($key, $val): static
     {
         $this->values->set($key, $val);
 
         return $this;
     }
 
+    /**
+     * @throws Exception
+     */
     public function emit(): true
     {
         return $this->userEventManager

@@ -80,9 +80,9 @@ abstract class AbstractLdapRepository
         return $this->ampConfManager->get('TNE_LDAP_SCHEMA_SHARE');
     }
 
-    protected function ldapToArray(Entry $entry)
+    protected function ldapToArray(Entry $entry): array
     {
-        $out = array();
+        $out = [];
 
         foreach ($entry->getAttributes() as $ldapField => $attribute) {
             $mapping = $this->getMapping($ldapField);

@@ -33,15 +33,18 @@ class HintManager
         $this->connection = $connection;
     }
 
-    public function create($name, $exten): true
+    /**
+     * @throws Exception
+     */
+    public function create(string $name, $exten): true
     {
-        $command = array(
+        $command = [
             'Command' => sprintf(
                 'dialplan add extension %s,hint,%s into ext-tnedyn-hint replace',
                 $exten,
                 sprintf('Custom:%s', $name)
             ),
-        );
+        ];
 
         try {
             $this->connection
@@ -56,7 +59,7 @@ class HintManager
     /**
      * @throws Exception
      */
-    public function update($name, $status): true
+    public function update(string $name, $status): true
     {
         $command = array(
             'Command' => sprintf('dialplan set global DEVICE_STATE(Custom:%s) %s', $name, $status),

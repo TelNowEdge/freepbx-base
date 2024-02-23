@@ -44,7 +44,7 @@ abstract class AbstractDbHandler
         Connection $connection,
         Connection $cdrConnection,
         Connection $addonsConnection
-    )
+    ): static
     {
         $this->addonsConnection = $addonsConnection;
         $this->cdrConnection = $cdrConnection;

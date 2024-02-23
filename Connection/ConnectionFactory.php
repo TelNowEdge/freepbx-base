@@ -19,6 +19,7 @@
 namespace TelNowEdge\FreePBX\Base\Connection;
 
 use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception;
 use Symfony\Component\Ldap\Ldap;
@@ -36,7 +37,7 @@ class ConnectionFactory
     /**
      * @throws Exception
      */
-    public function getDefaultConnection()
+    public function getDefaultConnection(): Connection
     {
         /**
          * Reinit Doctrine connection to inherit of Doctrine instead of FreePBX\DataBase.
@@ -66,7 +67,7 @@ class ConnectionFactory
     /**
      * @throws Exception
      */
-    public function getCdrConnection()
+    public function getCdrConnection(): Connection
     {
         /**
          * Reinit Doctrine connection to inherit of Doctrine instead of FreePBX\DataBase.
@@ -96,7 +97,7 @@ class ConnectionFactory
     /**
      * @throws Exception
      */
-    public function getAddonsConnection()
+    public function getAddonsConnection(): Connection
     {
         /**
          * Reinit Doctrine connection to inherit of Doctrine instead of FreePBX\DataBase.
@@ -144,7 +145,7 @@ class ConnectionFactory
     /**
      * @throws Exception
      */
-    public function getAsteriskConnection()
+    public function getAsteriskConnection(): Connection
     {
         $config = new Configuration();
         $connectionParams = array(

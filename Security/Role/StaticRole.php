@@ -26,7 +26,7 @@ class StaticRole
 {
     public static function getForForm(): array
     {
-        $out = array();
+        $out = [];
 
         foreach (self::getOrdered() as $i => $x) {
             $out[$x['name']] = $i;
@@ -37,27 +37,27 @@ class StaticRole
 
     public static function getOrdered(): array
     {
-        return array(
-            1 => array(
+        return [
+            1 => [
                 'role' => 'ROLE_EXPORT',
                 'name' => 'Export',
-            ),
-            2 => array(
+            ],
+            2 => [
                 'role' => 'ROLE_IMPORT',
                 'name' => 'Import',
-            ),
-            4 => array(
+            ],
+            4 => [
                 'role' => 'ROLE_MOBILE_APP',
                 'name' => 'Mobile application',
-            ),
-            8 => array(
+            ],
+            8 => [
                 'role' => 'ROLE_WEBSOFTKEY_ADMIN',
                 'name' => 'WebSoftKey administrator',
-            ),
-            16 => array(
+            ],
+            16 => [
                 'role' => 'ROLE_ADMIN',
                 'name' => 'API administrator',
-            ),
-        );
+            ],
+        ];
     }
 }

@@ -34,7 +34,7 @@ class RestApiClientFactory
         $this->ampConfManager = $ampConfManager;
     }
 
-    public function createClient($apiKey = null, $timeout = 15): Client
+    public function createClient($apiKey = null, int $timeout = 15): Client
     {
         $uri = 'https://localhost/api/v1/';
 

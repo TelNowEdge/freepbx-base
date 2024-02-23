@@ -35,12 +35,12 @@ class AmpConfManager
         }
     }
 
-    public function exists($param): bool
+    public function exists(string $param): bool
     {
         return !(null === $this->ampConf->get($param));
     }
 
-    public function get($param)
+    public function get(string $param)
     {
         return $this->ampConf->get($param);
     }

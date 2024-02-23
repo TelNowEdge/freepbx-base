@@ -87,10 +87,10 @@ class MigrationBuilder
                     $migrations->set($key, $sub);
                 }
 
-                $sub->add(array(
+                $sub->add([
                     'object' => $x,
                     'migration' => $method,
-                ));
+                ]);
             }
 
             return true;
@@ -133,10 +133,10 @@ class MigrationBuilder
                     $migrations->set($key, $sub);
                 }
 
-                $sub->add(array(
+                $sub->add([
                     'object' => $x,
                     'migration' => $method,
-                ));
+                ]);
             }
 
             return true;

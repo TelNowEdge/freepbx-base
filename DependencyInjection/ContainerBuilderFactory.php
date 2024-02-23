@@ -47,7 +47,7 @@ class ContainerBuilderFactory
 
     private $container;
 
-    public function __construct($debug = false, $disabledCache = false)
+    public function __construct(bool $debug = false, bool $disabledCache = false)
     {
         static::autoloadTelNowEdgeModule();
         $this->container = static::startContainer($debug, $disabledCache);
@@ -69,7 +69,7 @@ class ContainerBuilderFactory
         });
     }
 
-    private static function startContainer($debug, $disabledCache): BaseContainerBuilder|TelNowEdgeCachedContainer
+    private static function startContainer(bool $debug, bool $disabledCache): BaseContainerBuilder|TelNowEdgeCachedContainer
     {
         $action = false === isset($_GET['action']) ? null : $_GET['action'];
         $forceLoading = false;
@@ -163,7 +163,7 @@ class ContainerBuilderFactory
 
     private static function registerModule(
         BaseContainerBuilder $container,
-                             $forceLoading = false
+        bool                 $forceLoading = false
     ): void
     {
         $modules = FreePBX::Modules()->getActiveModules(true);
@@ -211,7 +211,7 @@ class ContainerBuilderFactory
         }
     }
 
-    public static function getInstance($debug = false, $disabledCache = false)
+    public static function getInstance(bool $debug = false, bool $disabledCache = false)
     {
         if (false === isset(static::$instance)) {
             static::$instance = new static($debug, $disabledCache);

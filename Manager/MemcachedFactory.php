@@ -38,11 +38,11 @@ class MemcachedFactory
 
     private function getConnection($connection): array
     {
-        $connections = array(
-            'default' => array(
+        $connections = [
+            'default' => [
                 'memcached://localhost:11211',
-            ),
-        );
+            ],
+        ];
 
         if (false === isset($connections[$connection])) {
             throw new InvalidArgumentException(sprintf('Unable to find connection: %s', $connection));

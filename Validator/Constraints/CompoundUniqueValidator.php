@@ -63,7 +63,7 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
                     return;
                 }
 
-                $errors = array();
+                $errors = [];
                 $i = 0;
 
                 foreach ($values as $key => $val) {
@@ -88,7 +88,7 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
      */
     public function getClassValues($class, Constraint $constraint): array
     {
-        $values = array();
+        $values = [];
         $reflector = new ReflectionClass($class);
 
         foreach ($constraint->fields as $field) {

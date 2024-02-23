@@ -29,14 +29,14 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
 {
     private ArrayCollection $collection;
 
-    private $choiceList;
+    private ArrayChoiceList $choiceList;
 
     public function __construct(ArrayCollection $collection)
     {
         $this->collection = $collection;
     }
 
-    public function loadChoicesForValues(array $values, $value = null): array
+    public function loadChoicesForValues(array $values, ?callable $value = null): array
     {
         if (true === empty($values)) {
             return array();
@@ -45,7 +45,7 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
         return $this->loadChoiceList($value)->getChoicesForValues($values);
     }
 
-    public function loadChoiceList($value = null): ChoiceListInterface
+    public function loadChoiceList(?callable $value = null): ChoiceListInterface
     {
         if (null !== $this->choiceList) {
             return $this->choiceList;
@@ -54,7 +54,7 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
         return $this->choiceList = new ArrayChoiceList($this->collection, $value);
     }
 
-    public function loadValuesForChoices(array $choices, $value = null): array
+    public function loadValuesForChoices(array $choices, ?callable $value = null): array
     {
         if (true === empty($choices)) {
             return array();

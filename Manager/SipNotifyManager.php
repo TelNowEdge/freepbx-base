@@ -33,7 +33,10 @@ class SipNotifyManager
         $this->connection = $connection;
     }
 
-    public function notify($event, $device, $tech = 'sip'): void
+    /**
+     * @throws Exception
+     */
+    public function notify($event, int $device, string $tech = 'sip'): void
     {
         $cmd = sprintf('sip notify %s %d', $event, (int)$device);
 

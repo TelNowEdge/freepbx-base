@@ -27,7 +27,7 @@ class Migration
 
     public $reinstall = false;
 
-    public $connection = 'connection';
+    public string $connection = 'connection';
 
     public $doLast = false;
 }

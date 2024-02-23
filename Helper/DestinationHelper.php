@@ -64,18 +64,19 @@ class DestinationHelper
             return $this;
         }
 
-        $this->destinations['Error'] = array(
-            array(
+        $this->destinations['Error'] = [
+            [
                 'destination' => $destination->getDestination(),
                 'description' => $destination->getDestination(),
                 'category' => 'Error',
-            ),
-        );
+            ]
+
+        ];
 
         return $this;
     }
 
-    private function destinationExists($t): bool
+    private function destinationExists(string $t): bool
     {
         foreach ($this->destinations as $category) {
             foreach ($category as $destination) {

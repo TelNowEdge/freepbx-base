@@ -18,9 +18,7 @@
 
 namespace TelNowEdge\FreePBX\Base\Serializer\Normalizer;
 
-use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Mapping\Loader\AttributeLoader;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -29,8 +27,6 @@ class ObjectNormalizerFactory
 {
     public function getObjectNormalizer(): ObjectNormalizer
     {
-        // TODO AnnotationLoader.php is deprecated, use AttributeLoader instead
-        // AttributeLoader : reader in constructor is deprecated. In future version, it's not in.
         $classMetadataFactory = new ClassMetadataFactory(new AttributeLoader());
         // Handle circular reference
         $defaultContext = [
@@ -42,6 +38,6 @@ class ObjectNormalizerFactory
         //     return $object->getId();
         // });
 
-        return new ObjectNormalizer($classMetadataFactory,null, null, null, null, null, $defaultContext);
+        return new ObjectNormalizer($classMetadataFactory, null, null, null, null, null, $defaultContext);
     }
 }

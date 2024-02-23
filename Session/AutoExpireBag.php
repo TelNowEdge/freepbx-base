@@ -60,10 +60,10 @@ class AutoExpireBag implements SessionBagInterface, IteratorAggregate, Countable
     {
         $expire = new Datetime(sprintf('+%d seconds', $timeout));
 
-        $this->autoExpires[$name] = array(
+        $this->autoExpires[$name] = [
             'expire' => $expire->getTimestamp(),
             'value' => $value,
-        );
+        ];
     }
 
     public function get(string $name, $default = null)

@@ -43,7 +43,7 @@ class IpeiValidator extends ConstraintValidator
         return true;
     }
 
-    private function calculCrc($ipei): string
+    private function calculCrc(string $ipei): string
     {
         $ipei = substr($ipei, 0, 12);
         $crc = 0;

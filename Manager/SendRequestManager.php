@@ -36,7 +36,7 @@ class SendRequestManager
     /**
      * @throws Exception
      */
-    public function sendRequest($request, array $command): false|array
+    public function sendRequest(string $request, array $command): false|array
     {
         try {
             return $this->connection

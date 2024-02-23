@@ -64,7 +64,7 @@ class DestinationType extends AbstractType implements ContainerAwareInterface
         });
     }
 
-    public function setContainer(ContainerInterface $container = null)
+    public function setContainer(ContainerInterface $container = null): void
     {
         $this->container = $container;
     }

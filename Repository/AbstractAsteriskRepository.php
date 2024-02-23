@@ -20,9 +20,9 @@ namespace TelNowEdge\FreePBX\Base\Repository;
 
 use AGI_AsteriskManager;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Util\Inflector;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Statement;
+use Doctrine\Inflector\Inflector;
 use ReflectionClass;
 use ReflectionException;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
@@ -91,7 +91,7 @@ SELECT
 
     public function sqliteToArray(array $res)
     {
-        $out = array();
+        $out = [];
 
         foreach ($res as $x) {
             $out[$x->a__key] = $x->a__value;
@@ -100,7 +100,7 @@ SELECT
         return $this->sqlToArray($out);
     }
 
-    public function sqlToArray(array $res)
+    public function sqlToArray(array $res): array
     {
         $temp = array();
         $out = array();

@@ -117,7 +117,7 @@ abstract class AbstractRepository
     /**
      * @throws Exception
      */
-    protected function objectFromArray($fqn, array $array, $params = array())
+    protected function objectFromArray($fqn, array $array, array $params = [])
     {
         $reflector = new ReflectionClass($fqn);
 
@@ -139,7 +139,7 @@ abstract class AbstractRepository
     /**
      * @throws ReflectionException
      */
-    protected function uncontrolledObjectFromArray($fqdn, array $array, $params = array())
+    protected function uncontrolledObjectFromArray($fqdn, array $array, array $params = [])
     {
         $reflector = new ReflectionClass($fqdn);
         $class = $reflector->newInstanceArgs($params);

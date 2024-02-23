@@ -125,28 +125,28 @@ CREATE
 
     protected function out($msg): void
     {
-        $mapping = array(
-            'OK' => array(
+        $mapping = [
+            'OK' => [
                 'console' => 'info',
                 'web' => 'green',
-            ),
-            'SKIPPED' => array(
+            ],
+            'SKIPPED' => [
                 'console' => 'skipped',
                 'web' => 'cyan',
-            ),
-            'ERROR' => array(
+            ],
+            'ERROR' => [
                 'console' => 'error',
                 'web' => 'red',
-            ),
-            'PROCESS' => array(
+            ],
+            'PROCESS' => [
                 'console' => 'comment',
                 'web' => 'orange',
-            ),
-            'PLAYAGAIN' => array(
+            ],
+            'PLAYAGAIN' => [
                 'console' => 'comment',
                 'web' => 'orange',
-            ),
-        );
+            ],
+        ];
 
         $mode = 'cli' === PHP_SAPI
             ? 'console'
@@ -398,7 +398,7 @@ CREATE
 
         $reflector = new ReflectionClass(static::class);
         $methods = $reflector->getMethods();
-        $temp = array();
+        $temp = [];
 
         arsort($methods);
 
@@ -407,10 +407,10 @@ CREATE
                 continue;
             }
 
-            $temp[$match[1]] = array(
+            $temp[$match[1]] = [
                 'annotation' => $this->annotationReader->getMethodAnnotations($method),
                 'method' => $method,
-            );
+            ];
         }
 
         return $temp;
@@ -427,10 +427,10 @@ CREATE
 
         $stmt = $this->connection->executeQuery(
             'SELECT * FROM tne_migrations WHERE id = ? AND module = ?',
-            array(
+            [
                 $version,
                 $module,
-            )
+            ]
         );
 
         return !(false === $stmt->fetch());

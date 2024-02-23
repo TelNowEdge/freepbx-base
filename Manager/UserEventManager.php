@@ -37,13 +37,13 @@ class UserEventManager
     /**
      * @throws Exception
      */
-    public function emit($name, $type, $channel, ArrayCollection $values): true
+    public function emit(string $name, $type, $channel, ArrayCollection $values): true
     {
-        $array = array(
+        $array = [
             'UserEvent' => $name,
             'Type' => $type,
             'Channel' => $channel,
-        );
+        ];
 
         foreach ($values as $k => $v) {
             $array[$k] = $v;

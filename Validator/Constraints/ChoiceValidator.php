@@ -39,7 +39,7 @@ class ChoiceValidator extends BaseChoiceValidator implements ContainerAwareInter
     /**
      * @throws ReflectionException
      */
-    public function validate($value, Constraint $consraint)
+    public function validate(mixed $value, Constraint $consraint)
     {
         if (true === is_array($consraint->service)) {
             if (true === $consraint->nullable) {

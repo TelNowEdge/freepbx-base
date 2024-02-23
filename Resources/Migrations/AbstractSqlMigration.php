@@ -26,7 +26,10 @@ use Exception;
  */
 abstract class AbstractSqlMigration extends AbstractMigration
 {
-    public function migrateOne($id, array $res)
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function migrateOne($id, array $res): bool
     {
         parent::migrateOne($id, $res);
 
@@ -84,7 +87,10 @@ abstract class AbstractSqlMigration extends AbstractMigration
         return true;
     }
 
-    public function uninstallOne($id, array $res)
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function uninstallOne($id, array $res): bool
     {
         parent::uninstallOne($id, $res);
 
@@ -144,7 +150,10 @@ abstract class AbstractSqlMigration extends AbstractMigration
     /*
      * Deprecated
      */
-    public function migrate()
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function migrate(): bool
     {
         parent::migrate();
 
@@ -187,7 +196,10 @@ abstract class AbstractSqlMigration extends AbstractMigration
     /*
      * Deprecated
      */
-    public function uninstall()
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function uninstall(): bool
     {
         parent::uninstall();
 

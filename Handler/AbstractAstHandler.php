@@ -21,7 +21,7 @@ namespace TelNowEdge\FreePBX\Base\Handler;
 use AGI_AsteriskManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-abstract class AbstractAstHandler
+abstract class jAbstractAstHandler
 {
     /**
      * class AGI_AsteriskManager (libraries/php-asmanager.php).
