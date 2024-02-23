@@ -19,32 +19,41 @@
 namespace TelNowEdge\FreePBX\Base\Repository;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Result;
+use Doctrine\DBAL\Statement;
+use Exception;
+use ReflectionClass;
+use ReflectionException;
+use stdClass;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
+use function call_user_func;
 
 abstract class AbstractRepository
 {
     /**
      * \Doctrine\DBAL\Connection.
      */
-    protected $connection;
+    protected Connection $connection;
 
     /**
      * \Doctrine\DBAL\Connection.
      */
-    protected $cdrConnection;
+    protected Connection $cdrConnection;
 
     /**
      * \Doctrine\DBAL\Connection.
      */
-    protected $addonsConnection;
+    protected Connection $addonsConnection;
 
-    protected $eventDispatcher;
+    protected EventDispatcher $eventDispatcher;
 
     public function setConnection(
         Connection $connection,
         Connection $cdrConnection,
         Connection $addonsConnection
-    ) {
+    ): static
+    {
         $this->connection = $connection;
         $this->cdrConnection = $cdrConnection;
         $this->addonsConnection = $addonsConnection;
@@ -52,12 +61,15 @@ abstract class AbstractRepository
         return $this;
     }
 
-    public function setEventDispatcher(\Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher)
+    public function setEventDispatcher(EventDispatcher $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    protected function fetch(\Doctrine\DBAL\Statement $statment)
+    /**
+     * @throws NoResultException
+     */
+    protected function fetch(Statement $statment)
     {
         if (false === $res = $statment->fetch()) {
             throw new NoResultException();
@@ -66,7 +78,11 @@ abstract class AbstractRepository
         return $res;
     }
 
-    protected function fetchAll(\Doctrine\DBAL\Result $statment)
+    /**
+     * @throws NoResultException
+     * @throws \Doctrine\DBAL\Exception
+     */
+    protected function fetchAll(Result $statment): array
     {
         $res = $statment->fetchAllAssociative();
 
@@ -77,15 +93,15 @@ abstract class AbstractRepository
         return $res;
     }
 
-    protected function sqlToArray($param)
+    protected function sqlToArray($param): array
     {
-        if (true === $param instanceof \stdClass) {
-            $param = (array) $param;
+        if (true === $param instanceof stdClass) {
+            $param = (array)$param;
         }
 
-        $res = array();
+        $res = [];
         foreach ($param as $key => $value) {
-            $chunks = preg_split('/__/', $key);
+            $chunks = explode('__', $key);
             $class = $chunks[0];
             $prop = trim($chunks[1], '_');
 
@@ -98,9 +114,12 @@ abstract class AbstractRepository
         return $res;
     }
 
+    /**
+     * @throws Exception
+     */
     protected function objectFromArray($fqn, array $array, $params = array())
     {
-        $reflector = new \ReflectionClass($fqn);
+        $reflector = new ReflectionClass($fqn);
 
         $class = $reflector->newInstanceArgs($params);
 
@@ -110,22 +129,25 @@ abstract class AbstractRepository
             if (true === $reflector->hasMethod($method)) {
                 $reflector->getMethod($method)->invoke($class, $value);
             } else {
-                throw new \Exception(sprintf('%s:%s is not callable', $fqn, $method));
+                throw new Exception(sprintf('%s:%s is not callable', $fqn, $method));
             }
         }
 
         return $class;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     protected function uncontrolledObjectFromArray($fqdn, array $array, $params = array())
     {
-        $reflector = new \ReflectionClass($fqdn);
+        $reflector = new ReflectionClass($fqdn);
         $class = $reflector->newInstanceArgs($params);
 
         foreach ($array as $prop => $value) {
             $method = sprintf('set%s', ucfirst($prop));
 
-            \call_user_func(array($class, $method), $value);
+            call_user_func(array($class, $method), $value);
         }
 
         return $class;

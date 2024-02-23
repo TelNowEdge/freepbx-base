@@ -18,10 +18,13 @@
 
 namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
+use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use function is_object;
 
 class CompoundUniqueValidator extends ConstraintValidator implements ContainerAwareInterface
 {
@@ -32,18 +35,20 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
         $this->container = $container;
     }
 
-    public function validate($class, Constraint $constraint)
+    /**
+     * @throws ReflectionException
+     */
+    public function validate($class, Constraint $constraint): void
     {
         $values = $this->getClassValues($class, $constraint);
         if (true === $this->container->has($constraint->service[0])) {
             $service = $this->container->get($constraint->service[0]);
-            $reflector = new \ReflectionClass($service);
+            $reflector = new ReflectionClass($service);
 
             if (true === $reflector->hasMethod($constraint->service[1])) {
                 $valid = $reflector
                     ->getMethod($constraint->service[1])
-                    ->invoke($service, $values)
-                    ;
+                    ->invoke($service, $values);
 
                 if (true === $valid) {
                     return;
@@ -64,7 +69,7 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
                 foreach ($values as $key => $val) {
                     ++$i;
 
-                    $errors['{{ '.$i.' }}'] = true === \is_object($val) ? sprintf('%s__%s', $key, $val->getId()) : sprintf('%s__%s', $key, $val);
+                    $errors['{{ ' . $i . ' }}'] = true === is_object($val) ? sprintf('%s__%s', $key, $val->getId()) : sprintf('%s__%s', $key, $val);
                 }
 
                 $constraint->message = sprintf($constraint->message, implode(',', $errors));
@@ -78,10 +83,13 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
         }
     }
 
-    public function getClassValues($class, Constraint $constraint)
+    /**
+     * @throws ReflectionException
+     */
+    public function getClassValues($class, Constraint $constraint): array
     {
         $values = array();
-        $reflector = new \ReflectionClass($class);
+        $reflector = new ReflectionClass($class);
 
         foreach ($constraint->fields as $field) {
             if (false === $reflector->hasProperty($field)) {
@@ -92,20 +100,21 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
              * If the property is private
              */
             $property = $reflector->getProperty($field);
-            $property->setAccessible(true);
 
-            $values[$field] = \is_object($property->getValue($class))
+            $values[$field] = is_object($property->getValue($class))
                 ? $property->getValue($class)->getId()
-                : $property->getValue($class)
-                ;
+                : $property->getValue($class);
         }
 
         return $values;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function getClassCompare($class, Constraint $constraint)
     {
-        $reflector = new \ReflectionClass($class);
+        $reflector = new ReflectionClass($class);
 
         if (false === $reflector->hasProperty($constraint->compare)) {
             $this->context->addViolation(sprintf("%s::%s isn't a property", $reflector->name, $constraint->compare));
@@ -115,7 +124,6 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
          * If the property is private
          */
         $property = $reflector->getProperty($constraint->compare);
-        $property->setAccessible(true);
 
         return $property->getValue($class);
     }

@@ -33,7 +33,7 @@ class DestinationType extends AbstractType implements ContainerAwareInterface
 {
     private $container;
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $destinationHelper = $this->container->get(DestinationHelper::class);
 
@@ -60,8 +60,7 @@ class DestinationType extends AbstractType implements ContainerAwareInterface
                         'data-type' => 'tne-destination',
                     ),
                     'placeholder' => '-',
-                ))
-                ;
+                ));
         });
     }
 
@@ -70,7 +69,7 @@ class DestinationType extends AbstractType implements ContainerAwareInterface
         $this->container = $container;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults(array(

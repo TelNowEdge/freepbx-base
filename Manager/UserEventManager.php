@@ -18,19 +18,26 @@
 
 namespace TelNowEdge\FreePBX\Base\Manager;
 
+use AGI_AsteriskManager;
+use Doctrine\Common\Collections\ArrayCollection;
+use Exception;
+
 class UserEventManager
 {
     /**
      * class AGI_AsteriskManager (libraries/php-asmanager.php).
      */
-    protected $connection;
+    protected AGI_AsteriskManager $connection;
 
-    public function setConnection(\AGI_AsteriskManager $connection)
+    public function setConnection(AGI_AsteriskManager $connection): void
     {
         $this->connection = $connection;
     }
 
-    public function emit($name, $type, $channel, \Doctrine\Common\Collections\ArrayCollection $values)
+    /**
+     * @throws Exception
+     */
+    public function emit($name, $type, $channel, ArrayCollection $values): true
     {
         $array = array(
             'UserEvent' => $name,
@@ -45,8 +52,8 @@ class UserEventManager
         try {
             $this->connection
                 ->send_request('UserEvent', $array);
-        } catch (\Exception $e) {
-            throw new \Exception(sprintf('Error with: [%s, %s, %s]', $name, $type, $channel), 0, $e);
+        } catch (Exception $e) {
+            throw new Exception(sprintf('Error with: [%s, %s, %s]', $name, $type, $channel), 0, $e);
         }
 
         return true;

@@ -26,14 +26,14 @@ use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 
 class LoggerFactory
 {
-    private $ampConfManager;
+    private AmpConfManager $ampConfManager;
 
     public function __construct(AmpConfManager $ampConfManager)
     {
         $this->ampConfManager = $ampConfManager;
     }
 
-    public function createLogger()
+    public function createLogger(): Logger
     {
         $logger = new Logger('App');
 
@@ -46,8 +46,7 @@ class LoggerFactory
 
         $file = true === $this->ampConfManager->exists('FPBXDBUGFILE')
             ? $this->ampConfManager->get('FPBXDBUGFILE')
-            : '/var/log/asterisk/freepbx_dbug'
-            ;
+            : '/var/log/asterisk/freepbx_dbug';
 
         if (1 === $this->ampConfManager->get('DEVEL')) {
             $streamHandler = new StreamHandler($file, Logger::DEBUG);

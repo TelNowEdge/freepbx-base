@@ -18,8 +18,14 @@
 
 namespace TelNowEdge\FreePBX\Base\Module;
 
+use Exception;
 use FreePBX_Helpers;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Form\FormFactory;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
 use TelNowEdge\FreePBX\Base\DependencyInjection\ContainerBuilderFactory;
+use TelNowEdgeCachedContainer;
 
 abstract class Module extends FreePBX_Helpers
 {
@@ -33,12 +39,12 @@ abstract class Module extends FreePBX_Helpers
     /**
      * Symfony\Component\HttpFoundation\Request.
      */
-    protected $request;
+    protected Request $request;
 
     /**
      * Symfony\Component\Form\FormFactory.
      */
-    protected $formFactory;
+    protected FormFactory $formFactory;
 
     /**
      * \Twig_Environment.
@@ -48,13 +54,16 @@ abstract class Module extends FreePBX_Helpers
     /**
      * Symfony\Component\Validator\Validator\RecursiveValidator.php.
      */
-    protected $validator;
+    protected RecursiveValidator $validator;
 
     /**
      * Symfony\Component\DependencyInjection\ContainerBuilder.
      */
-    protected $container;
+    protected ContainerBuilder|TelNowEdgeCachedContainer $container;
 
+    /**
+     * @throws Exception
+     */
     public function __construct($freepbx = null, $disabledCache = false)
     {
         parent::__construct($freepbx);
@@ -69,7 +78,7 @@ abstract class Module extends FreePBX_Helpers
         );
     }
 
-    public static function dropCache()
+    public static function dropCache(): void
     {
         ContainerBuilderFactory::dropCache();
     }

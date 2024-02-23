@@ -18,6 +18,7 @@
 
 namespace TelNowEdge\FreePBX\Base\DependencyInjection;
 
+use Exception;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -25,9 +26,12 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class BaseExtension extends Extension
 {
-    public function load(array $configs, ContainerBuilder $container)
+    /**
+     * @throws Exception
+     */
+    public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
@@ -43,100 +47,126 @@ class BaseExtension extends Extension
             ->registerAnnotationConfiguration($config, $container, $loader)
             ->registerValidatorConfiguration($config, $container, $loader)
             ->registerConnectionConfiguration($config, $container, $loader)
-            ->registerClientConfiguration($config, $container, $loader)
-            ->registerLoggerConfiguration($config, $container, $loader)
-            ;
+            ->registerClientConfiguration($config, $container, $loader);
 
         $loader->load('services.yml');
     }
 
-    private function registerSessionConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
+    /**
+     * @throws Exception
+     */
+    private function registerClientConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): void
     {
-        $loader->load('session.yml');
+        $loader->load('client.yml');
 
-        return $this;
     }
 
-    private function registerSecurityCsrfConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
-    {
-        $loader->load('security_csrf.yml');
-
-        return $this;
-    }
-
-    private function registerAnnotationConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
-    {
-        $loader->load('annotation.yml');
-
-        return $this;
-    }
-
-    private function registerValidatorConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
-    {
-        $loader->load('validator.yml');
-
-        return $this;
-    }
-
-    private function registerFormConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
-    {
-        $loader->load('form.yml');
-
-        return $this;
-    }
-
-    private function registerRequestConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
-    {
-        $loader->load('request.yml');
-
-        return $this;
-    }
-
-    private function registerTemplateEngineConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
-    {
-        $loader->load('template_engine.yml');
-
-        return $this;
-    }
-
-    private function registerSerializerConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
-    {
-        $loader->load('serializer.yml');
-
-        return $this;
-    }
-
-    private function registerContainerConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
-    {
-        $loader->load('container.yml');
-
-        return $this;
-    }
-
-    private function registerEventDispatcherConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
-    {
-        $loader->load('event_dispatcher.yml');
-
-        return $this;
-    }
-
-    private function registerConnectionConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
+    /**
+     * @throws Exception
+     */
+    private function registerConnectionConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
         $loader->load('connection.yml');
 
         return $this;
     }
 
-    private function registerClientConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
+    /**
+     * @throws Exception
+     */
+    private function registerValidatorConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
-        $loader->load('client.yml');
+        $loader->load('validator.yml');
 
         return $this;
     }
 
-    private function registerLoggerConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader)
+    /**
+     * @throws Exception
+     */
+    private function registerAnnotationConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
-        $loader->load('logger.yml');
+        $loader->load('annotation.yml');
+
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function registerTemplateEngineConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
+    {
+        $loader->load('template_engine.yml');
+
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function registerSessionConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
+    {
+        $loader->load('session.yml');
+
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function registerSerializerConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
+    {
+        $loader->load('serializer.yml');
+
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function registerSecurityCsrfConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
+    {
+        $loader->load('security_csrf.yml');
+
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function registerRequestConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
+    {
+        $loader->load('request.yml');
+
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function registerFormConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
+    {
+        $loader->load('form.yml');
+
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function registerEventDispatcherConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
+    {
+        $loader->load('event_dispatcher.yml');
+
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function registerContainerConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
+    {
+        $loader->load('container.yml');
 
         return $this;
     }

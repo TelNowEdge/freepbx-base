@@ -22,23 +22,21 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class MigrationBuilder
 {
-    private $collection;
+    private ArrayCollection $collection;
 
     private function __construct()
     {
         $this->collection = new ArrayCollection();
     }
 
-    public function addMigration(AbstractMigration $class)
+    public static function createBuilder(): MigrationBuilder
     {
-        $this->collection->add($class);
-
-        return $this;
+        return new self();
     }
 
-    public function removeMigration(AbstractMigration $class)
+    public function addMigration(AbstractMigration $class): static
     {
-        $this->collection->remove($class);
+        $this->collection->add($class);
 
         return $this;
     }
@@ -47,7 +45,15 @@ class MigrationBuilder
      * Order migrations by date.
      * For same date the order of input array is the reference.
      */
-    public function install()
+
+    public function removeMigration($class): static
+    {
+        $this->collection->remove($class);
+
+        return $this;
+    }
+
+    public function install(): true
     {
         $ordered = $this->getOrderedMigration();
         $ok = true;
@@ -56,8 +62,7 @@ class MigrationBuilder
             $x->forAll(function ($j, $z) use ($ok, $id) {
                 $ok = $ok
                     && $z['object']->playAgainOne($id, $z['migration'])
-                    && $z['object']->migrateOne($id, $z['migration'])
-                    ;
+                    && $z['object']->migrateOne($id, $z['migration']);
 
                 return true;
             });
@@ -71,33 +76,7 @@ class MigrationBuilder
         return $ok;
     }
 
-    public function uninstall()
-    {
-        $ordered = $this->getOrderedUninstall();
-        $ok = true;
-
-        $ordered->forAll(function ($id, $x) use ($ok) {
-            $x->forAll(function ($j, $z) use ($ok, $id) {
-                $ok = $ok
-                    && $z['object']->needReinstallOne($id, $z['migration'])
-                    && $z['object']->uninstallOne($id, $z['migration'])
-                    ;
-
-                return true;
-            });
-
-            return true;
-        });
-
-        return $ok;
-    }
-
-    public static function createBuilder()
-    {
-        return new self();
-    }
-
-    private function getOrderedMigration()
+    private function getOrderedMigration(): ArrayCollection
     {
         $migrations = new ArrayCollection();
 
@@ -123,7 +102,27 @@ class MigrationBuilder
         return new ArrayCollection($temp);
     }
 
-    private function getOrderedUninstall()
+    public function uninstall(): true
+    {
+        $ordered = $this->getOrderedUninstall();
+        $ok = true;
+
+        $ordered->forAll(function ($id, $x) use ($ok) {
+            $x->forAll(function ($j, $z) use ($ok, $id) {
+                $ok = $ok
+                    && $z['object']->needReinstallOne($id, $z['migration'])
+                    && $z['object']->uninstallOne($id, $z['migration']);
+
+                return true;
+            });
+
+            return true;
+        });
+
+        return $ok;
+    }
+
+    private function getOrderedUninstall(): ArrayCollection
     {
         $migrations = new ArrayCollection();
 

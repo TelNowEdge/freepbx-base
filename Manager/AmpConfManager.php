@@ -18,28 +18,30 @@
 
 namespace TelNowEdge\FreePBX\Base\Manager;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 class AmpConfManager
 {
-    private $ampConf;
+    private ArrayCollection $ampConf;
 
     public function __construct()
     {
         global $amp_conf;
 
-        $this->ampConf = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->ampConf = new ArrayCollection();
 
         foreach ($amp_conf as $k => $v) {
             $this->ampConf->set($k, $v);
         }
     }
 
+    public function exists($param): bool
+    {
+        return !(null === $this->ampConf->get($param));
+    }
+
     public function get($param)
     {
         return $this->ampConf->get($param);
-    }
-
-    public function exists($param)
-    {
-        return null === $this->ampConf->get($param) ? false : true;
     }
 }

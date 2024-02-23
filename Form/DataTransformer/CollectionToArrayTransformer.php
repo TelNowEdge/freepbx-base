@@ -22,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
+use function is_array;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -35,14 +36,14 @@ class CollectionToArrayTransformer implements DataTransformerInterface
      *
      * @throws TransformationFailedException
      */
-    public function transform($collection)
+    public function transform($collection): mixed
     {
         if (null === $collection) {
             return array();
         }
         // For cases when the collection getter returns $collection->toArray()
         // in order to prevent modifications of the returned collection
-        if (\is_array($collection)) {
+        if (is_array($collection)) {
             return $collection;
         }
         if (!$collection instanceof Collection) {
@@ -57,14 +58,14 @@ class CollectionToArrayTransformer implements DataTransformerInterface
      *
      * @param mixed $array An array of entities
      *
-     * @return Collection A collection of entities
+     * @return ArrayCollection|Collection A collection of entities
      */
-    public function reverseTransform($array)
+    public function reverseTransform($array): ArrayCollection|Collection
     {
         if ('' === $array || null === $array) {
             $array = array();
         } else {
-            $array = (array) $array;
+            $array = (array)$array;
         }
 
         return new ArrayCollection($array);

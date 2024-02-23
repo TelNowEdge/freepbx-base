@@ -26,19 +26,19 @@ abstract class AbstractDbHandler
     /**
      * \Doctrine\DBAL\Connection.
      */
-    protected $connection;
+    protected Connection $connection;
 
     /**
      * \Doctrine\DBAL\Connection.
      */
-    protected $cdrConnection;
+    protected Connection $cdrConnection;
 
     /**
      * \Doctrine\DBAL\Connection.
      */
-    protected $addonsConnection;
+    protected Connection $addonsConnection;
 
-    protected $eventDispatcher;
+    protected EventDispatcher $eventDispatcher;
 
     public function setConnection(
         Connection $connection,
@@ -53,7 +53,7 @@ abstract class AbstractDbHandler
         return $this;
     }
 
-    public function setEventDispatcher(EventDispatcher $eventDispatcher)
+    public function setEventDispatcher(EventDispatcher $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
     }

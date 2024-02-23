@@ -25,7 +25,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Service\Attribute\Required;
 
-// TODO : ContainerAwareInterface deprecated
 abstract class AbstractController implements ControllerInterface
 {
     protected ContainerInterface $container;

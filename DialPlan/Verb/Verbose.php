@@ -29,7 +29,7 @@ class Verbose implements VerbInterface
         $this->message = $message;
     }
 
-    public function output()
+    public function output(): string
     {
         return sprintf(
             'Verbose(%d, %s)',

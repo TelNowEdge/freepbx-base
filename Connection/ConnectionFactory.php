@@ -20,18 +20,22 @@ namespace TelNowEdge\FreePBX\Base\Connection;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Exception;
 use Symfony\Component\Ldap\Ldap;
 use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 
 class ConnectionFactory
 {
-    private $ampConfManager;
+    private AmpConfManager $ampConfManager;
 
     public function __construct(AmpConfManager $ampConfManager)
     {
         $this->ampConfManager = $ampConfManager;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getDefaultConnection()
     {
         /**
@@ -59,6 +63,9 @@ class ConnectionFactory
         return $connection;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getCdrConnection()
     {
         /**
@@ -86,6 +93,9 @@ class ConnectionFactory
         return $connection;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getAddonsConnection()
     {
         /**
@@ -113,7 +123,7 @@ class ConnectionFactory
         return $connection;
     }
 
-    public function getLdapDefaultConnection()
+    public function getLdapDefaultConnection(): Ldap
     {
         $ldap = Ldap::create('ext_ldap', array(
             'host' => $this->ampConfManager->get('TNE_LDAPIP') ?: '127.0.0.1',
@@ -131,6 +141,9 @@ class ConnectionFactory
         return $ldap;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getAsteriskConnection()
     {
         $config = new Configuration();

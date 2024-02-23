@@ -28,7 +28,7 @@ class Queue implements VerbInterface
     private $announceoverride;
     private $timeout;
 
-    public function ext_queue_plus($queuename, $options, $rules, $position, $optionalurl, $announceoverride, $timeout)
+    public function ext_queue_plus($queuename, $options, $rules, $position, $optionalurl, $announceoverride, $timeout): void
     {
         $this->queuename = $queuename;
         $this->options = $options;
@@ -39,11 +39,11 @@ class Queue implements VerbInterface
         $this->timeout = $timeout;
     }
 
-    public function output()
+    public function output(): string
     {
         $cmdend = '';
         if (-1 !== $this->position) {
-            $cmdend = ','.$this->position;
+            $cmdend = ',' . $this->position;
         }
 
         return sprintf(

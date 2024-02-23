@@ -18,15 +18,23 @@
 
 namespace TelNowEdge\FreePBX\Base\Console;
 
+use DirectoryIterator;
+use FreePBX;
+use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use UnexpectedValueException;
 
 class ApplicationFactory implements ContainerAwareInterface
 {
     protected $container;
 
-    public function createApplication()
+    /**
+     * @throws ReflectionException
+     */
+    public function createApplication(): Application
     {
         $commands = $this->getAvailableCommands();
 
@@ -36,15 +44,13 @@ class ApplicationFactory implements ContainerAwareInterface
         return $application;
     }
 
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    private function getAvailableCommands()
+    /**
+     * @throws ReflectionException
+     */
+    private function getAvailableCommands(): array
     {
         $out = array();
-        $modules = \FreePBX::Modules()->getActiveModules();
+        $modules = FreePBX::Modules()->getActiveModules();
 
         foreach ($modules as $module) {
             $path = sprintf(
@@ -54,8 +60,8 @@ class ApplicationFactory implements ContainerAwareInterface
             );
 
             try {
-                $directoryIterator = new \DirectoryIterator($path);
-            } catch (\UnexpectedValueException $e) {
+                $directoryIterator = new DirectoryIterator($path);
+            } catch (UnexpectedValueException $e) {
                 continue;
             }
 
@@ -71,11 +77,16 @@ class ApplicationFactory implements ContainerAwareInterface
                 require_once $x->getPathname();
                 $class = sprintf('FreePBX\Console\Command\%s', $match[1]);
 
-                $reflection = new \ReflectionClass($class);
-                array_push($out, $reflection->newInstanceArgs());
+                $reflection = new ReflectionClass($class);
+                $out[] = $reflection->newInstanceArgs();
             }
         }
 
         return $out;
+    }
+
+    public function setContainer(ContainerInterface $container = null): void
+    {
+        $this->container = $container;
     }
 }

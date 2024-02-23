@@ -21,9 +21,21 @@ namespace TelNowEdge\FreePBX\Base\Security\Role;
 /*
  * Caution this file is duplicated with Symfony API.
  */
+
 class StaticRole
 {
-    public static function getOrdered()
+    public static function getForForm(): array
+    {
+        $out = array();
+
+        foreach (self::getOrdered() as $i => $x) {
+            $out[$x['name']] = $i;
+        }
+
+        return $out;
+    }
+
+    public static function getOrdered(): array
     {
         return array(
             1 => array(
@@ -47,16 +59,5 @@ class StaticRole
                 'name' => 'API administrator',
             ),
         );
-    }
-
-    public static function getForForm()
-    {
-        $out = array();
-
-        foreach (self::getOrdered() as $i => $x) {
-            $out[$x['name']] = $i;
-        }
-
-        return $out;
     }
 }

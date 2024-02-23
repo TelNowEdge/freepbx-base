@@ -18,18 +18,20 @@
 
 namespace TelNowEdge\FreePBX\Base\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 class AbstractUncontrolledModel
 {
-    private $storage;
+    private ArrayCollection $storage;
 
     public function __construct()
     {
-        $this->storage = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->storage = new ArrayCollection();
 
         /*
          * Used by MacProvision
          */
-        $this->storage->set('keys', new \Doctrine\Common\Collections\ArrayCollection());
+        $this->storage->set('keys', new ArrayCollection());
     }
 
     public function __call($name, $args)
@@ -42,7 +44,7 @@ class AbstractUncontrolledModel
             if (1 === preg_match('/^key(\d{3})$/', $prop, $subMatch)) {
                 $this->storage->get('keys')->set($subMatch[1], $value);
 
-                return;
+                return null;
             }
 
             $this->storage->set(lcfirst($prop), $value);
@@ -58,7 +60,7 @@ class AbstractUncontrolledModel
         $this->storage = clone $this->storage;
     }
 
-    public function getAsObject()
+    public function getAsObject(): ArrayCollection
     {
         return $this->storage;
     }
@@ -73,8 +75,8 @@ class AbstractUncontrolledModel
         return $this->storage->get('keys');
     }
 
-    public function setKeys(\Doctrine\Common\Collections\ArrayCollection $keys)
+    public function setKeys(ArrayCollection $keys): void
     {
-        return $this->storage->set('keys', $keys);
+        $this->storage->set('keys', $keys);
     }
 }

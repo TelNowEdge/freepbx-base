@@ -23,7 +23,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class IpeiValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $consraint)
+    public function validate($value, Constraint $consraint): true
     {
         if (null === $value) {
             return true;
@@ -43,7 +43,7 @@ class IpeiValidator extends ConstraintValidator
         return true;
     }
 
-    private function calculCrc($ipei)
+    private function calculCrc($ipei): string
     {
         $ipei = substr($ipei, 0, 12);
         $crc = 0;
@@ -56,6 +56,6 @@ class IpeiValidator extends ConstraintValidator
 
         $crc = 10 === $crc ? '*' : $crc;
 
-        return $ipei.$crc;
+        return $ipei . $crc;
     }
 }

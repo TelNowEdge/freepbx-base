@@ -19,6 +19,7 @@
 namespace TelNowEdge\FreePBX\Base\Handler;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Ldap\Adapter\EntryManagerInterface;
 use Symfony\Component\Ldap\Ldap;
 use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 use TelNowEdge\FreePBX\Base\Traits\LdapTrait;
@@ -27,27 +28,27 @@ abstract class AbstractLdapHandler
 {
     use LdapTrait;
 
-    protected $ampConfManager;
+    protected AmpConfManager $ampConfManager;
 
-    protected $connection;
+    protected Ldap $connection;
 
-    protected $eventDispatcher;
+    protected EventDispatcher $eventDispatcher;
 
-    public function setAmpConfManager(AmpConfManager $ampConfManager)
+    public function setAmpConfManager(AmpConfManager $ampConfManager): static
     {
         $this->ampConfManager = $ampConfManager;
 
         return $this;
     }
 
-    public function setConnection(Ldap $connection)
+    public function setConnection(Ldap $connection): static
     {
         $this->connection = $connection;
 
         return $this;
     }
 
-    public function setEventDispatcher(EventDispatcher $eventDispatcher)
+    public function setEventDispatcher(EventDispatcher $eventDispatcher): static
     {
         $this->eventDispatcher = $eventDispatcher;
 
@@ -84,7 +85,7 @@ abstract class AbstractLdapHandler
         return $this->ampConfManager->get('TNE_LDAP_SCHEMA_SHARE');
     }
 
-    protected function getEntryManager()
+    protected function getEntryManager(): EntryManagerInterface
     {
         return $this->connection->getEntryManager();
     }

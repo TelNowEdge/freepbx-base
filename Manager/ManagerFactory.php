@@ -23,26 +23,26 @@ use TelNowEdge\FreePBX\Base\Builder\UserEventBuilder;
 
 class ManagerFactory
 {
-    protected $hintManager;
+    protected HintManager $hintManager;
 
-    protected $userEventManager;
+    protected UserEventManager $userEventManager;
 
-    public function setHintManager(HintManager $hintManager)
+    public function setHintManager(HintManager $hintManager): void
     {
         $this->hintManager = $hintManager;
     }
 
-    public function setUserEventManager(UserEventManager $userEventManager)
+    public function setUserEventManager(UserEventManager $userEventManager): void
     {
         $this->userEventManager = $userEventManager;
     }
 
-    public function createHintBuilder()
+    public function createHintBuilder(): HintBuilder
     {
         return new HintBuilder($this->hintManager);
     }
 
-    public function createUserEventBuilder()
+    public function createUserEventBuilder(): UserEventBuilder
     {
         return new UserEventBuilder($this->userEventManager);
     }

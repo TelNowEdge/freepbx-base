@@ -20,11 +20,14 @@ namespace TelNowEdge\FreePBX\Base\Form\ChoiceList;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
+use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
+use function call_user_func;
+use function is_object;
 
 class RepositoryChoiceLoader implements ChoiceLoaderInterface
 {
-    private $collection;
+    private ArrayCollection $collection;
 
     private $choiceList;
 
@@ -33,16 +36,7 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
         $this->collection = $collection;
     }
 
-    public function loadChoiceList($value = null)
-    {
-        if (null !== $this->choiceList) {
-            return $this->choiceList;
-        }
-
-        return $this->choiceList = new ArrayChoiceList($this->collection, $value);
-    }
-
-    public function loadChoicesForValues(array $values, $value = null)
+    public function loadChoicesForValues(array $values, $value = null): array
     {
         if (true === empty($values)) {
             return array();
@@ -51,26 +45,35 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
         return $this->loadChoiceList($value)->getChoicesForValues($values);
     }
 
-    public function loadValuesForChoices(array $choices, $value = null)
+    public function loadChoiceList($value = null): ChoiceListInterface
+    {
+        if (null !== $this->choiceList) {
+            return $this->choiceList;
+        }
+
+        return $this->choiceList = new ArrayChoiceList($this->collection, $value);
+    }
+
+    public function loadValuesForChoices(array $choices, $value = null): array
     {
         if (true === empty($choices)) {
             return array();
         }
 
-        $values = array();
+        $values = [];
 
         foreach ($choices as $i => $givenChoice) {
-            if (false === \is_object($givenChoice)) {
+            if (false === is_object($givenChoice)) {
                 continue;
             }
 
             if (null !== $value) {
-                $givenChoice = \call_user_func($value, $givenChoice);
+                $givenChoice = call_user_func($value, $givenChoice);
             }
 
             foreach ($this->collection as $val => $choice) {
                 if (null !== $value) {
-                    $val = \call_user_func($value, $choice);
+                    $val = call_user_func($value, $choice);
 
                     if ($val !== $givenChoice) {
                         continue;
@@ -83,7 +86,7 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
                     }
                 }
 
-                $values[$i] = (string) $val;
+                $values[$i] = (string)$val;
             }
         }
 

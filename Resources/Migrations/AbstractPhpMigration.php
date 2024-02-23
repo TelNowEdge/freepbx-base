@@ -18,18 +18,22 @@
 
 namespace TelNowEdge\FreePBX\Base\Resources\Migrations;
 
+use Doctrine\DBAL\Exception;
 use Symfony\Component\Console\Application;
 
 abstract class AbstractPhpMigration extends AbstractMigration
 {
-    protected $application;
+    protected Application $application;
 
-    public function setApplication(Application $application)
+    public function setApplication(Application $application): void
     {
         $this->application = $application;
     }
 
-    public function migrateOne($id, array $res)
+    /**
+     * @throws Exception
+     */
+    public function migrateOne($id, array $res): bool
     {
         parent::migrateOne($id, $res);
 
@@ -72,8 +76,12 @@ abstract class AbstractPhpMigration extends AbstractMigration
         return true;
     }
 
-    public function uninstallOne($id, array $res)
+    /**
+     * @throws Exception
+     */
+    public function uninstallOne($id, array $res): bool
     {
+        global $key;
         parent::uninstallOne($id, $res);
 
         if (false === $this->alreadyMigrate($key, static::class)) {
@@ -118,7 +126,10 @@ abstract class AbstractPhpMigration extends AbstractMigration
     /*
      * Deprecated
      */
-    public function migrate()
+    /**
+     * @throws Exception
+     */
+    public function migrate(): bool
     {
         parent::migrate();
 
@@ -141,13 +152,16 @@ abstract class AbstractPhpMigration extends AbstractMigration
             }
         }
 
-        return true === $error ? false : true;
+        return !(true === $error);
     }
 
     /*
      * Deprecated
      */
-    public function uninstall()
+    /**
+     * @throws Exception
+     */
+    public function uninstall(): bool
     {
         parent::uninstall();
 
@@ -170,6 +184,6 @@ abstract class AbstractPhpMigration extends AbstractMigration
             }
         }
 
-        return true === $error ? false : true;
+        return !(true === $error);
     }
 }

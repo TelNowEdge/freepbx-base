@@ -18,19 +18,22 @@
 
 namespace TelNowEdge\FreePBX\Base\Manager;
 
+use AGI_AsteriskManager;
+use Exception;
+
 class HintManager
 {
     /**
      * class AGI_AsteriskManager (libraries/php-asmanager.php).
      */
-    protected $connection;
+    protected AGI_AsteriskManager $connection;
 
-    public function setConnection(\AGI_AsteriskManager $connection)
+    public function setConnection(AGI_AsteriskManager $connection): void
     {
         $this->connection = $connection;
     }
 
-    public function create($name, $exten)
+    public function create($name, $exten): true
     {
         $command = array(
             'Command' => sprintf(
@@ -43,14 +46,17 @@ class HintManager
         try {
             $this->connection
                 ->send_request('Command', $command);
-        } catch (\Exception $e) {
-            throw new \Exception(sprintf('Error with: [%s, %s]', $exten, $name), 0, $e);
+        } catch (Exception $e) {
+            throw new Exception(sprintf('Error with: [%s, %s]', $exten, $name), 0, $e);
         }
 
         return true;
     }
 
-    public function update($name, $status)
+    /**
+     * @throws Exception
+     */
+    public function update($name, $status): true
     {
         $command = array(
             'Command' => sprintf('dialplan set global DEVICE_STATE(Custom:%s) %s', $name, $status),
@@ -59,8 +65,8 @@ class HintManager
         try {
             $this->connection
                 ->send_request('Command', $command);
-        } catch (\Exception $e) {
-            throw new \Exception(sprintf('Error with: [%s, %s]', $name, $status), 0, $e);
+        } catch (Exception $e) {
+            throw new Exception(sprintf('Error with: [%s, %s]', $name, $status), 0, $e);
         }
 
         return true;

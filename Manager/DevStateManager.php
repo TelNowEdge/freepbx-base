@@ -18,19 +18,25 @@
 
 namespace TelNowEdge\FreePBX\Base\Manager;
 
+use AGI_AsteriskManager;
+use Exception;
+
 class DevStateManager
 {
     /**
      * class AGI_AsteriskManager (libraries/php-asmanager.php).
      */
-    protected $connection;
+    protected AGI_AsteriskManager $connection;
 
-    public function setConnection(\AGI_AsteriskManager $connection)
+    public function setConnection(AGI_AsteriskManager $connection): void
     {
         $this->connection = $connection;
     }
 
-    public function update($hint, $state)
+    /**
+     * @throws Exception
+     */
+    public function update($hint, $state): true
     {
         $array = array(
             'Command' => sprintf('devstate change Custom:%s %s', $hint, $state),
@@ -39,8 +45,8 @@ class DevStateManager
         try {
             $this->connection
                 ->send_request('Command', $array);
-        } catch (\Exception $e) {
-            throw new \Exception(sprintf('Error with: [%s]', $array['command']), 0, $e);
+        } catch (Exception $e) {
+            throw new Exception(sprintf('Error with: [%s]', $array['command']), 0, $e);
         }
 
         return true;

@@ -18,6 +18,7 @@
 
 namespace TelNowEdge\FreePBX\Base\Form;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
@@ -27,6 +28,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
 use TelNowEdge\FreePBX\Base\Form\ChoiceList\RepositoryChoiceLoader;
 use TelNowEdge\FreePBX\Base\Form\DataTransformer\CollectionToArrayTransformer;
+use function call_user_func_array;
 
 class RepositoryType extends AbstractType implements ContainerAwareInterface
 {
@@ -37,34 +39,33 @@ class RepositoryType extends AbstractType implements ContainerAwareInterface
         $this->container = $container;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if ($options['multiple']) {
             $builder
-                ->addViewTransformer(new CollectionToArrayTransformer(), true)
-            ;
+                ->addViewTransformer(new CollectionToArrayTransformer(), true);
         }
     }
 
-    public function getParent()
+    public function getParent(): string
     {
         return 'Symfony\Component\Form\Extension\Core\Type\ChoiceType';
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $choiceLoader = function (Options $options) {
             if (null !== $options['choices']) {
-                return;
+                return null;
             }
 
             try {
-                $collection = \call_user_func_array(
+                $collection = call_user_func_array(
                     array($this->container->get($options['repository']), $options['caller']),
                     $options['parameters']
                 );
             } catch (NoResultException $e) {
-                $collection = new \Doctrine\Common\Collections\ArrayCollection();
+                $collection = new ArrayCollection();
             }
 
             return new RepositoryChoiceLoader($collection);

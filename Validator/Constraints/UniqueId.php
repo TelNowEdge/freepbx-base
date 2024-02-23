@@ -25,15 +25,15 @@ use Symfony\Component\Validator\Constraint;
  */
 class UniqueId extends Constraint
 {
-    public $message = 'This id is already in use';
+    public string $message = 'This id is already in use';
 
     public $service;
 
     public $field;
 
-    public $nullable = false;
+    public bool $nullable = false;
 
-    public function getRequiredOptions()
+    public function getRequiredOptions(): array
     {
         return array(
             'service',
@@ -41,7 +41,7 @@ class UniqueId extends Constraint
         );
     }
 
-    public function getTargets()
+    public function getTargets(): array|string
     {
         return self::CLASS_CONSTRAINT;
     }

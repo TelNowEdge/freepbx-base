@@ -26,22 +26,23 @@ use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
 class Session extends BaseSession
 {
-    protected $autoExpireName;
+    protected string $autoExpireName;
 
     public function __construct(
         SessionStorageInterface $storage = null,
-        AttributeBagInterface $attributes = null,
-        FlashBagInterface $flashes = null,
-        SessionBagInterface $autoExpires = null
-    ) {
+        AttributeBagInterface   $attributes = null,
+        FlashBagInterface       $flashes = null,
+        SessionBagInterface     $autoExpires = null
+    )
+    {
         parent::__construct($storage, $attributes, $flashes);
-        
+
         $autoExpires = $autoExpires ?: new AutoExpireBag();
         $this->autoExpireName = $autoExpires->getName();
         $this->registerBag($autoExpires);
     }
 
-    public function getAutoExpireBag()
+    public function getAutoExpireBag(): SessionBagInterface
     {
         return $this->getBag($this->autoExpireName);
     }

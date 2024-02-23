@@ -18,32 +18,33 @@
 
 namespace TelNowEdge\FreePBX\Base\Builder;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use TelNowEdge\FreePBX\Base\Manager\UserEventManager;
 
 class UserEventBuilder
 {
-    protected $userEventManager;
+    protected UserEventManager $userEventManager;
 
-    protected $name;
+    protected string $name;
 
     protected $type;
 
     protected $channel;
 
-    protected $values;
+    protected ArrayCollection $values;
 
     public function __construct(UserEventManager $userEventManager)
     {
-        $this->values = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->values = new ArrayCollection();
         $this->userEventManager = $userEventManager;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -55,7 +56,7 @@ class UserEventBuilder
         return $this->type;
     }
 
-    public function setType($type)
+    public function setType($type): static
     {
         $this->type = $type;
 
@@ -67,21 +68,21 @@ class UserEventBuilder
         return $this->channel;
     }
 
-    public function setChannel($channel)
+    public function setChannel($channel): static
     {
         $this->channel = $channel;
 
         return $this;
     }
 
-    public function getValues()
+    public function getValues(): ArrayCollection
     {
         return $this->values;
     }
 
     public function setValues($values)
     {
-        $this->values = new \Doctrine\Common\Collections\ArrayCollection($values);
+        $this->values = new ArrayCollection($values);
 
         return $this;
     }
@@ -93,7 +94,7 @@ class UserEventBuilder
         return $this;
     }
 
-    public function emit()
+    public function emit(): true
     {
         return $this->userEventManager
             ->emit(

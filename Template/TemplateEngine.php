@@ -33,7 +33,7 @@ class TemplateEngine implements TemplateEngineInterface
     /**
      * \Twig_Environment.
      */
-    private $twig;
+    private Environment $twig;
 
     public function __construct(CsrfTokenManager $csrfManager)
     {
@@ -73,7 +73,7 @@ class TemplateEngine implements TemplateEngineInterface
         $this->twig = $twig;
     }
 
-    public function addRegisterPath($path, $namespace = FilesystemLoader::MAIN_NAMESPACE): static
+    public function addRegisterPath(string|null $path, $namespace = FilesystemLoader::MAIN_NAMESPACE): static
     {
         if (true === empty($path) || true === empty($namespace)) {
             return $this;
@@ -90,14 +90,14 @@ class TemplateEngine implements TemplateEngineInterface
         return $this;
     }
 
-    public function setRegisterPaths(array $paths, $namespace = FilesystemLoader::MAIN_NAMESPACE)
+    public function setRegisterPaths(array $paths, $namespace = FilesystemLoader::MAIN_NAMESPACE): static
     {
         $this->twig->getLoader()->setPaths($paths, $namespace);
 
         return $this;
     }
 
-    public function getTemplateEngine()
+    public function getTemplateEngine(): Environment
     {
         return $this->twig;
     }

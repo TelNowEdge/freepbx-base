@@ -18,8 +18,15 @@
 
 namespace TelNowEdge\FreePBX\Base\Repository;
 
+use AGI_AsteriskManager;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Util\Inflector;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Statement;
+use ReflectionClass;
+use ReflectionException;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
+use function count;
 
 abstract class AbstractAsteriskRepository
 {
@@ -34,22 +41,26 @@ SELECT
     /**
      * class AGI_AsteriskManager (libraries/php-asmanager.php).
      */
-    protected $connection;
+    protected AGI_AsteriskManager $connection;
 
     /**
      * \Doctrine\DBAL\Connection.
      */
-    protected $asteriskConnection;
+    protected Connection $asteriskConnection;
 
     public function setConnection(
-        \AGI_AsteriskManager $connection,
-        Connection $asteriskConnection
-    ) {
+        AGI_AsteriskManager $connection,
+        Connection          $asteriskConnection
+    ): void
+    {
         $this->connection = $connection;
         $this->asteriskConnection = $asteriskConnection;
     }
 
-    public function getByFamily($family)
+    /**
+     * @throws NoResultException
+     */
+    public function getByFamily($family): array
     {
         $res = $this->connection
             ->database_show($family);
@@ -61,7 +72,10 @@ SELECT
         return $res;
     }
 
-    public function show($family, $key)
+    /**
+     * @throws NoResultException
+     */
+    public function show($family, $key): array
     {
         $request = sprintf('%s/%s', $family, $key);
 
@@ -73,25 +87,6 @@ SELECT
         }
 
         return $res;
-    }
-
-    public function linearize($keys, $value)
-    {
-        $out = array();
-
-        $array = preg_split('#/#', $keys, 2);
-
-        $key = \Doctrine\Common\Util\Inflector::camelize($array[0]);
-
-        if (1 === \count($array)) {
-            $value = '' === $value ? null : $value;
-
-            return array($key => $value);
-        }
-
-        $out[$key] = $this->linearize($array[1], $value);
-
-        return $out;
     }
 
     public function sqliteToArray(array $res)
@@ -130,7 +125,29 @@ SELECT
         return $out;
     }
 
-    protected function fetch(\Doctrine\DBAL\Statement $statment)
+    public function linearize($keys, $value): array
+    {
+        $out = array();
+
+        $array = explode('/', $keys, 2);
+
+        $key = Inflector::camelize($array[0]);
+
+        if (1 === count($array)) {
+            $value = '' === $value ? null : $value;
+
+            return array($key => $value);
+        }
+
+        $out[$key] = $this->linearize($array[1], $value);
+
+        return $out;
+    }
+
+    /**
+     * @throws NoResultException
+     */
+    protected function fetch(Statement $statment)
     {
         if (false === $res = $statment->fetch()) {
             throw new NoResultException();
@@ -139,7 +156,7 @@ SELECT
         return $res;
     }
 
-    protected function fetchAll(\Doctrine\DBAL\Statement $statment)
+    protected function fetchAll(Statement $statment)
     {
         $res = $statment->fetchAll();
 
@@ -150,11 +167,14 @@ SELECT
         return $res;
     }
 
-    protected function objectFromArray($fqn, array $array)
+    /**
+     * @throws ReflectionException
+     */
+    protected function objectFromArray($fqn, array $array): array
     {
-        $violations = new \Doctrine\Common\Collections\ArrayCollection();
+        $violations = new ArrayCollection();
 
-        $reflector = new \ReflectionClass($fqn);
+        $reflector = new ReflectionClass($fqn);
         $class = $reflector->newInstance();
 
         foreach ($array as $prop => $value) {

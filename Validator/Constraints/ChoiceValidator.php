@@ -18,10 +18,14 @@
 
 namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
+use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\ChoiceValidator as BaseChoiceValidator;
+use function in_array;
+use function is_array;
 
 class ChoiceValidator extends BaseChoiceValidator implements ContainerAwareInterface
 {
@@ -32,9 +36,12 @@ class ChoiceValidator extends BaseChoiceValidator implements ContainerAwareInter
         $this->container = $container;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function validate($value, Constraint $consraint)
     {
-        if (true === \is_array($consraint->service)) {
+        if (true === is_array($consraint->service)) {
             if (true === $consraint->nullable) {
                 return true;
             }
@@ -43,25 +50,23 @@ class ChoiceValidator extends BaseChoiceValidator implements ContainerAwareInter
                 $this->context
                     ->buildViolation('Unable to find service: {{ service }}')
                     ->setParameter('{{ service }}', $consraint->service[0])
-                    ->addViolation()
-                    ;
+                    ->addViolation();
             }
 
             $service = $this->container->get($consraint->service[0]);
 
-            $reflector = new \ReflectionClass($service);
+            $reflector = new ReflectionClass($service);
 
             if (false === $reflector->hasMethod($consraint->service[1])) {
                 $this->context
                     ->buildViolation('Unable to find method: {{ method }}')
                     ->setParameter('{{ method }}', $consraint->service[1])
-                    ->addViolation()
-                    ;
+                    ->addViolation();
             }
 
             $method = $reflector->getMethod($consraint->service[1]);
 
-            if (false === \in_array($value, $method->invoke($service), true)) {
+            if (false === in_array($value, $method->invoke($service), true)) {
                 $this->context->addViolation($consraint->message);
             }
 

@@ -25,13 +25,13 @@ use Symfony\Component\Validator\Constraint;
  */
 class ValidExtension extends Constraint
 {
-    public $message = 'Extension already in use by [{{ item }}]';
+    public string $message = 'Extension already in use by [{{ item }}]';
 
     public $service;
 
     public $field;
 
-    public function getRequiredOptions()
+    public function getRequiredOptions(): array
     {
         return array(
             'service',
@@ -39,7 +39,7 @@ class ValidExtension extends Constraint
         );
     }
 
-    public function getTargets()
+    public function getTargets(): array|string
     {
         return self::CLASS_CONSTRAINT;
     }

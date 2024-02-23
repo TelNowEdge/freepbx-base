@@ -25,24 +25,24 @@ use Symfony\Component\Validator\Constraint;
  */
 class CompoundUnique extends Constraint
 {
-    public $message = 'This fields already exists [%s]';
+    public string $message = 'This fields already exists [%s]';
 
-    public $fields = array();
+    public array $fields = [];
 
     public $service;
 
     public $compare;
 
-    public function getRequiredOptions()
+    public function getRequiredOptions(): array
     {
-        return array(
+        return [
             'fields',
             'service',
             'compare',
-        );
+        ];
     }
 
-    public function getTargets()
+    public function getTargets(): array|string
     {
         return self::CLASS_CONSTRAINT;
     }

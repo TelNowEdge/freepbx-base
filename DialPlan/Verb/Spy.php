@@ -20,8 +20,8 @@ namespace TelNowEdge\FreePBX\Base\DialPlan\Verb;
 
 class Spy implements VerbInterface
 {
-    private $prefix;
-    private $options;
+    private string $prefix;
+    private string $options;
 
     public function __construct($prefix = '', $options = '')
     {
@@ -29,12 +29,12 @@ class Spy implements VerbInterface
         $this->options = $options;
     }
 
-    public function output()
+    public function output(): string
     {
         return sprintf(
             'ExtenSpy(%s%s)',
             $this->prefix,
-            $this->options ? ','.$this->options : ''
+            $this->options ? ',' . $this->options : ''
         );
     }
 }

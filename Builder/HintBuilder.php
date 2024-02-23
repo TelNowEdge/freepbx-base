@@ -18,13 +18,14 @@
 
 namespace TelNowEdge\FreePBX\Base\Builder;
 
+use Exception;
 use TelNowEdge\FreePBX\Base\Manager\HintManager;
 
 class HintBuilder
 {
-    protected $hintManager;
+    protected HintManager $hintManager;
 
-    protected $name;
+    protected string $name;
 
     protected $extension;
 
@@ -35,12 +36,12 @@ class HintBuilder
         $this->hintManager = $hintManager;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -52,7 +53,7 @@ class HintBuilder
         return $this->extension;
     }
 
-    public function setExtension($extension)
+    public function setExtension($extension): static
     {
         $this->extension = $extension;
 
@@ -64,14 +65,17 @@ class HintBuilder
         return $this->status;
     }
 
-    public function setStatus($status)
+    public function setStatus($status): static
     {
         $this->status = $status;
 
         return $this;
     }
 
-    public function create()
+    /**
+     * @throws Exception
+     */
+    public function create(): true
     {
         return $this->hintManager
             ->create(
@@ -80,7 +84,10 @@ class HintBuilder
             );
     }
 
-    public function update()
+    /**
+     * @throws Exception
+     */
+    public function update(): true
     {
         return $this->hintManager
             ->update(

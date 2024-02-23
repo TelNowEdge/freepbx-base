@@ -18,22 +18,23 @@
 
 namespace TelNowEdge\FreePBX\Base\Handler;
 
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 
 abstract class AbstractFileSystemHandler
 {
-    protected $ampConfManager;
+    protected AmpConfManager $ampConfManager;
 
-    protected $eventDispatcher;
+    protected EventDispatcher $eventDispatcher;
 
-    public function setAmpConfManager(AmpConfManager $ampConfManager)
+    public function setAmpConfManager(AmpConfManager $ampConfManager): static
     {
         $this->ampConfManager = $ampConfManager;
 
         return $this;
     }
 
-    public function setEventDispatcher(\Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher)
+    public function setEventDispatcher(EventDispatcher $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
     }

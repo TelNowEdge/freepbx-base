@@ -24,7 +24,7 @@ use function call_user_func;
 
 class ControllerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (false === $container->has('template_engine')) {
             return;

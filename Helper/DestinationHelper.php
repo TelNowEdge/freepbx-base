@@ -18,15 +18,16 @@
 
 namespace TelNowEdge\FreePBX\Base\Helper;
 
+use FreePBX;
 use TelNowEdge\FreePBX\Base\Form\Model\Destination;
 
 class DestinationHelper
 {
-    private $destinations = array();
+    private array $destinations = [];
 
     public function __construct()
     {
-        $destinations = \FreePBX::Modules()->getDestinations();
+        $destinations = FreePBX::Modules()->getDestinations();
 
         foreach ($destinations as $destination) {
             $category = true === isset($destination['category']) ? $destination['category'] : $destination['name'];
@@ -35,14 +36,9 @@ class DestinationHelper
         }
     }
 
-    public function getCategories()
+    public function getDestinations(): array
     {
-        return array_keys($this->destinations);
-    }
-
-    public function getDestinations()
-    {
-        $out = array();
+        $out = [];
 
         foreach ($this->destinations as $destinations) {
             foreach ($destinations as $destination) {
@@ -53,7 +49,12 @@ class DestinationHelper
         return $out;
     }
 
-    public function addFake(Destination $destination)
+    public function getCategories(): array
+    {
+        return array_keys($this->destinations);
+    }
+
+    public function addFake(Destination $destination): static
     {
         if (true === $this->destinationExists($destination->getDestination())) {
             return $this;
@@ -74,28 +75,7 @@ class DestinationHelper
         return $this;
     }
 
-    public function getRaw()
-    {
-        return $this->destinations;
-    }
-
-    public function getDestinationsByCategory($category)
-    {
-        return $this->destinations[$category];
-    }
-
-    public function getFlatDestinationsByCategory($category)
-    {
-        if (null === $category) {
-            return array();
-        }
-
-        return array_map(function ($x) {
-            return $x['destination'];
-        }, $this->destinations[$category]);
-    }
-
-    private function destinationExists($t)
+    private function destinationExists($t): bool
     {
         foreach ($this->destinations as $category) {
             foreach ($category as $destination) {
@@ -108,5 +88,26 @@ class DestinationHelper
         }
 
         return false;
+    }
+
+    public function getRaw(): array
+    {
+        return $this->destinations;
+    }
+
+    public function getDestinationsByCategory($category)
+    {
+        return $this->destinations[$category];
+    }
+
+    public function getFlatDestinationsByCategory($category): array
+    {
+        if (null === $category) {
+            return array();
+        }
+
+        return array_map(function ($x) {
+            return $x['destination'];
+        }, $this->destinations[$category]);
     }
 }
