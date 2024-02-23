@@ -34,7 +34,7 @@ class Spy implements VerbInterface
         return sprintf(
             'ExtenSpy(%s%s)',
             $this->prefix,
-            $this->options !== '' && $this->options !== '0' ? ',' . $this->options : ''
+            '' !== $this->options && '0' !== $this->options ? ','.$this->options : ''
         );
     }
 }

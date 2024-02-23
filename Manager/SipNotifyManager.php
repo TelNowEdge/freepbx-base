@@ -19,40 +19,42 @@
 namespace TelNowEdge\FreePBX\Base\Manager;
 
 use AGI_AsteriskManager;
-use Exception;
 
 class SipNotifyManager
 {
     /**
      * class AGI_AsteriskManager (libraries/php-asmanager.php).
      */
-    protected AGI_AsteriskManager $connection;
+    protected \AGI_AsteriskManager $connection;
 
-    public function setConnection(AGI_AsteriskManager $connection): void
+    public function setConnection(\AGI_AsteriskManager $connection): void
     {
         $this->connection = $connection;
     }
 
     /**
-     * @throws Exception
+     * @param mixed $event
+     *
+     * @throws \Exception
      */
     public function notify($event, int $device, string $tech = 'sip'): void
     {
-        $cmd = sprintf('sip notify %s %d', $event, (int)$device);
+        $cmd = sprintf('sip notify %s %d', $event, (int) $device);
 
         if ('pjsip' === $tech) {
-            $cmd = sprintf('pjsip send notify %s endpoint %d', $event, (int)$device);
+            $cmd = sprintf('pjsip send notify %s endpoint %d', $event, (int) $device);
         }
 
-        $command = array(
+        $command = [
             'Command' => $cmd,
-        );
+        ];
 
         try {
             $this->connection
-                ->send_request('Command', $command);
-        } catch (Exception $e) {
-            throw new Exception(sprintf('Error with: [%s]', $command), 0, $e);
+                ->send_request('Command', $command)
+            ;
+        } catch (\Exception $e) {
+            throw new \Exception(sprintf('Error with: [%s]', $command), 0, $e);
         }
     }
 }

@@ -43,7 +43,7 @@ class Queue implements VerbInterface
     {
         $cmdend = '';
         if (-1 !== $this->position) {
-            $cmdend = ',' . $this->position;
+            $cmdend = ','.$this->position;
         }
 
         return sprintf(

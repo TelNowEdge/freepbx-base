@@ -18,9 +18,7 @@
 
 namespace TelNowEdge\FreePBX\Base\Security\Role;
 
-/*
- * Caution this file is duplicated with Symfony API.
- */
+// Caution this file is duplicated with Symfony API.
 
 class StaticRole
 {

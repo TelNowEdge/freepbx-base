@@ -18,17 +18,14 @@
 
 namespace TelNowEdge\FreePBX\Base\Session;
 
-use ArrayIterator;
 use Countable;
-use Datetime;
-use Exception;
 use IteratorAggregate;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 use Traversable;
-use function array_key_exists;
+
 use function count;
 
-class AutoExpireBag implements SessionBagInterface, IteratorAggregate, Countable
+class AutoExpireBag implements SessionBagInterface, \IteratorAggregate, \Countable
 {
     protected string $storageKey;
     private string $name = 'autoExpires';
@@ -52,11 +49,14 @@ class AutoExpireBag implements SessionBagInterface, IteratorAggregate, Countable
     }
 
     /**
-     * @throws Exception
+     * @param mixed $value
+     * @param mixed $timeout
+     *
+     * @throws \Exception
      */
     public function set(string $name, $value, $timeout): void
     {
-        $expire = new Datetime(sprintf('+%d seconds', $timeout));
+        $expire = new \Datetime(sprintf('+%d seconds', $timeout));
 
         $this->autoExpires[$name] = [
             'expire' => $expire->getTimestamp(),
@@ -66,10 +66,10 @@ class AutoExpireBag implements SessionBagInterface, IteratorAggregate, Countable
 
     public function get(string $name, $default = null)
     {
-        $param = array_key_exists($name, $this->autoExpires) ? $this->autoExpires[$name] : $default;
+        $param = \array_key_exists($name, $this->autoExpires) ? $this->autoExpires[$name] : $default;
 
-        $now = new Datetime();
-        $expire = new Datetime();
+        $now = new \Datetime();
+        $expire = new \Datetime();
         $expire->setTimestamp($param['expire']);
 
         $interval = $now->diff($expire);
@@ -86,7 +86,7 @@ class AutoExpireBag implements SessionBagInterface, IteratorAggregate, Countable
     public function remove(string $name)
     {
         $retval = null;
-        if (array_key_exists($name, $this->autoExpires)) {
+        if (\array_key_exists($name, $this->autoExpires)) {
             $retval = $this->autoExpires[$name];
             unset($this->autoExpires[$name]);
         }
@@ -96,10 +96,10 @@ class AutoExpireBag implements SessionBagInterface, IteratorAggregate, Countable
 
     public function has(string $name): bool
     {
-        $param = array_key_exists($name, $this->autoExpires);
+        $param = \array_key_exists($name, $this->autoExpires);
 
-        $now = new Datetime();
-        $expire = new Datetime();
+        $now = new \Datetime();
+        $expire = new \Datetime();
         $expire->setTimestamp($param['expire']);
 
         $interval = $now->diff($expire);
@@ -132,14 +132,14 @@ class AutoExpireBag implements SessionBagInterface, IteratorAggregate, Countable
     }
 
     // TODO Oblige un return : IteratorAggregate=>getIterator: Traversable?
-    public function getIterator(): Traversable
+    public function getIterator(): \Traversable
     {
-        return new ArrayIterator($this->autoExpires);
+        return new \ArrayIterator($this->autoExpires);
     }
 
     // TODO Oblige un return : Countable=>count: int?
     public function count(): int
     {
-        return count($this->autoExpires);
+        return \count($this->autoExpires);
     }
 }

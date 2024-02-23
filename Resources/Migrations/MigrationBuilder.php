@@ -29,7 +29,7 @@ class MigrationBuilder
         $this->collection = new ArrayCollection();
     }
 
-    public static function createBuilder(): MigrationBuilder
+    public static function createBuilder(): self
     {
         return new self();
     }
@@ -58,8 +58,8 @@ class MigrationBuilder
         $ordered = $this->getOrderedMigration();
         $ok = true;
 
-        $ordered->forAll(function ($id, $x) use ($ok): bool {
-            $x->forAll(function ($j, array $z) use ($ok, $id): bool {
+        $ordered->forAll(static function ($id, $x) use ($ok): bool {
+            $x->forAll(static function ($j, array $z) use ($ok, $id): bool {
                 $ok = $ok
                     && $z['object']->playAgainOne($id, $z['migration'])
                     && $z['object']->migrateOne($id, $z['migration']);
@@ -76,11 +76,31 @@ class MigrationBuilder
         return $ok;
     }
 
+    public function uninstall(): true
+    {
+        $ordered = $this->getOrderedUninstall();
+        $ok = true;
+
+        $ordered->forAll(static function ($id, $x) use ($ok): bool {
+            $x->forAll(static function ($j, array $z) use ($ok, $id): bool {
+                $ok = $ok
+                    && $z['object']->needReinstallOne($id, $z['migration'])
+                    && $z['object']->uninstallOne($id, $z['migration']);
+
+                return true;
+            });
+
+            return true;
+        });
+
+        return $ok;
+    }
+
     private function getOrderedMigration(): ArrayCollection
     {
         $migrations = new ArrayCollection();
 
-        $this->collection->forAll(function ($k, $x) use ($migrations): bool {
+        $this->collection->forAll(static function ($k, $x) use ($migrations): bool {
             foreach ($x->getOrderedMigration() as $key => $method) {
                 if (null === $sub = $migrations->get($key)) {
                     $sub = new ArrayCollection();
@@ -102,31 +122,11 @@ class MigrationBuilder
         return new ArrayCollection($temp);
     }
 
-    public function uninstall(): true
-    {
-        $ordered = $this->getOrderedUninstall();
-        $ok = true;
-
-        $ordered->forAll(function ($id, $x) use ($ok): bool {
-            $x->forAll(function ($j, array $z) use ($ok, $id): bool {
-                $ok = $ok
-                    && $z['object']->needReinstallOne($id, $z['migration'])
-                    && $z['object']->uninstallOne($id, $z['migration']);
-
-                return true;
-            });
-
-            return true;
-        });
-
-        return $ok;
-    }
-
     private function getOrderedUninstall(): ArrayCollection
     {
         $migrations = new ArrayCollection();
 
-        $this->collection->forAll(function ($k, $x) use ($migrations): bool {
+        $this->collection->forAll(static function ($k, $x) use ($migrations): bool {
             foreach ($x->getOrderedMigration() as $key => $method) {
                 if (null === $sub = $migrations->get($key)) {
                     $sub = new ArrayCollection();

@@ -18,16 +18,15 @@
 
 namespace TelNowEdge\FreePBX\Base\Event;
 
-//TODO : deprecated
-//use Symfony\Component\EventDispatcher\Event;
+// TODO : deprecated
+// use Symfony\Component\EventDispatcher\Event;
 use Symfony\Contracts\EventDispatcher\Event;
-
 
 class GuiHookEvent extends Event
 {
-    const GUI_HOOK_START = 'gui_hook.start';
-    const GUI_HOOK_DONE = 'gui_hook.done';
-    const GUI_HOOK_PRE_RENDERING = 'gui_hook.pre_rendering';
+    public const GUI_HOOK_START = 'gui_hook.start';
+    public const GUI_HOOK_DONE = 'gui_hook.done';
+    public const GUI_HOOK_PRE_RENDERING = 'gui_hook.pre_rendering';
 
     protected $module;
 

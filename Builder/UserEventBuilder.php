@@ -19,7 +19,6 @@
 namespace TelNowEdge\FreePBX\Base\Builder;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Exception;
 use TelNowEdge\FreePBX\Base\Manager\UserEventManager;
 
 class UserEventBuilder
@@ -96,7 +95,7 @@ class UserEventBuilder
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function emit(): true
     {
@@ -106,6 +105,7 @@ class UserEventBuilder
                 $this->type,
                 $this->channel,
                 $this->values
-            );
+            )
+        ;
     }
 }

@@ -18,7 +18,6 @@
 
 namespace TelNowEdge\FreePBX\Base\DependencyInjection;
 
-use Exception;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -27,11 +26,11 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 class BaseExtension extends Extension
 {
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
@@ -48,23 +47,22 @@ class BaseExtension extends Extension
             ->registerAttributeConfiguration($config, $container, $loader)
             ->registerValidatorConfiguration($config, $container, $loader)
             ->registerConnectionConfiguration($config, $container, $loader)
-            ->registerClientConfiguration($config, $container, $loader);
-
+            ->registerClientConfiguration($config, $container, $loader)
+        ;
 
         $loader->load('services.yml');
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function registerClientConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): void
     {
         $loader->load('client.yml');
-
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function registerConnectionConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
@@ -74,7 +72,7 @@ class BaseExtension extends Extension
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function registerValidatorConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
@@ -84,7 +82,7 @@ class BaseExtension extends Extension
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function registerAttributeConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
@@ -94,7 +92,7 @@ class BaseExtension extends Extension
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function registerAnnotationConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
@@ -104,7 +102,7 @@ class BaseExtension extends Extension
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function registerTemplateEngineConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
@@ -114,7 +112,7 @@ class BaseExtension extends Extension
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function registerSessionConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
@@ -124,7 +122,7 @@ class BaseExtension extends Extension
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function registerSerializerConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
@@ -134,7 +132,7 @@ class BaseExtension extends Extension
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function registerSecurityCsrfConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
@@ -144,7 +142,7 @@ class BaseExtension extends Extension
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function registerRequestConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
@@ -154,7 +152,7 @@ class BaseExtension extends Extension
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function registerFormConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
@@ -164,7 +162,7 @@ class BaseExtension extends Extension
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function registerEventDispatcherConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
@@ -174,7 +172,7 @@ class BaseExtension extends Extension
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function registerContainerConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {

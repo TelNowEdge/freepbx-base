@@ -18,15 +18,10 @@
 
 namespace TelNowEdge\FreePBX\Base\Repository;
 
-use Exception;
-use ReflectionClass;
-use ReflectionException;
 use Symfony\Component\Ldap\Entry;
 use Symfony\Component\Ldap\Ldap;
 use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 use TelNowEdge\FreePBX\Base\Traits\LdapTrait;
-use function call_user_func;
-use function count;
 
 abstract class AbstractLdapRepository
 {
@@ -93,7 +88,7 @@ abstract class AbstractLdapRepository
 
             foreach ($mapping as $i => $map) {
                 foreach ($map as $model => $attr) {
-                    if (1 < count($attribute)) {
+                    if (1 < \count($attribute)) {
                         $out[$model][$attr] = $attribute;
 
                         continue;
@@ -114,11 +109,13 @@ abstract class AbstractLdapRepository
     abstract protected function getMapping($ldapField);
 
     /**
-     * @throws ReflectionException
+     * @param mixed $fqn
+     *
+     * @throws \ReflectionException
      */
     protected function objectFromArray($fqn, array $array)
     {
-        $reflector = new ReflectionClass($fqn);
+        $reflector = new \ReflectionClass($fqn);
         $class = $reflector->newInstance();
 
         foreach ($array as $prop => $value) {
@@ -127,7 +124,7 @@ abstract class AbstractLdapRepository
             if (true === $reflector->hasMethod($method)) {
                 $reflector->getMethod($method)->invoke($class, $value);
             } else {
-                throw new Exception(sprintf('%s:%s is not callable', $fqn, $method));
+                throw new \Exception(sprintf('%s:%s is not callable', $fqn, $method));
             }
         }
 
@@ -135,17 +132,19 @@ abstract class AbstractLdapRepository
     }
 
     /**
-     * @throws ReflectionException
+     * @param mixed $fqdn
+     *
+     * @throws \ReflectionException
      */
     protected function uncontrolledObjectFromArray($fqdn, array $array)
     {
-        $reflector = new ReflectionClass($fqdn);
+        $reflector = new \ReflectionClass($fqdn);
         $class = $reflector->newInstance();
 
         foreach ($array as $prop => $value) {
             $method = sprintf('set%s', ucfirst($prop));
 
-            call_user_func(array($class, $method), $value);
+            \call_user_func([$class, $method], $value);
         }
 
         return $class;

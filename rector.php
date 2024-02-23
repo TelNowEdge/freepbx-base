@@ -4,10 +4,10 @@ use Rector\Config\RectorConfig;
 use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
 
-return function (RectorConfig $rectorConfig): void {
+return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->skip([
-        __DIR__ . '/vendor',
-        __DIR__ . '/../../libraries',
+        __DIR__.'/vendor',
+        __DIR__.'/../../libraries',
     ]);
 
     // register single rule
@@ -19,8 +19,8 @@ return function (RectorConfig $rectorConfig): void {
         SetList::CODE_QUALITY,
         SetList::PHP_82,
         SetList::TYPE_DECLARATION,
-//        SymfonySetList::SYMFONY_64,
-//        SymfonySetList::SYMFONY_CODE_QUALITY,
-//        SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
+        //        SymfonySetList::SYMFONY_64,
+        //        SymfonySetList::SYMFONY_CODE_QUALITY,
+        //        SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
     ]);
 };

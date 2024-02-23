@@ -35,10 +35,10 @@ class UniqueId extends Constraint
 
     public function getRequiredOptions(): array
     {
-        return array(
+        return [
             'service',
             'field',
-        );
+        ];
     }
 
     public function getTargets(): array|string

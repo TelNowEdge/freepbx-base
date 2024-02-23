@@ -18,9 +18,7 @@
 
 namespace TelNowEdge\FreePBX\Base\Exception;
 
-use Exception;
-
-class NoResultException extends Exception
+class NoResultException extends \Exception
 {
     public function __construct($code = 0, $e = null)
     {

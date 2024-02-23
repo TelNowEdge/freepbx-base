@@ -18,7 +18,6 @@
 
 namespace TelNowEdge\FreePBX\Base\Helper;
 
-use FreePBX;
 use TelNowEdge\FreePBX\Base\Form\Model\Destination;
 
 class DestinationHelper
@@ -27,10 +26,10 @@ class DestinationHelper
 
     public function __construct()
     {
-        $destinations = FreePBX::Modules()->getDestinations();
+        $destinations = \FreePBX::Modules()->getDestinations();
 
         foreach ($destinations as $destination) {
-            $category = isset($destination['category']) ? $destination['category'] : $destination['name'];
+            $category = $destination['category'] ?? $destination['name'];
             $destination['category'] = $category;
             $this->destinations[$category][] = $destination;
         }
@@ -69,26 +68,10 @@ class DestinationHelper
                 'destination' => $destination->getDestination(),
                 'description' => $destination->getDestination(),
                 'category' => 'Error',
-            ]
-
+            ],
         ];
 
         return $this;
-    }
-
-    private function destinationExists(string $t): bool
-    {
-        foreach ($this->destinations as $category) {
-            foreach ($category as $destination) {
-                if ($destination['destination'] !== $t) {
-                    continue;
-                }
-
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public function getRaw(): array
@@ -104,11 +87,26 @@ class DestinationHelper
     public function getFlatDestinationsByCategory($category): array
     {
         if (null === $category) {
-            return array();
+            return [];
         }
 
-        return array_map(function (array $x) {
+        return array_map(static function (array $x) {
             return $x['destination'];
         }, $this->destinations[$category]);
+    }
+
+    private function destinationExists(string $t): bool
+    {
+        foreach ($this->destinations as $category) {
+            foreach ($category as $destination) {
+                if ($destination['destination'] !== $t) {
+                    continue;
+                }
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

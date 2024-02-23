@@ -28,7 +28,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
 use TelNowEdge\FreePBX\Base\Form\ChoiceList\RepositoryChoiceLoader;
 use TelNowEdge\FreePBX\Base\Form\DataTransformer\CollectionToArrayTransformer;
-use function call_user_func_array;
 
 class RepositoryType extends AbstractType implements ContainerAwareInterface
 {
@@ -43,7 +42,8 @@ class RepositoryType extends AbstractType implements ContainerAwareInterface
     {
         if ($options['multiple']) {
             $builder
-                ->addViewTransformer(new CollectionToArrayTransformer(), true);
+                ->addViewTransformer(new CollectionToArrayTransformer(), true)
+            ;
         }
     }
 
@@ -54,14 +54,14 @@ class RepositoryType extends AbstractType implements ContainerAwareInterface
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $choiceLoader = function (Options $options): ?\TelNowEdge\FreePBX\Base\Form\ChoiceList\RepositoryChoiceLoader {
+        $choiceLoader = function (Options $options): ?RepositoryChoiceLoader {
             if (null !== $options['choices']) {
                 return null;
             }
 
             try {
-                $collection = call_user_func_array(
-                    array($this->container->get($options['repository']), $options['caller']),
+                $collection = \call_user_func_array(
+                    [$this->container->get($options['repository']), $options['caller']],
                     $options['parameters']
                 );
             } catch (NoResultException $e) {
@@ -71,16 +71,16 @@ class RepositoryType extends AbstractType implements ContainerAwareInterface
             return new RepositoryChoiceLoader($collection);
         };
 
-        $resolver->setRequired(array(
+        $resolver->setRequired([
             'parameters',
             'caller',
             'repository',
-        ));
+        ]);
 
-        $resolver->setDefaults(array(
-            'parameters' => array(),
+        $resolver->setDefaults([
+            'parameters' => [],
             'choice_loader' => $choiceLoader,
             'choices' => null,
-        ));
+        ]);
     }
 }

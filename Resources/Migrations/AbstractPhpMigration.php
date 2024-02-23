@@ -31,6 +31,8 @@ abstract class AbstractPhpMigration extends AbstractMigration
     }
 
     /**
+     * @param mixed $id
+     *
      * @throws Exception
      */
     public function migrateOne($id, array $res): bool
@@ -77,6 +79,8 @@ abstract class AbstractPhpMigration extends AbstractMigration
     }
 
     /**
+     * @param mixed $id
+     *
      * @throws Exception
      */
     public function uninstallOne($id, array $res): bool
@@ -123,9 +127,7 @@ abstract class AbstractPhpMigration extends AbstractMigration
         return true;
     }
 
-    /*
-     * Deprecated
-     */
+    // Deprecated
     /**
      * @throws Exception
      */
@@ -139,6 +141,7 @@ abstract class AbstractPhpMigration extends AbstractMigration
         foreach ($methods as $key => $res) {
             if ($this->alreadyMigrate($key, static::class)) {
                 $this->out(sprintf('%s already migrate. Nothing todo', $key));
+
                 continue;
             }
 
@@ -155,9 +158,7 @@ abstract class AbstractPhpMigration extends AbstractMigration
         return !$error;
     }
 
-    /*
-     * Deprecated
-     */
+    // Deprecated
     /**
      * @throws Exception
      */
@@ -171,6 +172,7 @@ abstract class AbstractPhpMigration extends AbstractMigration
         foreach ($methods as $key => $res) {
             if (false === $this->alreadyMigrate($key, static::class)) {
                 $this->out(sprintf('%s not currently present. Nothing todo', $key));
+
                 continue;
             }
 

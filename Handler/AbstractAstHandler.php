@@ -21,16 +21,16 @@ namespace TelNowEdge\FreePBX\Base\Handler;
 use AGI_AsteriskManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-abstract class jAbstractAstHandler
+abstract class AbstractAstHandler
 {
     /**
      * class AGI_AsteriskManager (libraries/php-asmanager.php).
      */
-    protected AGI_AsteriskManager $connection;
+    protected \AGI_AsteriskManager $connection;
 
     protected EventDispatcher $eventDispatcher;
 
-    public function setConnection(AGI_AsteriskManager $connection): void
+    public function setConnection(\AGI_AsteriskManager $connection): void
     {
         $this->connection = $connection;
     }

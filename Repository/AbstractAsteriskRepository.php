@@ -23,14 +23,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Statement;
 use Doctrine\Inflector\Inflector;
-use ReflectionClass;
-use ReflectionException;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
-use function count;
 
 abstract class AbstractAsteriskRepository
 {
-    const SQL = '
+    public const SQL = '
 SELECT
         a.key a__key
         ,a.value a__value
@@ -41,7 +38,7 @@ SELECT
     /**
      * class AGI_AsteriskManager (libraries/php-asmanager.php).
      */
-    protected AGI_AsteriskManager $connection;
+    protected \AGI_AsteriskManager $connection;
 
     /**
      * \Doctrine\DBAL\Connection.
@@ -49,21 +46,23 @@ SELECT
     protected Connection $asteriskConnection;
 
     public function setConnection(
-        AGI_AsteriskManager $connection,
-        Connection          $asteriskConnection
-    ): void
-    {
+        \AGI_AsteriskManager $connection,
+        Connection $asteriskConnection
+    ): void {
         $this->connection = $connection;
         $this->asteriskConnection = $asteriskConnection;
     }
 
     /**
+     * @param mixed $family
+     *
      * @throws NoResultException
      */
     public function getByFamily($family): array
     {
         $res = $this->connection
-            ->database_show($family);
+            ->database_show($family)
+        ;
 
         if (empty($res)) {
             throw new NoResultException();
@@ -73,6 +72,9 @@ SELECT
     }
 
     /**
+     * @param mixed $family
+     * @param mixed $key
+     *
      * @throws NoResultException
      */
     public function show($family, $key): array
@@ -80,7 +82,8 @@ SELECT
         $request = sprintf('%s/%s', $family, $key);
 
         $res = $this->connection
-            ->database_show($request);
+            ->database_show($request)
+        ;
 
         if (empty($res)) {
             throw new NoResultException();
@@ -102,8 +105,8 @@ SELECT
 
     public function sqlToArray(array $res): array
     {
-        $temp = array();
-        $out = array();
+        $temp = [];
+        $out = [];
 
         foreach ($res as $key => $child) {
             $key = strtolower($key);
@@ -127,16 +130,16 @@ SELECT
 
     public function linearize($keys, $value): array
     {
-        $out = array();
+        $out = [];
 
         $array = explode('/', $keys, 2);
 
         $key = Inflector::camelize($array[0]);
 
-        if (1 === count($array)) {
+        if (1 === \count($array)) {
             $value = '' === $value ? null : $value;
 
-            return array($key => $value);
+            return [$key => $value];
         }
 
         $out[$key] = $this->linearize($array[1], $value);
@@ -168,13 +171,15 @@ SELECT
     }
 
     /**
-     * @throws ReflectionException
+     * @param mixed $fqn
+     *
+     * @throws \ReflectionException
      */
     protected function objectFromArray($fqn, array $array): array
     {
         $violations = new ArrayCollection();
 
-        $reflector = new ReflectionClass($fqn);
+        $reflector = new \ReflectionClass($fqn);
         $class = $reflector->newInstance();
 
         foreach ($array as $prop => $value) {
@@ -187,9 +192,9 @@ SELECT
             }
         }
 
-        return array(
+        return [
             'object' => $class,
             'violations' => $violations,
-        );
+        ];
     }
 }

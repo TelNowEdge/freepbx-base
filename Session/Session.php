@@ -30,11 +30,10 @@ class Session extends BaseSession
 
     public function __construct(
         SessionStorageInterface $storage = null,
-        AttributeBagInterface   $attributes = null,
-        FlashBagInterface       $flashes = null,
-        SessionBagInterface     $autoExpires = null
-    )
-    {
+        AttributeBagInterface $attributes = null,
+        FlashBagInterface $flashes = null,
+        SessionBagInterface $autoExpires = null
+    ) {
         parent::__construct($storage, $attributes, $flashes);
 
         $autoExpires = $autoExpires ?: new AutoExpireBag();

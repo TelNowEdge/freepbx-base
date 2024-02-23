@@ -52,10 +52,10 @@ class IpeiValidator extends ConstraintValidator
             $crc += $ipei[$i] * ($i + 1);
         }
 
-        $crc = $crc % 11;
+        $crc %= 11;
 
         $crc = 10 === $crc ? '*' : $crc;
 
-        return $ipei . $crc;
+        return $ipei.$crc;
     }
 }

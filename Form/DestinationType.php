@@ -46,21 +46,22 @@ class DestinationType extends AbstractType implements ContainerAwareInterface
             }
 
             $form
-                ->add('category', ChoiceType::class, array(
+                ->add('category', ChoiceType::class, [
                     'choices' => array_combine(
                         $destinationHelper->getCategories(),
                         $destinationHelper->getCategories()
                     ),
                     'placeholder' => '-',
-                ))
-                ->add('destination', ChoiceType::class, array(
+                ])
+                ->add('destination', ChoiceType::class, [
                     'choices' => $destinationHelper->getDestinations(),
-                    'attr' => array(
+                    'attr' => [
                         'data-prototype' => $this->container->get('serializer')->serialize($destinationHelper->getRaw(), 'json'),
                         'data-type' => 'tne-destination',
-                    ),
+                    ],
                     'placeholder' => '-',
-                ));
+                ])
+            ;
         });
     }
 
@@ -72,8 +73,9 @@ class DestinationType extends AbstractType implements ContainerAwareInterface
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
-            ->setDefaults(array(
+            ->setDefaults([
                 'data_class' => Destination::class,
-            ));
+            ])
+        ;
     }
 }

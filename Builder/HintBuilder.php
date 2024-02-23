@@ -18,7 +18,6 @@
 
 namespace TelNowEdge\FreePBX\Base\Builder;
 
-use Exception;
 use TelNowEdge\FreePBX\Base\Manager\HintManager;
 
 class HintBuilder
@@ -73,7 +72,7 @@ class HintBuilder
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function create(): true
     {
@@ -81,11 +80,12 @@ class HintBuilder
             ->create(
                 $this->name,
                 $this->extension
-            );
+            )
+        ;
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function update(): true
     {
@@ -93,6 +93,7 @@ class HintBuilder
             ->update(
                 $this->name,
                 $this->status
-            );
+            )
+        ;
     }
 }

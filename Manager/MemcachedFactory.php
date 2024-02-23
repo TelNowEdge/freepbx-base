@@ -18,18 +18,15 @@
 
 namespace TelNowEdge\FreePBX\Base\Manager;
 
-use Exception;
-use InvalidArgumentException;
-use Memcached;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 
 class MemcachedFactory
 {
-    public function createMemcachedManager($connection): ?Memcached
+    public function createMemcachedManager($connection): ?\Memcached
     {
         try {
             $client = MemcachedAdapter::createConnection($this->getConnection($connection));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return null;
         }
 
@@ -45,7 +42,7 @@ class MemcachedFactory
         ];
 
         if (false === isset($connections[$connection])) {
-            throw new InvalidArgumentException(sprintf('Unable to find connection: %s', $connection));
+            throw new \InvalidArgumentException(sprintf('Unable to find connection: %s', $connection));
         }
 
         return $connections[$connection];

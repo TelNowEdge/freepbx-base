@@ -22,11 +22,8 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\TableNotFoundException;
-use Exception;
-use ReflectionClass;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use const PHP_SAPI;
 
 abstract class AbstractMigration
 {
@@ -69,27 +66,6 @@ abstract class AbstractMigration
         $this->checkDb();
     }
 
-    protected function checkDb()
-    {
-        try {
-            $this->connection->executeQuery('desc tne_migrations');
-        } catch (TableNotFoundException $e) {
-            $this->connection->executeQuery('
-CREATE
-    TABLE
-        tne_migrations (
-            `id` INT
-            ,`module` VARCHAR (255) NOT NULL
-            ,created_at DATETIME NOT NULL
-            ,PRIMARY KEY (
-                `id`
-                ,`module`
-            )
-        )
-            ');
-        }
-    }
-
     public function uninstallOne($id, array $res)
     {
         $this->checkDb();
@@ -109,7 +85,7 @@ CREATE
             ));
 
             $this->removeMigration($id, static::class);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->out(sprintf(
                 '[ERROR]        [%s::%s]: [%s]',
                 $res['method']->class,
@@ -123,96 +99,7 @@ CREATE
         return true;
     }
 
-    protected function out($msg): void
-    {
-        $mapping = [
-            'OK' => [
-                'console' => 'info',
-                'web' => 'green',
-            ],
-            'SKIPPED' => [
-                'console' => 'skipped',
-                'web' => 'cyan',
-            ],
-            'ERROR' => [
-                'console' => 'error',
-                'web' => 'red',
-            ],
-            'PROCESS' => [
-                'console' => 'comment',
-                'web' => 'orange',
-            ],
-            'PLAYAGAIN' => [
-                'console' => 'comment',
-                'web' => 'orange',
-            ],
-        ];
-
-        $mode = 'cli' === PHP_SAPI
-            ? 'console'
-            : 'web';
-
-        if (1 !== preg_match('/^\[([^\]]+)\]/', $msg, $match)) {
-            $this->write($msg);
-        }
-
-        if (false === isset($mapping[$match[1]][$mode])) {
-            $this->write($msg);
-
-            return;
-        }
-
-        $pattern = sprintf('/%s/', $match[1]);
-        $subject = 'console' === $mode
-            ? '<%1$s>%2$s</%1$s>'
-            : '<span style="font-weight: bold; color:%1$s;">%2$s</span>';
-
-        $replacement = sprintf($subject, $mapping[$match[1]][$mode], $match[1]);
-
-        $msg = preg_replace($pattern, $replacement, $msg);
-
-        $this->write($msg);
-    }
-
-    /*
-     * Deprecated
-     */
-
-    private function write(string|iterable $msg): void
-    {
-        if ('cli' === PHP_SAPI) {
-            $this->output->writeln($msg);
-
-            return;
-        }
-
-        outn(sprintf('%s<br/>', $msg));
-    }
-
-    /*
-     * Deprecated
-     */
-
-    /**
-     * @throws \Doctrine\DBAL\Exception
-     */
-    protected function removeMigration($version, $module): void
-    {
-        if (1 === preg_match('/^99(\d{10})_doLast$/', $version, $match)) {
-            $version = $match[1];
-        }
-
-        $stmt = $this->connection->prepare('DELETE FROM `tne_migrations` WHERE id = ? AND module = ?');
-
-        $stmt->bindValue(1, $version);
-        $stmt->bindValue(2, $module);
-
-        $stmt->execute();
-    }
-
-    /*
-     * Deprecated
-     */
+    // Deprecated
 
     public function needReinstallOne($id, array $res): bool
     {
@@ -228,7 +115,7 @@ CREATE
             ));
 
             $this->removeMigration($id, static::class);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->out(sprintf(
                 '[ERROR]        [%s::%s]: [%s]',
                 $res['method']->class,
@@ -242,13 +129,11 @@ CREATE
         return true;
     }
 
-    /*
-     * Deprecated
-     */
+    // Deprecated
 
     public function displaySkipped(ArrayCollection $collection): void
     {
-        $number = array_reduce($collection->getValues(), function ($acc, $x): int|float {
+        $number = array_reduce($collection->getValues(), static function ($acc, $x): float|int {
             return $acc + $x->skipped->count();
         }, $i = 0);
 
@@ -264,9 +149,7 @@ CREATE
         $this->checkDb();
     }
 
-    /*
-     * Deprecated
-     */
+    // Deprecated
 
     public function uninstall()
     {
@@ -299,7 +182,7 @@ CREATE
             try {
                 $this->removeMigration($key, static::class);
                 $this->out(sprintf('%s marked for playAgain', $key));
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->out($e->getMessage());
                 $error = true;
             }
@@ -318,10 +201,10 @@ CREATE
 
     public function getOrderedMigration(): array
     {
-        $reflector = new ReflectionClass(static::class);
+        $reflector = new \ReflectionClass(static::class);
         $methods = $reflector->getMethods();
-        $temp = array();
-        $last = array();
+        $temp = [];
+        $last = [];
 
         asort($methods);
 
@@ -333,18 +216,18 @@ CREATE
             $annotation = $this->annotationReader->getMethodAnnotations($method);
 
             if (true === $annotation[0]->doLast) {
-                $last[sprintf('99%s_doLast', $match[1])] = array(
+                $last[sprintf('99%s_doLast', $match[1])] = [
                     'annotation' => $annotation,
                     'method' => $method,
-                );
+                ];
 
                 continue;
             }
 
-            $temp[$match[1]] = array(
+            $temp[$match[1]] = [
                 'annotation' => $annotation,
                 'method' => $method,
-            );
+            ];
         }
 
         return $temp + $last;
@@ -375,7 +258,7 @@ CREATE
             try {
                 $this->removeMigration($key, static::class);
                 $this->out(sprintf('%s marked for reinstall', $key));
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->out($e->getMessage());
                 $error = true;
             }
@@ -392,11 +275,105 @@ CREATE
         return true;
     }
 
+    protected function checkDb()
+    {
+        try {
+            $this->connection->executeQuery('desc tne_migrations');
+        } catch (TableNotFoundException $e) {
+            $this->connection->executeQuery('
+CREATE
+    TABLE
+        tne_migrations (
+            `id` INT
+            ,`module` VARCHAR (255) NOT NULL
+            ,created_at DATETIME NOT NULL
+            ,PRIMARY KEY (
+                `id`
+                ,`module`
+            )
+        )
+            ');
+        }
+    }
+
+    protected function out($msg): void
+    {
+        $mapping = [
+            'OK' => [
+                'console' => 'info',
+                'web' => 'green',
+            ],
+            'SKIPPED' => [
+                'console' => 'skipped',
+                'web' => 'cyan',
+            ],
+            'ERROR' => [
+                'console' => 'error',
+                'web' => 'red',
+            ],
+            'PROCESS' => [
+                'console' => 'comment',
+                'web' => 'orange',
+            ],
+            'PLAYAGAIN' => [
+                'console' => 'comment',
+                'web' => 'orange',
+            ],
+        ];
+
+        $mode = 'cli' === \PHP_SAPI
+            ? 'console'
+            : 'web';
+
+        if (1 !== preg_match('/^\[([^\]]+)\]/', $msg, $match)) {
+            $this->write($msg);
+        }
+
+        if (false === isset($mapping[$match[1]][$mode])) {
+            $this->write($msg);
+
+            return;
+        }
+
+        $pattern = sprintf('/%s/', $match[1]);
+        $subject = 'console' === $mode
+            ? '<%1$s>%2$s</%1$s>'
+            : '<span style="font-weight: bold; color:%1$s;">%2$s</span>';
+
+        $replacement = sprintf($subject, $mapping[$match[1]][$mode], $match[1]);
+
+        $msg = preg_replace($pattern, $replacement, $msg);
+
+        $this->write($msg);
+    }
+
+    // Deprecated
+
+    /**
+     * @param mixed $version
+     * @param mixed $module
+     *
+     * @throws \Doctrine\DBAL\Exception
+     */
+    protected function removeMigration($version, $module): void
+    {
+        if (1 === preg_match('/^99(\d{10})_doLast$/', $version, $match)) {
+            $version = $match[1];
+        }
+
+        $stmt = $this->connection->prepare('DELETE FROM `tne_migrations` WHERE id = ? AND module = ?');
+
+        $stmt->bindValue(1, $version);
+        $stmt->bindValue(2, $module);
+
+        $stmt->execute();
+    }
+
     protected function getOrderedUninstall(): array
     {
         @trigger_error('Remove in new version', E_USER_DEPRECATED);
 
-        $reflector = new ReflectionClass(static::class);
+        $reflector = new \ReflectionClass(static::class);
         $methods = $reflector->getMethods();
         $temp = [];
 
@@ -417,6 +394,9 @@ CREATE
     }
 
     /**
+     * @param mixed $version
+     * @param mixed $module
+     *
      * @throws \Doctrine\DBAL\Exception
      */
     protected function alreadyMigrate($version, $module): bool
@@ -437,6 +417,9 @@ CREATE
     }
 
     /**
+     * @param mixed $version
+     * @param mixed $module
+     *
      * @throws \Doctrine\DBAL\Exception
      */
     protected function markAsMigrated($version, $module): void
@@ -451,5 +434,18 @@ CREATE
         $stmt->bindValue(2, $module);
 
         $stmt->execute();
+    }
+
+    // Deprecated
+
+    private function write(iterable|string $msg): void
+    {
+        if ('cli' === \PHP_SAPI) {
+            $this->output->writeln($msg);
+
+            return;
+        }
+
+        outn(sprintf('%s<br/>', $msg));
     }
 }

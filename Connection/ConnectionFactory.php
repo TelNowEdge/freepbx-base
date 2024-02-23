@@ -46,7 +46,7 @@ class ConnectionFactory
          * \PDO. So all useful Doctrine\Exceptions aren't available.
          */
         $config = new Configuration();
-        $connectionParams = array(
+        $connectionParams = [
             'dbname' => true === $this->ampConfManager->exists('AMPDBNAME') ? $this->ampConfManager->get('AMPDBNAME') : 'asterisk',
             'user' => $this->ampConfManager->get('AMPDBUSER'),
             'password' => $this->ampConfManager->get('AMPDBPASS'),
@@ -54,14 +54,12 @@ class ConnectionFactory
             'driver' => 'pdo_mysql',
             'port' => true === $this->ampConfManager->get('AMPDBPORT') ? $this->ampConfManager->get('AMPDBPORT') : 3306,
             'charset' => 'utf8',
-            'driverOptions' => array(
+            'driverOptions' => [
                 1002 => 'SET NAMES utf8',
-            ),
-        );
+            ],
+        ];
 
-        $connection = DriverManager::getConnection($connectionParams, $config);
-
-        return $connection;
+        return DriverManager::getConnection($connectionParams, $config);
     }
 
     /**
@@ -76,7 +74,7 @@ class ConnectionFactory
          * \PDO. So all useful Doctrine\Exceptions aren't available.
          */
         $config = new Configuration();
-        $connectionParams = array(
+        $connectionParams = [
             'dbname' => true === $this->ampConfManager->exists('AMPDBCDRNAME') ? $this->ampConfManager->get('AMPDBCDRNAME') : 'asteriskcdrdb',
             'user' => $this->ampConfManager->get('AMPDBUSER'),
             'password' => $this->ampConfManager->get('AMPDBPASS'),
@@ -84,14 +82,12 @@ class ConnectionFactory
             'driver' => 'pdo_mysql',
             'port' => true === $this->ampConfManager->get('AMPDBPORT') ? $this->ampConfManager->get('AMPDBPORT') : 3306,
             'charset' => 'utf8',
-            'driverOptions' => array(
+            'driverOptions' => [
                 1002 => 'SET NAMES utf8',
-            ),
-        );
+            ],
+        ];
 
-        $connection = DriverManager::getConnection($connectionParams, $config);
-
-        return $connection;
+        return DriverManager::getConnection($connectionParams, $config);
     }
 
     /**
@@ -106,7 +102,7 @@ class ConnectionFactory
          * \PDO. So all useful Doctrine\Exceptions aren't available.
          */
         $config = new Configuration();
-        $connectionParams = array(
+        $connectionParams = [
             'dbname' => true === $this->ampConfManager->exists('TNE_DBQUEUEMEMBERS') ? $this->ampConfManager->get('TNE_DBQUEUEMEMBERS') : 'tneaddons',
             'user' => $this->ampConfManager->get('AMPDBUSER'),
             'password' => $this->ampConfManager->get('AMPDBPASS'),
@@ -114,22 +110,20 @@ class ConnectionFactory
             'driver' => 'pdo_mysql',
             'port' => true === $this->ampConfManager->get('AMPDBPORT') ? $this->ampConfManager->get('AMPDBPORT') : 3306,
             'charset' => 'utf8',
-            'driverOptions' => array(
+            'driverOptions' => [
                 1002 => 'SET NAMES utf8',
-            ),
-        );
+            ],
+        ];
 
-        $connection = DriverManager::getConnection($connectionParams, $config);
-
-        return $connection;
+        return DriverManager::getConnection($connectionParams, $config);
     }
 
     public function getLdapDefaultConnection(): Ldap
     {
-        $ldap = Ldap::create('ext_ldap', array(
+        $ldap = Ldap::create('ext_ldap', [
             'host' => $this->ampConfManager->get('TNE_LDAPIP') ?: '127.0.0.1',
             'encryption' => 'yes' === $this->ampConfManager->get('TNE_LDAP_STARTTLS') ? 'tls' : 'none',
-        ));
+        ]);
 
         $dn = sprintf(
             '%s,%s',
@@ -148,14 +142,12 @@ class ConnectionFactory
     public function getAsteriskConnection(): Connection
     {
         $config = new Configuration();
-        $connectionParams = array(
+        $connectionParams = [
             'memory' => false,
             'driver' => 'pdo_sqlite',
             'path' => sprintf('%s/astdb.sqlite3', $this->ampConfManager->get('ASTVARLIBDIR')),
-        );
+        ];
 
-        $connection = DriverManager::getConnection($connectionParams, $config);
-
-        return $connection;
+        return DriverManager::getConnection($connectionParams, $config);
     }
 }

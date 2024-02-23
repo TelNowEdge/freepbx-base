@@ -18,7 +18,6 @@
 
 namespace TelNowEdge\FreePBX\Base\Template;
 
-use ReflectionClass;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Bridge\Twig\Form\TwigRendererEngine;
 use Symfony\Component\Form\FormRenderer;
@@ -39,33 +38,33 @@ class TemplateEngine implements TemplateEngineInterface
     {
         $defaultFormTheme = 'freepbx_layout_page.html.twig';
 
-        $appVariableReflection = new ReflectionClass('\Symfony\Bridge\Twig\AppVariable');
-        $vendorTwigBridgeDir = dirname($appVariableReflection->getFileName());
+        $appVariableReflection = new \ReflectionClass('\Symfony\Bridge\Twig\AppVariable');
+        $vendorTwigBridgeDir = \dirname($appVariableReflection->getFileName());
 
         $twig = new Environment(new FilesystemLoader([
-            $vendorTwigBridgeDir . '/Resources/views/Form',
-            __DIR__ . '/../Resources/views/Form',
+            $vendorTwigBridgeDir.'/Resources/views/Form',
+            __DIR__.'/../Resources/views/Form',
         ]), [// 'cache' => sprintf('%s/../../../../../../assets/cache/twig/', __DIR__),
         ]);
 
-        $twig->getLoader()->addPath(__DIR__ . '/../Resources/views', 'telnowedge');
+        $twig->getLoader()->addPath(__DIR__.'/../Resources/views', 'telnowedge');
 
         $formEngine = new TwigRendererEngine([$defaultFormTheme], $twig);
 
         $twig->addRuntimeLoader(new FactoryRuntimeLoader([
-            FormRenderer::class => function () use ($formEngine, $csrfManager): \Symfony\Component\Form\FormRenderer {
+            FormRenderer::class => static function () use ($formEngine, $csrfManager): \Symfony\Component\Form\FormRenderer {
                 return new FormRenderer($formEngine, $csrfManager);
             },
         ]));
 
         $twig->addExtension(new FormExtension());
 
-        $filter = new TwigFilter('fpbxtrans', function ($string): string {
+        $filter = new TwigFilter('fpbxtrans', static function ($string): string {
             return _($string);
         });
         $twig->addFilter($filter);
 
-        $filter = new TwigFilter('trans', function ($string): string {
+        $filter = new TwigFilter('trans', static function ($string): string {
             return _($string);
         });
         $twig->addFilter($filter);
@@ -73,15 +72,15 @@ class TemplateEngine implements TemplateEngineInterface
         $this->twig = $twig;
     }
 
-    public function addRegisterPath(string|null $path, $namespace = FilesystemLoader::MAIN_NAMESPACE): static
+    public function addRegisterPath(null|string $path, $namespace = FilesystemLoader::MAIN_NAMESPACE): static
     {
-        if ($path === null || $path === '' || $path === '0' || empty($namespace)) {
+        if (null === $path || '' === $path || '0' === $path || empty($namespace)) {
             return $this;
         }
 
         $paths = $this->twig->getLoader()->getPaths($namespace);
 
-        if (in_array($path, $paths, true)) {
+        if (\in_array($path, $paths, true)) {
             return $this;
         }
 

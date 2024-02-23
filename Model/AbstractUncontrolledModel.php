@@ -28,9 +28,7 @@ class AbstractUncontrolledModel
     {
         $this->storage = new ArrayCollection();
 
-        /*
-         * Used by MacProvision
-         */
+        // Used by MacProvision
         $this->storage->set('keys', new ArrayCollection());
     }
 

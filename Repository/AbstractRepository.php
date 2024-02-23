@@ -21,13 +21,8 @@ namespace TelNowEdge\FreePBX\Base\Repository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Result;
 use Doctrine\DBAL\Statement;
-use Exception;
-use ReflectionClass;
-use ReflectionException;
-use stdClass;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
-use function call_user_func;
 
 abstract class AbstractRepository
 {
@@ -52,8 +47,7 @@ abstract class AbstractRepository
         Connection $connection,
         Connection $cdrConnection,
         Connection $addonsConnection
-    ): static
-    {
+    ): static {
         $this->connection = $connection;
         $this->cdrConnection = $cdrConnection;
         $this->addonsConnection = $addonsConnection;
@@ -95,8 +89,8 @@ abstract class AbstractRepository
 
     protected function sqlToArray($param): array
     {
-        if ($param instanceof stdClass) {
-            $param = (array)$param;
+        if ($param instanceof \stdClass) {
+            $param = (array) $param;
         }
 
         $res = [];
@@ -105,7 +99,7 @@ abstract class AbstractRepository
             $class = $chunks[0];
             $prop = trim($chunks[1], '_');
 
-            $prop = preg_replace_callback('/_(\w)/', function ($match): string {
+            $prop = preg_replace_callback('/_(\w)/', static function ($match): string {
                 return ucfirst($match[1]);
             }, $prop);
             $res[$class][$prop] = $value;
@@ -115,11 +109,13 @@ abstract class AbstractRepository
     }
 
     /**
-     * @throws Exception
+     * @param mixed $fqn
+     *
+     * @throws \Exception
      */
     protected function objectFromArray($fqn, array $array, array $params = [])
     {
-        $reflector = new ReflectionClass($fqn);
+        $reflector = new \ReflectionClass($fqn);
 
         $class = $reflector->newInstanceArgs($params);
 
@@ -129,7 +125,7 @@ abstract class AbstractRepository
             if (true === $reflector->hasMethod($method)) {
                 $reflector->getMethod($method)->invoke($class, $value);
             } else {
-                throw new Exception(sprintf('%s:%s is not callable', $fqn, $method));
+                throw new \Exception(sprintf('%s:%s is not callable', $fqn, $method));
             }
         }
 
@@ -137,17 +133,19 @@ abstract class AbstractRepository
     }
 
     /**
-     * @throws ReflectionException
+     * @param mixed $fqdn
+     *
+     * @throws \ReflectionException
      */
     protected function uncontrolledObjectFromArray($fqdn, array $array, array $params = [])
     {
-        $reflector = new ReflectionClass($fqdn);
+        $reflector = new \ReflectionClass($fqdn);
         $class = $reflector->newInstanceArgs($params);
 
         foreach ($array as $prop => $value) {
             $method = sprintf('set%s', ucfirst($prop));
 
-            call_user_func(array($class, $method), $value);
+            \call_user_func([$class, $method], $value);
         }
 
         return $class;

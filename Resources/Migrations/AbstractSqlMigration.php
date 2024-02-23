@@ -18,15 +18,15 @@
 
 namespace TelNowEdge\FreePBX\Base\Resources\Migrations;
 
-use Exception;
-
 /**
  * Transactional error with DDL
- * Please read https://www.doctrine-project.org/projects/doctrine-migrations/en/3.3/explanation/implicit-commits
+ * Please read https://www.doctrine-project.org/projects/doctrine-migrations/en/3.3/explanation/implicit-commits.
  */
 abstract class AbstractSqlMigration extends AbstractMigration
 {
     /**
+     * @param mixed $id
+     *
      * @throws \Doctrine\DBAL\Exception
      */
     public function migrateOne($id, array $res): bool
@@ -67,7 +67,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
                 $res['method']->class,
                 $res['method']->name
             ));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->out(sprintf(
                 '[ERROR]        [%s::%s]: [%s]',
                 $res['method']->class,
@@ -88,6 +88,8 @@ abstract class AbstractSqlMigration extends AbstractMigration
     }
 
     /**
+     * @param mixed $id
+     *
      * @throws \Doctrine\DBAL\Exception
      */
     public function uninstallOne($id, array $res): bool
@@ -127,7 +129,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
                 $res['method']->class,
                 $res['method']->name
             ));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->out(sprintf(
                 '[ERROR]        [%s::%s]: [%s]',
                 $res['method']->class,
@@ -147,9 +149,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
         return true;
     }
 
-    /*
-     * Deprecated
-     */
+    // Deprecated
     /**
      * @throws \Doctrine\DBAL\Exception
      */
@@ -174,7 +174,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
                 $this->{$res['annotation'][0]->connection}->executeUpdate($sql);
                 $this->markAsMigrated($key, static::class);
                 $this->out(sprintf('Apply migration %s: [%s]', $key, $sql));
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->out($e->getMessage());
                 $error = true;
             }
@@ -193,9 +193,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
         return true;
     }
 
-    /*
-     * Deprecated
-     */
+    // Deprecated
     /**
      * @throws \Doctrine\DBAL\Exception
      */
@@ -210,6 +208,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
         foreach ($methods as $key => $res) {
             if (false === $this->alreadyMigrate($key, static::class)) {
                 $this->out(sprintf('%s not currently present. Nothing todo', $key));
+
                 continue;
             }
 
@@ -218,7 +217,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
                 $this->connection->executeUpdate($sql);
                 $this->removeMigration($key, static::class);
                 $this->out(sprintf('Uninstall %s: [%s]', $key, $sql));
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->out($e->getMessage());
                 $error = true;
             }

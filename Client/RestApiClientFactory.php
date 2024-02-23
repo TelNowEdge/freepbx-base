@@ -18,7 +18,6 @@
 
 namespace TelNowEdge\FreePBX\Base\Client;
 
-use Closure;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\CurlMultiHandler;
 use GuzzleHttp\HandlerStack;
@@ -55,17 +54,17 @@ class RestApiClientFactory
             $stack->push($this->addApiKey($apiKey));
         }
 
-        return new Client(array(
+        return new Client([
             'base_uri' => $uri,
             'handler' => $stack,
             'timeout' => $timeout,
-        ));
+        ]);
     }
 
-    private function addContentType(): Closure
+    private function addContentType(): \Closure
     {
-        return function (callable $handler) {
-            return function (RequestInterface $request, array $options) use ($handler) {
+        return static function (callable $handler) {
+            return static function (RequestInterface $request, array $options) use ($handler) {
                 $request->withHeader('Content-Type', 'application/json');
 
                 return $handler($request, $options);
@@ -73,10 +72,10 @@ class RestApiClientFactory
         };
     }
 
-    private function addApiKey($apiKey): Closure
+    private function addApiKey($apiKey): \Closure
     {
-        return function (callable $handler) use ($apiKey) {
-            return function (RequestInterface $request, array $options) use ($handler, $apiKey) {
+        return static function (callable $handler) use ($apiKey) {
+            return static function (RequestInterface $request, array $options) use ($handler, $apiKey) {
                 $request = $request->withHeader('x-api-key', $apiKey);
 
                 return $handler($request, $options);

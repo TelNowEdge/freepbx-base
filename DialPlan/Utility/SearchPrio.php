@@ -24,13 +24,14 @@ class SearchPrio
     {
         $exts = $ext->_exts;
         $findTag = false;
-        $context = ' ' . trim($context) . ' ';  // Je ne sais pas pourquoi mais c'est comme cela dans extension.class.php de FreePBX
+        $context = ' '.trim($context).' ';  // Je ne sais pas pourquoi mais c'est comme cela dans extension.class.php de FreePBX
         if (isset($exts[$section][$context])) {
             $count = 0;
             foreach ($exts[$section][$context] as $pri => $curr_command) {
                 if ($curr_command['tag'] === $tag) {
                     $new_priority = $count;
                     $findTag = true;
+
                     break;
                 }
                 ++$count;

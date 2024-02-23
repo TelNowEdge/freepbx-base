@@ -30,7 +30,7 @@ class ObjectNormalizerFactory
         $classMetadataFactory = new ClassMetadataFactory(new AttributeLoader());
         // Handle circular reference
         $defaultContext = [
-            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function (object $object, ?string $format, array $context): string {
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => static function (object $object, ?string $format, array $context): string {
                 return $object->getId();
             },
         ];

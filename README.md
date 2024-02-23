@@ -128,7 +128,7 @@ To check the `coding standard` please include on your module GrumPHP.
          tasks:
            jsonlint: ~
            phpcsfixer2:
-             config: "./.php_cs"
+             config: "./.php-cs-fixer.php"
              allow_risky: true
              # rules:
              #   - "@@Symfony"
