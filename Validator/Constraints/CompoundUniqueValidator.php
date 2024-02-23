@@ -28,9 +28,9 @@ use function is_object;
 
 class CompoundUniqueValidator extends ConstraintValidator implements ContainerAwareInterface
 {
-    private $container;
+    private ?\Symfony\Component\DependencyInjection\ContainerInterface $container = null;
 
-    public function setContainer(ContainerInterface $container = null)
+    public function setContainer(ContainerInterface $container = null): void
     {
         $this->container = $container;
     }
@@ -69,7 +69,7 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
                 foreach ($values as $key => $val) {
                     ++$i;
 
-                    $errors['{{ ' . $i . ' }}'] = true === is_object($val) ? sprintf('%s__%s', $key, $val->getId()) : sprintf('%s__%s', $key, $val);
+                    $errors['{{ ' . $i . ' }}'] = is_object($val) ? sprintf('%s__%s', $key, $val->getId()) : sprintf('%s__%s', $key, $val);
                 }
 
                 $constraint->message = sprintf($constraint->message, implode(',', $errors));

@@ -65,7 +65,7 @@ SELECT
         $res = $this->connection
             ->database_show($family);
 
-        if (true === empty($res)) {
+        if (empty($res)) {
             throw new NoResultException();
         }
 
@@ -82,14 +82,14 @@ SELECT
         $res = $this->connection
             ->database_show($request);
 
-        if (true === empty($res)) {
+        if (empty($res)) {
             throw new NoResultException();
         }
 
         return $res;
     }
 
-    public function sqliteToArray(array $res)
+    public function sqliteToArray(array $res): array
     {
         $out = [];
 
@@ -160,7 +160,7 @@ SELECT
     {
         $res = $statment->fetchAll();
 
-        if (true === empty($res)) {
+        if (empty($res)) {
             throw new NoResultException();
         }
 

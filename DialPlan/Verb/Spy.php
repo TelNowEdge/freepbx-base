@@ -23,7 +23,7 @@ class Spy implements VerbInterface
     private string $prefix;
     private string $options;
 
-    public function __construct($prefix = '', $options = '')
+    public function __construct(string $prefix = '', string $options = '')
     {
         $this->prefix = $prefix;
         $this->options = $options;
@@ -34,7 +34,7 @@ class Spy implements VerbInterface
         return sprintf(
             'ExtenSpy(%s%s)',
             $this->prefix,
-            $this->options ? ',' . $this->options : ''
+            $this->options !== '' && $this->options !== '0' ? ',' . $this->options : ''
         );
     }
 }

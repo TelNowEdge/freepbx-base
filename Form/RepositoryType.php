@@ -32,7 +32,7 @@ use function call_user_func_array;
 
 class RepositoryType extends AbstractType implements ContainerAwareInterface
 {
-    private $container;
+    private ?\Symfony\Component\DependencyInjection\ContainerInterface $container = null;
 
     public function setContainer(ContainerInterface $container = null): void
     {
@@ -54,7 +54,7 @@ class RepositoryType extends AbstractType implements ContainerAwareInterface
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $choiceLoader = function (Options $options) {
+        $choiceLoader = function (Options $options): ?\TelNowEdge\FreePBX\Base\Form\ChoiceList\RepositoryChoiceLoader {
             if (null !== $options['choices']) {
                 return null;
             }

@@ -29,9 +29,9 @@ use function is_array;
 
 class ChoiceValidator extends BaseChoiceValidator implements ContainerAwareInterface
 {
-    private $container;
+    private ?\Symfony\Component\DependencyInjection\ContainerInterface $container = null;
 
-    public function setContainer(ContainerInterface $container = null)
+    public function setContainer(ContainerInterface $container = null): void
     {
         $this->container = $container;
     }
@@ -41,7 +41,7 @@ class ChoiceValidator extends BaseChoiceValidator implements ContainerAwareInter
      */
     public function validate(mixed $value, Constraint $consraint)
     {
-        if (true === is_array($consraint->service)) {
+        if (is_array($consraint->service)) {
             if (true === $consraint->nullable) {
                 return true;
             }

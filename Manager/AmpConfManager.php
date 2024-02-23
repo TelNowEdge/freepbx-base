@@ -37,7 +37,7 @@ class AmpConfManager
 
     public function exists(string $param): bool
     {
-        return !(null === $this->ampConf->get($param));
+        return null !== $this->ampConf->get($param);
     }
 
     public function get(string $param)

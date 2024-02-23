@@ -28,9 +28,9 @@ use function array_key_exists;
 
 class ValidExtensionValidator extends ConstraintValidator
 {
-    private $container;
+    private ?\Symfony\Component\DependencyInjection\ContainerInterface $container = null;
 
-    public function setContainer(ContainerInterface $container = null)
+    public function setContainer(ContainerInterface $container = null): void
     {
         $this->container = $container;
     }

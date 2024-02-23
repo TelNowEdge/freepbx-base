@@ -41,7 +41,7 @@ class Destination
     #[Assert\NotNull]
     protected string $destination;
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->destination;
     }

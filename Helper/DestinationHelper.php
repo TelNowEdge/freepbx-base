@@ -30,7 +30,7 @@ class DestinationHelper
         $destinations = FreePBX::Modules()->getDestinations();
 
         foreach ($destinations as $destination) {
-            $category = true === isset($destination['category']) ? $destination['category'] : $destination['name'];
+            $category = isset($destination['category']) ? $destination['category'] : $destination['name'];
             $destination['category'] = $category;
             $this->destinations[$category][] = $destination;
         }
@@ -56,7 +56,7 @@ class DestinationHelper
 
     public function addFake(Destination $destination): static
     {
-        if (true === $this->destinationExists($destination->getDestination())) {
+        if ($this->destinationExists($destination->getDestination())) {
             return $this;
         }
 
@@ -107,7 +107,7 @@ class DestinationHelper
             return array();
         }
 
-        return array_map(function ($x) {
+        return array_map(function (array $x) {
             return $x['destination'];
         }, $this->destinations[$category]);
     }

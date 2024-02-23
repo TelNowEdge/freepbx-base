@@ -62,11 +62,7 @@ class CollectionToArrayTransformer implements DataTransformerInterface
      */
     public function reverseTransform($array): ArrayCollection|Collection
     {
-        if ('' === $array || null === $array) {
-            $array = [];
-        } else {
-            $array = (array)$array;
-        }
+        $array = '' === $array || null === $array ? [] : (array)$array;
 
         return new ArrayCollection($array);
     }

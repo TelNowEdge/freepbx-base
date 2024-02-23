@@ -31,15 +31,13 @@ use function count;
 class AutoExpireBag implements SessionBagInterface, IteratorAggregate, Countable
 {
     protected string $storageKey;
-    private string $name;
-    private array $autoExpires;
+    private string $name = 'autoExpires';
+    private array $autoExpires = [];
 
     private array $attributes;
 
-    public function __construct($storageKey = '_telnowedge_autoexpires')
+    public function __construct(string $storageKey = '_telnowedge_autoexpires')
     {
-        $this->autoExpires = [];
-        $this->name = 'autoExpires';
         $this->storageKey = $storageKey;
     }
 

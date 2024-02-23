@@ -58,8 +58,8 @@ class MigrationBuilder
         $ordered = $this->getOrderedMigration();
         $ok = true;
 
-        $ordered->forAll(function ($id, $x) use ($ok) {
-            $x->forAll(function ($j, $z) use ($ok, $id) {
+        $ordered->forAll(function ($id, $x) use ($ok): bool {
+            $x->forAll(function ($j, array $z) use ($ok, $id): bool {
                 $ok = $ok
                     && $z['object']->playAgainOne($id, $z['migration'])
                     && $z['object']->migrateOne($id, $z['migration']);
@@ -80,7 +80,7 @@ class MigrationBuilder
     {
         $migrations = new ArrayCollection();
 
-        $this->collection->forAll(function ($k, $x) use ($migrations) {
+        $this->collection->forAll(function ($k, $x) use ($migrations): bool {
             foreach ($x->getOrderedMigration() as $key => $method) {
                 if (null === $sub = $migrations->get($key)) {
                     $sub = new ArrayCollection();
@@ -107,8 +107,8 @@ class MigrationBuilder
         $ordered = $this->getOrderedUninstall();
         $ok = true;
 
-        $ordered->forAll(function ($id, $x) use ($ok) {
-            $x->forAll(function ($j, $z) use ($ok, $id) {
+        $ordered->forAll(function ($id, $x) use ($ok): bool {
+            $x->forAll(function ($j, array $z) use ($ok, $id): bool {
                 $ok = $ok
                     && $z['object']->needReinstallOne($id, $z['migration'])
                     && $z['object']->uninstallOne($id, $z['migration']);
@@ -126,7 +126,7 @@ class MigrationBuilder
     {
         $migrations = new ArrayCollection();
 
-        $this->collection->forAll(function ($k, $x) use ($migrations) {
+        $this->collection->forAll(function ($k, $x) use ($migrations): bool {
             foreach ($x->getOrderedMigration() as $key => $method) {
                 if (null === $sub = $migrations->get($key)) {
                     $sub = new ArrayCollection();

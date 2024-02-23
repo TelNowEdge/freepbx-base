@@ -31,17 +31,17 @@ use TelNowEdge\FreePBX\Base\Helper\DestinationHelper;
 
 class DestinationType extends AbstractType implements ContainerAwareInterface
 {
-    private $container;
+    private ?\Symfony\Component\DependencyInjection\ContainerInterface $container = null;
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $destinationHelper = $this->container->get(DestinationHelper::class);
 
         // All in event because $builder->getData() isn't available on child form.
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($destinationHelper) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($destinationHelper): void {
             $data = $event->getData();
             $form = $event->getForm();
-            if (true === is_a($data, Destination::class, true)) {
+            if (is_a($data, Destination::class, true)) {
                 $destinationHelper->addFake($data);
             }
 

@@ -53,19 +53,19 @@ class TemplateEngine implements TemplateEngineInterface
         $formEngine = new TwigRendererEngine([$defaultFormTheme], $twig);
 
         $twig->addRuntimeLoader(new FactoryRuntimeLoader([
-            FormRenderer::class => function () use ($formEngine, $csrfManager) {
+            FormRenderer::class => function () use ($formEngine, $csrfManager): \Symfony\Component\Form\FormRenderer {
                 return new FormRenderer($formEngine, $csrfManager);
             },
         ]));
 
         $twig->addExtension(new FormExtension());
 
-        $filter = new TwigFilter('fpbxtrans', function ($string) {
+        $filter = new TwigFilter('fpbxtrans', function ($string): string {
             return _($string);
         });
         $twig->addFilter($filter);
 
-        $filter = new TwigFilter('trans', function ($string) {
+        $filter = new TwigFilter('trans', function ($string): string {
             return _($string);
         });
         $twig->addFilter($filter);
@@ -75,13 +75,13 @@ class TemplateEngine implements TemplateEngineInterface
 
     public function addRegisterPath(string|null $path, $namespace = FilesystemLoader::MAIN_NAMESPACE): static
     {
-        if (true === empty($path) || true === empty($namespace)) {
+        if ($path === null || $path === '' || $path === '0' || empty($namespace)) {
             return $this;
         }
 
         $paths = $this->twig->getLoader()->getPaths($namespace);
 
-        if (true === in_array($path, $paths, true)) {
+        if (in_array($path, $paths, true)) {
             return $this;
         }
 

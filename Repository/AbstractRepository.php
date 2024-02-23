@@ -86,7 +86,7 @@ abstract class AbstractRepository
     {
         $res = $statment->fetchAllAssociative();
 
-        if (true === empty($res)) {
+        if (empty($res)) {
             throw new NoResultException();
         }
 
@@ -95,7 +95,7 @@ abstract class AbstractRepository
 
     protected function sqlToArray($param): array
     {
-        if (true === $param instanceof stdClass) {
+        if ($param instanceof stdClass) {
             $param = (array)$param;
         }
 
@@ -105,7 +105,7 @@ abstract class AbstractRepository
             $class = $chunks[0];
             $prop = trim($chunks[1], '_');
 
-            $prop = preg_replace_callback('/_(\w)/', function ($match) {
+            $prop = preg_replace_callback('/_(\w)/', function ($match): string {
                 return ucfirst($match[1]);
             }, $prop);
             $res[$class][$prop] = $value;

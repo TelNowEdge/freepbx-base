@@ -178,7 +178,7 @@ CREATE
      * Deprecated
      */
 
-    private function write($msg): void
+    private function write(string|iterable $msg): void
     {
         if ('cli' === PHP_SAPI) {
             $this->output->writeln($msg);
@@ -248,7 +248,7 @@ CREATE
 
     public function displaySkipped(ArrayCollection $collection): void
     {
-        $number = array_reduce($collection->getValues(), function ($acc, $x) {
+        $number = array_reduce($collection->getValues(), function ($acc, $x): int|float {
             return $acc + $x->skipped->count();
         }, $i = 0);
 
@@ -305,7 +305,7 @@ CREATE
             }
         }
 
-        if (true === $error) {
+        if ($error) {
             $this->connection->rollBack();
 
             return false;
@@ -381,7 +381,7 @@ CREATE
             }
         }
 
-        if (true === $error) {
+        if ($error) {
             $this->connection->rollBack();
 
             return false;
@@ -433,7 +433,7 @@ CREATE
             ]
         );
 
-        return !(false === $stmt->fetch());
+        return false !== $stmt->fetch();
     }
 
     /**

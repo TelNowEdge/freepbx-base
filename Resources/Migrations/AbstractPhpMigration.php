@@ -37,7 +37,7 @@ abstract class AbstractPhpMigration extends AbstractMigration
     {
         parent::migrateOne($id, $res);
 
-        if (true === $this->alreadyMigrate($id, static::class)) {
+        if ($this->alreadyMigrate($id, static::class)) {
             $this->skipped->add(sprintf(
                 '[SKIPPED]      [%s::%s] Already migrated.',
                 $res['method']->class,
@@ -137,7 +137,7 @@ abstract class AbstractPhpMigration extends AbstractMigration
         $methods = $this->getOrderedMigration();
 
         foreach ($methods as $key => $res) {
-            if (true === $this->alreadyMigrate($key, static::class)) {
+            if ($this->alreadyMigrate($key, static::class)) {
                 $this->out(sprintf('%s already migrate. Nothing todo', $key));
                 continue;
             }
@@ -152,7 +152,7 @@ abstract class AbstractPhpMigration extends AbstractMigration
             }
         }
 
-        return !(true === $error);
+        return !$error;
     }
 
     /*
@@ -184,6 +184,6 @@ abstract class AbstractPhpMigration extends AbstractMigration
             }
         }
 
-        return !(true === $error);
+        return !$error;
     }
 }

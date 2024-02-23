@@ -42,19 +42,17 @@ class RestApiClientFactory
             $uri = 'http://localhost/api/v1/';
         } elseif ('yes+debug' === $this->ampConfManager->get('TNE_API_URI_LOCALHOST')) {
             $uri = 'http://localhost/api/v1/app_dev.php/';
-        } else {
-            if (null !== $uri = $this->ampConfManager->get('TNE_API_URI')) {
-                if (1 !== preg_match('/\/$/', $uri)) {
-                    $uri = sprintf('%s/', $uri);
-                }
+        } elseif (null !== $uri = $this->ampConfManager->get('TNE_API_URI')) {
+            if (1 !== preg_match('/\/$/', $uri)) {
+                $uri = sprintf('%s/', $uri);
             }
         }
 
         $stack = HandlerStack::create(new CurlMultiHandler());
-        $stack->push(self::addContentType());
+        $stack->push($this->addContentType());
 
         if (null !== $apiKey) {
-            $stack->push(self::addApiKey($apiKey));
+            $stack->push($this->addApiKey($apiKey));
         }
 
         return new Client(array(
@@ -64,7 +62,7 @@ class RestApiClientFactory
         ));
     }
 
-    private static function addContentType(): Closure
+    private function addContentType(): Closure
     {
         return function (callable $handler) {
             return function (RequestInterface $request, array $options) use ($handler) {
@@ -75,7 +73,7 @@ class RestApiClientFactory
         };
     }
 
-    private static function addApiKey($apiKey): Closure
+    private function addApiKey($apiKey): Closure
     {
         return function (callable $handler) use ($apiKey) {
             return function (RequestInterface $request, array $options) use ($handler, $apiKey) {

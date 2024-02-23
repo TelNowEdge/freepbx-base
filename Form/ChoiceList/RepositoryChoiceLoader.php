@@ -38,7 +38,7 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
 
     public function loadChoicesForValues(array $values, ?callable $value = null): array
     {
-        if (true === empty($values)) {
+        if ($values === []) {
             return array();
         }
 
@@ -47,7 +47,7 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
 
     public function loadChoiceList(?callable $value = null): ChoiceListInterface
     {
-        if (null !== $this->choiceList) {
+        if ($this->choiceList instanceof \Symfony\Component\Form\ChoiceList\ArrayChoiceList) {
             return $this->choiceList;
         }
 
@@ -56,7 +56,7 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
 
     public function loadValuesForChoices(array $choices, ?callable $value = null): array
     {
-        if (true === empty($choices)) {
+        if ($choices === []) {
             return array();
         }
 
@@ -80,10 +80,8 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
                     }
                 }
 
-                if (null === $value) {
-                    if ($choice->getId() !== $givenChoice->getId()) {
-                        continue;
-                    }
+                if (null === $value && $choice->getId() !== $givenChoice->getId()) {
+                    continue;
                 }
 
                 $values[$i] = (string)$val;

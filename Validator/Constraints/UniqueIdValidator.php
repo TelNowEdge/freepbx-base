@@ -31,7 +31,7 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
 {
     public $container;
 
-    public function setContainer(ContainerInterface $container = null)
+    public function setContainer(ContainerInterface $container = null): void
     {
         $this->container = $container;
     }
@@ -72,11 +72,11 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
         $fieldMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($constraint->field)));
         $fieldValue = $fieldMethod->invoke($value);
 
-        if (true === is_object($fieldValue)) {
+        if (is_object($fieldValue)) {
             $fieldValue = $fieldValue->getId();
         }
 
-        if (null === $fieldValue && true === (bool)$constraint->nullable) {
+        if (null === $fieldValue && (bool)$constraint->nullable) {
             return;
         }
 

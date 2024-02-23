@@ -4,7 +4,7 @@ use Rector\Config\RectorConfig;
 use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
 
-return function (RectorConfig $rectorConfig) {
+return function (RectorConfig $rectorConfig): void {
     $rectorConfig->skip([
         __DIR__ . '/vendor',
         __DIR__ . '/../../libraries',

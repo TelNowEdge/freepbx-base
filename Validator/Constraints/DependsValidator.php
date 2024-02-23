@@ -29,9 +29,9 @@ use function is_object;
 
 class DependsValidator extends ConstraintValidator implements ContainerAwareInterface
 {
-    private $container;
+    private ?\Symfony\Component\DependencyInjection\ContainerInterface $container = null;
 
-    public function setContainer(ContainerInterface $container = null)
+    public function setContainer(ContainerInterface $container = null): void
     {
         $this->container = $container;
     }
@@ -75,7 +75,7 @@ class DependsValidator extends ConstraintValidator implements ContainerAwareInte
 
         $field = $fieldMethod->invoke($value);
 
-        if (true === is_object($field)) {
+        if (is_object($field)) {
             $field = $field->getId();
         }
 

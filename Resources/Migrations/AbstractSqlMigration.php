@@ -33,7 +33,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
     {
         parent::migrateOne($id, $res);
 
-        if (true === $this->alreadyMigrate($id, static::class)) {
+        if ($this->alreadyMigrate($id, static::class)) {
             $this->skipped->add(sprintf(
                 '[SKIPPED]      [%s::%s] Already migrated.',
                 $res['method']->class,
@@ -163,7 +163,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
         $this->cdrConnection->beginTransaction();
 
         foreach ($methods as $key => $res) {
-            if (true === $this->alreadyMigrate($key, static::class)) {
+            if ($this->alreadyMigrate($key, static::class)) {
                 $this->out(sprintf('%s already migrate. Nothing todo', $key));
 
                 continue;
@@ -180,7 +180,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
             }
         }
 
-        if (true === $error) {
+        if ($error) {
             $this->connection->rollBack();
             $this->cdrConnection->rollBack();
 
@@ -224,7 +224,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
             }
         }
 
-        if (true === $error) {
+        if ($error) {
             $this->connection->rollBack();
 
             return false;

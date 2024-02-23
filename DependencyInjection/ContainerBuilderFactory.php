@@ -43,9 +43,9 @@ use const PHP_SAPI;
 
 class ContainerBuilderFactory
 {
-    private static $instance;
+    private static ?self $instance = null;
 
-    private $container;
+    private \Symfony\Component\DependencyInjection\ContainerBuilder|\TelNowEdgeCachedContainer $container;
 
     public function __construct(bool $debug = false, bool $disabledCache = false)
     {
@@ -53,11 +53,11 @@ class ContainerBuilderFactory
         $this->container = static::startContainer($debug, $disabledCache);
     }
 
-    private static function autoloadTelNowEdgeModule(): void
+    private function autoloadTelNowEdgeModule(): void
     {
         // SearchHelper: TelNowEdge\Module
         // Autoload to add my own NS starting by TelNowEdge\Module
-        spl_autoload_register(function ($class) {
+        spl_autoload_register(function ($class): void {
             if (1 !== preg_match('/^TelNowEdge\\\\Module\\\\(.*)$/', $class, $match)) {
                 return;
             }
@@ -69,7 +69,7 @@ class ContainerBuilderFactory
         });
     }
 
-    private static function startContainer(bool $debug, bool $disabledCache): BaseContainerBuilder|TelNowEdgeCachedContainer
+    private function startContainer(bool $debug, bool $disabledCache): BaseContainerBuilder|TelNowEdgeCachedContainer
     {
         $action = false === isset($_GET['action']) ? null : $_GET['action'];
         $forceLoading = false;
@@ -80,7 +80,7 @@ class ContainerBuilderFactory
 
         $containerConfigCache = new ConfigCache($file, $debug);
 
-        $argv = true === isset($_SERVER['argv'])
+        $argv = isset($_SERVER['argv'])
             ? $_SERVER['argv']
             : array();
 
@@ -89,10 +89,10 @@ class ContainerBuilderFactory
          * So disable filter "by active" else I can't load module NS to install it.
          */
         if (
-            (PHP_SAPI === 'cli' && 0 !== count(array_intersect(array('ma', 'moduleadmin'), $argv)))
+            (PHP_SAPI === 'cli' && [] !== array_intersect(array('ma', 'moduleadmin'), $argv))
             || ('modules' === $display && 'process' === $action)
         ) {
-            if (true === file_exists($containerConfigCache->getPath())) {
+            if (file_exists($containerConfigCache->getPath())) {
                 unlink($containerConfigCache->getPath());
             }
 
@@ -106,7 +106,7 @@ class ContainerBuilderFactory
 
         if (
             false === $containerConfigCache->isFresh()
-            || true === $forceLoading
+            || $forceLoading
         ) {
             $container = new BaseContainerBuilder();
 
@@ -137,7 +137,7 @@ class ContainerBuilderFactory
 
             $container->compile();
 
-            if (true === $forceLoading || true === $disabledCache) {
+            if ($forceLoading || $disabledCache) {
                 return $container;
             }
 
@@ -153,7 +153,7 @@ class ContainerBuilderFactory
         return new TelNowEdgeCachedContainer();
     }
 
-    private static function registerSelf(BaseContainerBuilder $container): void
+    private function registerSelf(BaseContainerBuilder $container): void
     {
         $c = new BaseExtension();
 
@@ -161,7 +161,7 @@ class ContainerBuilderFactory
         $container->loadFromExtension($c->getAlias());
     }
 
-    private static function registerModule(
+    private function registerModule(
         BaseContainerBuilder $container,
         bool                 $forceLoading = false
     ): void

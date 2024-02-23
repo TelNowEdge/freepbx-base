@@ -44,7 +44,7 @@ class LoggerFactory
             return $logger;
         }
 
-        $file = true === $this->ampConfManager->exists('FPBXDBUGFILE')
+        $file = $this->ampConfManager->exists('FPBXDBUGFILE')
             ? $this->ampConfManager->get('FPBXDBUGFILE')
             : '/var/log/asterisk/freepbx_dbug';
 
