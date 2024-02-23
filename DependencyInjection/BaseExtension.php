@@ -45,9 +45,11 @@ class BaseExtension extends Extension
             ->registerSessionConfiguration($config, $container, $loader)
             ->registerTemplateEngineConfiguration($config, $container, $loader)
             ->registerAnnotationConfiguration($config, $container, $loader)
+            ->registerAttributeConfiguration($config, $container, $loader)
             ->registerValidatorConfiguration($config, $container, $loader)
             ->registerConnectionConfiguration($config, $container, $loader)
             ->registerClientConfiguration($config, $container, $loader);
+
 
         $loader->load('services.yml');
     }
@@ -77,6 +79,16 @@ class BaseExtension extends Extension
     private function registerValidatorConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
     {
         $loader->load('validator.yml');
+
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function registerAttributeConfiguration(array $config, ContainerBuilder $container, YamlFileLoader $loader): static
+    {
+        $loader->load('attribute.yml');
 
         return $this;
     }

@@ -24,6 +24,7 @@ class KernelTest extends Kernel
         $loader->load(__DIR__ . '/../Resources/config/session.yml');
         $loader->load(__DIR__ . '/../Resources/config/security_csrf.yml');
         $loader->load(__DIR__ . '/../Resources/config/annotation.yml');
+        $loader->load(__DIR__ . '/../Resources/config/attribute.yml');
         $loader->load(__DIR__ . '/../Resources/config/validator.yml');
         $loader->load(__DIR__ . '/../Resources/config/form.yml');
         $loader->load(__DIR__ . '/../Resources/config/request.yml');
