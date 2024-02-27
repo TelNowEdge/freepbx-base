@@ -18,14 +18,17 @@
 
 namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
+use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
+use function array_key_exists;
 
 class ValidExtensionValidator extends ConstraintValidator
 {
-    private ?\Symfony\Component\DependencyInjection\ContainerInterface $container = null;
+    private ?ContainerInterface $container = null;
 
     public function setContainer(ContainerInterface $container = null): void
     {
@@ -34,39 +37,36 @@ class ValidExtensionValidator extends ConstraintValidator
 
     /**
      * @param mixed $value
-     *
-     * @throws \ReflectionException
+     * @param Constraint $constraint
+     * @throws ReflectionException
      */
-    public function validate($value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint): void
     {
         if (false === $this->container->has($constraint->service[0])) {
             $this->context
                 ->buildViolation('Unable to find service: {{ service }}')
                 ->setParameter('{{ service }}', $constraint->service[0])
-                ->addViolation()
-            ;
+                ->addViolation();
         }
 
         $service = $this->container->get($constraint->service[0]);
 
-        $reflector = new \ReflectionClass($service);
+        $reflector = new ReflectionClass($service);
 
         if (false === $reflector->hasMethod($constraint->service[1])) {
             $this->context
                 ->buildViolation('Unable to find method: {{ method }}')
                 ->setParameter('{{ method }}', $constraint->service[1])
-                ->addViolation()
-            ;
+                ->addViolation();
         }
 
-        $reflModel = new \ReflectionClass($value);
+        $reflModel = new ReflectionClass($value);
 
         if (false === $reflModel->hasMethod(sprintf('get%s', ucfirst($constraint->field)))) {
             $this->context
                 ->buildViolation('Unable to find methods: {{ method }}')
                 ->setParameter('{{ method }}', $constraint->field)
-                ->addViolation()
-            ;
+                ->addViolation();
         }
 
         $method = $reflector->getMethod($constraint->service[1]);
@@ -84,7 +84,7 @@ class ValidExtensionValidator extends ConstraintValidator
 
         $exts = framework_get_extmap();
 
-        if (false === \array_key_exists($fieldValue, (array) $exts)) {
+        if (false === array_key_exists($fieldValue, (array)$exts)) {
             return;
         }
 

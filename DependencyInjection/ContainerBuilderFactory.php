@@ -26,6 +26,9 @@
 
 namespace TelNowEdge\FreePBX\Base\DependencyInjection;
 
+use DirectoryIterator;
+use FreePBX;
+use SplFileInfo;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder as BaseContainerBuilder;
@@ -34,39 +37,19 @@ use Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass;
 use Symfony\Component\Form\DependencyInjection\FormPass;
 use Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass;
 use TelNowEdge\FreePBX\Base\DependencyInjection\Compiler\ControllerPass;
+use TelNowEdgeCachedContainer;
+use const PHP_SAPI;
 
 class ContainerBuilderFactory
 {
     private static ?self $instance = null;
 
-    private \Symfony\Component\DependencyInjection\ContainerBuilder|\TelNowEdgeCachedContainer $container;
+    private BaseContainerBuilder|TelNowEdgeCachedContainer $container;
 
     public function __construct(bool $debug = false, bool $disabledCache = false)
     {
         static::autoloadTelNowEdgeModule();
         $this->container = static::startContainer($debug, $disabledCache);
-    }
-
-    public static function getInstance(bool $debug = false, bool $disabledCache = false): \Symfony\Component\DependencyInjection\ContainerBuilder|\TelNowEdgeCachedContainer
-    {
-        if (false === isset(static::$instance)) {
-            static::$instance = new static($debug, $disabledCache);
-        }
-
-        return static::$instance->container;
-    }
-
-    public static function dropCache(): bool
-    {
-        // $file = sprintf('%s/../../../../../../assets/cache/container.php', __DIR__);
-
-        $file = '/var/www/admin/assets/cache/container.php';
-
-        if (false === file_exists($file)) {
-            return true;
-        }
-
-        return unlink($file);
     }
 
     private function autoloadTelNowEdgeModule(): void
@@ -85,7 +68,7 @@ class ContainerBuilderFactory
         });
     }
 
-    private function startContainer(bool $debug, bool $disabledCache): BaseContainerBuilder|\TelNowEdgeCachedContainer
+    private function startContainer(bool $debug, bool $disabledCache): BaseContainerBuilder|TelNowEdgeCachedContainer
     {
         $action = false === isset($_GET['action']) ? null : $_GET['action'];
         $forceLoading = false;
@@ -104,7 +87,7 @@ class ContainerBuilderFactory
          * So disable filter "by active" else I can't load module NS to install it.
          */
         if (
-            (\PHP_SAPI === 'cli' && [] !== array_intersect(['ma', 'moduleadmin'], $argv))
+            (PHP_SAPI === 'cli' && [] !== array_intersect(['ma', 'moduleadmin'], $argv))
             || ('modules' === $display && 'process' === $action)
         ) {
             if (file_exists($containerConfigCache->getPath())) {
@@ -148,8 +131,7 @@ class ContainerBuilderFactory
                     new RegisterListenersPass(),
                     PassConfig::TYPE_BEFORE_OPTIMIZATION,
                     0
-                )
-            ;
+                );
 
             $container->compile();
 
@@ -166,7 +148,7 @@ class ContainerBuilderFactory
 
         require $file;
 
-        return new \TelNowEdgeCachedContainer();
+        return new TelNowEdgeCachedContainer();
     }
 
     private function registerSelf(BaseContainerBuilder $container): void
@@ -179,11 +161,12 @@ class ContainerBuilderFactory
 
     private function registerModule(
         BaseContainerBuilder $container,
-        bool $forceLoading = false
-    ): void {
-        $modules = \FreePBX::Modules()->getActiveModules(true);
+        bool                 $forceLoading = false
+    ): void
+    {
+        $modules = FreePBX::Modules()->getActiveModules(true);
 
-        foreach (new \DirectoryIterator('/var/www/admin/modules/') as $child) {
+        foreach (new DirectoryIterator('/var/www/admin/modules/') as $child) {
             // foreach (new \DirectoryIterator(__DIR__.'/../../../../../../modules/') as $child) {
             if (false === $child->isDir()) {
                 continue;
@@ -199,7 +182,7 @@ class ContainerBuilderFactory
                 ucfirst($child->getFilename())
             );
 
-            $extension = new \SplFileInfo($filePath);
+            $extension = new SplFileInfo($filePath);
 
             if (true === $extension->isReadable()) {
                 $fqdn = sprintf('\TelNowEdge\Module\%s\DependencyInjection\%sExtension', strtolower($child), ucfirst($child));
@@ -215,7 +198,7 @@ class ContainerBuilderFactory
                 ucfirst($child->getFilename())
             );
 
-            $extension = new \SplFileInfo($filePath);
+            $extension = new SplFileInfo($filePath);
 
             if (true === $extension->isReadable()) {
                 $fqdn = sprintf('\TelNowEdge\Module\%s\DependencyInjection\%sBundle', strtolower($child), ucfirst($child));
@@ -224,5 +207,27 @@ class ContainerBuilderFactory
                 $instance->build($container);
             }
         }
+    }
+
+    public static function getInstance(bool $debug = false, bool $disabledCache = false): BaseContainerBuilder|TelNowEdgeCachedContainer
+    {
+        if (false === isset(static::$instance)) {
+            static::$instance = new static($debug, $disabledCache);
+        }
+
+        return static::$instance->container;
+    }
+
+    public static function dropCache(): bool
+    {
+        // $file = sprintf('%s/../../../../../../assets/cache/container.php', __DIR__);
+
+        $file = '/var/www/admin/assets/cache/container.php';
+
+        if (false === file_exists($file)) {
+            return true;
+        }
+
+        return unlink($file);
     }
 }

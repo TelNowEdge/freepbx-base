@@ -18,14 +18,18 @@
 
 namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
+use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use function in_array;
+use function is_object;
 
 class DependsValidator extends ConstraintValidator implements ContainerAwareInterface
 {
-    private ?\Symfony\Component\DependencyInjection\ContainerInterface $container = null;
+    private ?ContainerInterface $container = null;
 
     public function setContainer(ContainerInterface $container = null): void
     {
@@ -34,40 +38,38 @@ class DependsValidator extends ConstraintValidator implements ContainerAwareInte
 
     /**
      * @param mixed $value
-     *
-     * @throws \ReflectionException
+     * @param Constraint $constraint
+     * @return true
+     * @throws ReflectionException
      */
-    public function validate($value, Constraint $constraint): true
+    public function validate(mixed $value, Constraint $constraint): true
     {
         if (false === $this->container->has($constraint->service[0])) {
             $this->context
                 ->buildViolation('Unable to find service: {{ service }}')
                 ->setParameter('{{ service }}', $constraint->service[0])
-                ->addViolation()
-            ;
+                ->addViolation();
         }
 
         $service = $this->container->get($constraint->service[0]);
 
-        $reflector = new \ReflectionClass($service);
+        $reflector = new ReflectionClass($service);
 
         if (false === $reflector->hasMethod($constraint->service[1])) {
             $this->context
                 ->buildViolation('Unable to find method: {{ method }}')
                 ->setParameter('{{ method }}', $constraint->service[1])
-                ->addViolation()
-            ;
+                ->addViolation();
         }
 
-        $reflModel = new \ReflectionClass($value);
+        $reflModel = new ReflectionClass($value);
         if (false === $reflModel->hasMethod(sprintf('get%s', ucfirst($constraint->field)))
             || false === $reflModel->hasMethod(sprintf('get%s', ucfirst($constraint->depends)))
         ) {
             $this->context
                 ->buildViolation('Unable to find a least one of this methods: {{ methods }}')
                 ->setParameter('{{ methods }}', sprintf('%s or %s', $constraint->field, $constraint->depends))
-                ->addViolation()
-            ;
+                ->addViolation();
         }
 
         $method = $reflector->getMethod($constraint->service[1]);
@@ -76,16 +78,15 @@ class DependsValidator extends ConstraintValidator implements ContainerAwareInte
 
         $field = $fieldMethod->invoke($value);
 
-        if (\is_object($field)) {
+        if (is_object($field)) {
             $field = $field->getId();
         }
 
-        if (false === \in_array($field, $method->invoke($service, $dependsMethod->invoke($value)), true)) {
+        if (false === in_array($field, $method->invoke($service, $dependsMethod->invoke($value)), true)) {
             $this->context
                 ->buildViolation($constraint->message)
                 ->atPath($constraint->field)
-                ->addViolation()
-            ;
+                ->addViolation();
         }
 
         return true;

@@ -18,7 +18,7 @@
 
 namespace TelNowEdge\FreePBX\Base\Module;
 
-trait ModuleTrait
+trait fModuleTrait
 {
     protected function get($service)
     {

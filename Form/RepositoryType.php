@@ -28,10 +28,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
 use TelNowEdge\FreePBX\Base\Form\ChoiceList\RepositoryChoiceLoader;
 use TelNowEdge\FreePBX\Base\Form\DataTransformer\CollectionToArrayTransformer;
+use function call_user_func_array;
 
 class RepositoryType extends AbstractType implements ContainerAwareInterface
 {
-    private ?\Symfony\Component\DependencyInjection\ContainerInterface $container = null;
+    private ?ContainerInterface $container = null;
 
     public function setContainer(ContainerInterface $container = null): void
     {
@@ -42,8 +43,7 @@ class RepositoryType extends AbstractType implements ContainerAwareInterface
     {
         if ($options['multiple']) {
             $builder
-                ->addViewTransformer(new CollectionToArrayTransformer(), true)
-            ;
+                ->addViewTransformer(new CollectionToArrayTransformer(), true);
         }
     }
 
@@ -60,7 +60,7 @@ class RepositoryType extends AbstractType implements ContainerAwareInterface
             }
 
             try {
-                $collection = \call_user_func_array(
+                $collection = call_user_func_array(
                     [$this->container->get($options['repository']), $options['caller']],
                     $options['parameters']
                 );

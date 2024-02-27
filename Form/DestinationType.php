@@ -31,7 +31,7 @@ use TelNowEdge\FreePBX\Base\Helper\DestinationHelper;
 
 class DestinationType extends AbstractType implements ContainerAwareInterface
 {
-    private ?\Symfony\Component\DependencyInjection\ContainerInterface $container = null;
+    private ?ContainerInterface $container = null;
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -60,8 +60,7 @@ class DestinationType extends AbstractType implements ContainerAwareInterface
                         'data-type' => 'tne-destination',
                     ],
                     'placeholder' => '-',
-                ])
-            ;
+                ]);
         });
     }
 
@@ -75,7 +74,6 @@ class DestinationType extends AbstractType implements ContainerAwareInterface
         $resolver
             ->setDefaults([
                 'data_class' => Destination::class,
-            ])
-        ;
+            ]);
     }
 }
