@@ -24,13 +24,11 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 
-class LoggerFactory
+readonly class LoggerFactory
 {
-    private AmpConfManager $ampConfManager;
 
-    public function __construct(AmpConfManager $ampConfManager)
+    public function __construct(private AmpConfManager $ampConfManager)
     {
-        $this->ampConfManager = $ampConfManager;
     }
 
     public function createLogger(): Logger

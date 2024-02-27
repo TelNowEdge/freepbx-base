@@ -20,11 +20,9 @@ namespace TelNowEdge\FreePBX\Base\DialPlan\Verb;
 
 class Raw implements VerbInterface
 {
-    private $data;
 
-    public function __construct($data = '')
+    public function __construct(private $data = '')
     {
-        $this->data = $data;
     }
 
     public function output(): string

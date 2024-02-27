@@ -19,11 +19,11 @@
 namespace TelNowEdge\FreePBX\Base\Builder;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Exception;
 use TelNowEdge\FreePBX\Base\Manager\UserEventManager;
 
 class UserEventBuilder
 {
-    protected UserEventManager $userEventManager;
 
     protected string $name;
 
@@ -33,10 +33,9 @@ class UserEventBuilder
 
     protected ArrayCollection $values;
 
-    public function __construct(UserEventManager $userEventManager)
+    public function __construct(protected UserEventManager $userEventManager)
     {
         $this->values = new ArrayCollection();
-        $this->userEventManager = $userEventManager;
     }
 
     public function getName(): string
@@ -95,7 +94,7 @@ class UserEventBuilder
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function emit(): true
     {
@@ -105,7 +104,6 @@ class UserEventBuilder
                 $this->type,
                 $this->channel,
                 $this->values
-            )
-        ;
+            );
     }
 }

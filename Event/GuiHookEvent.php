@@ -28,10 +28,7 @@ class GuiHookEvent extends Event
     public const GUI_HOOK_DONE = 'gui_hook.done';
     public const GUI_HOOK_PRE_RENDERING = 'gui_hook.pre_rendering';
 
-    protected $module;
-
-    public function __construct($module)
+    public function __construct(protected $module)
     {
-        $this->module = $module;
     }
 }

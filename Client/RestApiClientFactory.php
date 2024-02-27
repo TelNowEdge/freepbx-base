@@ -18,6 +18,7 @@
 
 namespace TelNowEdge\FreePBX\Base\Client;
 
+use Closure;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\CurlMultiHandler;
 use GuzzleHttp\HandlerStack;
@@ -26,11 +27,9 @@ use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 
 class RestApiClientFactory
 {
-    private AmpConfManager $ampConfManager;
 
-    public function __construct(AmpConfManager $ampConfManager)
+    public function __construct(private AmpConfManager $ampConfManager)
     {
-        $this->ampConfManager = $ampConfManager;
     }
 
     public function createClient($apiKey = null, int $timeout = 15): Client
@@ -61,7 +60,7 @@ class RestApiClientFactory
         ]);
     }
 
-    private function addContentType(): \Closure
+    private function addContentType(): Closure
     {
         return static function (callable $handler) {
             return static function (RequestInterface $request, array $options) use ($handler) {
@@ -72,7 +71,7 @@ class RestApiClientFactory
         };
     }
 
-    private function addApiKey($apiKey): \Closure
+    private function addApiKey($apiKey): Closure
     {
         return static function (callable $handler) use ($apiKey) {
             return static function (RequestInterface $request, array $options) use ($handler, $apiKey) {

@@ -22,16 +22,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
 use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
+use function call_user_func;
+use function is_object;
 
 class RepositoryChoiceLoader implements ChoiceLoaderInterface
 {
-    private ArrayCollection $collection;
 
     private ArrayChoiceList $choiceList;
 
-    public function __construct(ArrayCollection $collection)
+    public function __construct(private ArrayCollection $collection)
     {
-        $this->collection = $collection;
     }
 
     public function loadChoicesForValues(array $values, ?callable $value = null): array
@@ -45,7 +45,7 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
 
     public function loadChoiceList(?callable $value = null): ChoiceListInterface
     {
-        if ($this->choiceList instanceof \Symfony\Component\Form\ChoiceList\ArrayChoiceList) {
+        if ($this->choiceList instanceof ArrayChoiceList) {
             return $this->choiceList;
         }
 
@@ -61,17 +61,17 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
         $values = [];
 
         foreach ($choices as $i => $givenChoice) {
-            if (false === \is_object($givenChoice)) {
+            if (false === is_object($givenChoice)) {
                 continue;
             }
 
             if (null !== $value) {
-                $givenChoice = \call_user_func($value, $givenChoice);
+                $givenChoice = call_user_func($value, $givenChoice);
             }
 
             foreach ($this->collection as $val => $choice) {
                 if (null !== $value) {
-                    $val = \call_user_func($value, $choice);
+                    $val = call_user_func($value, $choice);
 
                     if ($val !== $givenChoice) {
                         continue;
@@ -82,7 +82,7 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
                     continue;
                 }
 
-                $values[$i] = (string) $val;
+                $values[$i] = (string)$val;
             }
         }
 

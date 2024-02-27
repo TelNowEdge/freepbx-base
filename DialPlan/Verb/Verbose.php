@@ -20,13 +20,9 @@ namespace TelNowEdge\FreePBX\Base\DialPlan\Verb;
 
 class Verbose implements VerbInterface
 {
-    private int $level;
-    private string $message;
 
-    public function __construct(int $level = 1, string $message = '')
+    public function __construct(private int $level = 1, private string $message = '')
     {
-        $this->level = $level;
-        $this->message = $message;
     }
 
     public function output(): string
