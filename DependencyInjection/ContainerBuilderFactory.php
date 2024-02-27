@@ -47,7 +47,7 @@ class ContainerBuilderFactory
         $this->container = static::startContainer($debug, $disabledCache);
     }
 
-    public static function getInstance(bool $debug = false, bool $disabledCache = false)
+    public static function getInstance(bool $debug = false, bool $disabledCache = false): \Symfony\Component\DependencyInjection\ContainerBuilder|\TelNowEdgeCachedContainer
     {
         if (false === isset(static::$instance)) {
             static::$instance = new static($debug, $disabledCache);

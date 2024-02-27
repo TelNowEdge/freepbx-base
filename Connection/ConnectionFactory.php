@@ -47,10 +47,10 @@ class ConnectionFactory
          */
         $config = new Configuration();
         $connectionParams = [
-            'dbname' => true === $this->ampConfManager->exists('AMPDBNAME') ? $this->ampConfManager->get('AMPDBNAME') : 'asterisk',
+            'dbname' => $this->ampConfManager->exists('AMPDBNAME') ? $this->ampConfManager->get('AMPDBNAME') : 'asterisk',
             'user' => $this->ampConfManager->get('AMPDBUSER'),
             'password' => $this->ampConfManager->get('AMPDBPASS'),
-            'host' => true === $this->ampConfManager->exists('AMPDBHOST') ? $this->ampConfManager->get('AMPDBHOST') : 'localhost',
+            'host' => $this->ampConfManager->exists('AMPDBHOST') ? $this->ampConfManager->get('AMPDBHOST') : 'localhost',
             'driver' => 'pdo_mysql',
             'port' => true === $this->ampConfManager->get('AMPDBPORT') ? $this->ampConfManager->get('AMPDBPORT') : 3306,
             'charset' => 'utf8',
@@ -75,10 +75,10 @@ class ConnectionFactory
          */
         $config = new Configuration();
         $connectionParams = [
-            'dbname' => true === $this->ampConfManager->exists('AMPDBCDRNAME') ? $this->ampConfManager->get('AMPDBCDRNAME') : 'asteriskcdrdb',
+            'dbname' => $this->ampConfManager->exists('AMPDBCDRNAME') ? $this->ampConfManager->get('AMPDBCDRNAME') : 'asteriskcdrdb',
             'user' => $this->ampConfManager->get('AMPDBUSER'),
             'password' => $this->ampConfManager->get('AMPDBPASS'),
-            'host' => true === $this->ampConfManager->exists('AMPDBHOST') ? $this->ampConfManager->get('AMPDBHOST') : 'localhost',
+            'host' => $this->ampConfManager->exists('AMPDBHOST') ? $this->ampConfManager->get('AMPDBHOST') : 'localhost',
             'driver' => 'pdo_mysql',
             'port' => true === $this->ampConfManager->get('AMPDBPORT') ? $this->ampConfManager->get('AMPDBPORT') : 3306,
             'charset' => 'utf8',
@@ -103,10 +103,10 @@ class ConnectionFactory
          */
         $config = new Configuration();
         $connectionParams = [
-            'dbname' => true === $this->ampConfManager->exists('TNE_DBQUEUEMEMBERS') ? $this->ampConfManager->get('TNE_DBQUEUEMEMBERS') : 'tneaddons',
+            'dbname' => $this->ampConfManager->exists('TNE_DBQUEUEMEMBERS') ? $this->ampConfManager->get('TNE_DBQUEUEMEMBERS') : 'tneaddons',
             'user' => $this->ampConfManager->get('AMPDBUSER'),
             'password' => $this->ampConfManager->get('AMPDBPASS'),
-            'host' => true === $this->ampConfManager->exists('AMPDBHOST') ? $this->ampConfManager->get('AMPDBHOST') : 'localhost',
+            'host' => $this->ampConfManager->exists('AMPDBHOST') ? $this->ampConfManager->get('AMPDBHOST') : 'localhost',
             'driver' => 'pdo_mysql',
             'port' => true === $this->ampConfManager->get('AMPDBPORT') ? $this->ampConfManager->get('AMPDBPORT') : 3306,
             'charset' => 'utf8',
