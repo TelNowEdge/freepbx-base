@@ -18,7 +18,7 @@
 
 namespace TelNowEdge\FreePBX\Base\DialPlan\Verb;
 
-class Spy implements VerbInterface
+readonly class Spy implements VerbInterface
 {
 
     public function __construct(private string $prefix = '', private string $options = '')

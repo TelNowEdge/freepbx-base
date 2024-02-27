@@ -30,7 +30,7 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
 
     private ArrayChoiceList $choiceList;
 
-    public function __construct(private ArrayCollection $collection)
+    public function __construct(private readonly ArrayCollection $collection)
     {
     }
 
