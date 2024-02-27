@@ -19,30 +19,29 @@
 namespace TelNowEdge\FreePBX\Base\Manager;
 
 use AGI_AsteriskManager;
+use Exception;
 
 class SendRequestManager
 {
     /**
      * class AGI_AsteriskManager (libraries/php-asmanager.php).
      */
-    protected \AGI_AsteriskManager $connection;
+    protected AGI_AsteriskManager $connection;
 
-    public function setConnection(\AGI_AsteriskManager $connection): void
+    public function setConnection(AGI_AsteriskManager $connection): void
     {
         $this->connection = $connection;
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function sendRequest(string $request, array $command): array|false
     {
         try {
-            return $this->connection
-                ->send_request($request, $command)
-            ;
-        } catch (\Exception $e) {
-            throw new \Exception(sprintf('Error with: %s', $request), 0, $e);
+            return $this->connection->send_request($request, $command);
+        } catch (Exception $e) {
+            throw new Exception(sprintf('Error with: %s', $request), 0, $e);
         }
     }
 }

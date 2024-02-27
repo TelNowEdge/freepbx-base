@@ -21,17 +21,10 @@ namespace TelNowEdge\FreePBX\Base\Form\Model;
 use Symfony\Component\Validator\Constraints as Assert;
 use TelNowEdge\FreePBX\Base\Validator\Constraints as TNEAssert;
 
-// /**
-// * @TNEAssert\Depends(
-// *   field = "destination",
-// *   depends = "category",
-// *   service = {"TelNowEdge\FreePBX\Base\Helper\DestinationHelper", "getFlatDestinationsByCategory"}
-// * )
-// */
 #[TNEAssert\Depends(
-    field : 'destination',
-    depends : 'category',
-    service : ['TelNowEdge\\FreePBX\\Base\\Helper\\DestinationHelper', 'getFlatDestinationsByCategory']
+    field: 'destination',
+    depends: 'category',
+    service: ['TelNowEdge\\FreePBX\\Base\\Helper\\DestinationHelper', 'getFlatDestinationsByCategory']
 )]
 class Destination
 {
