@@ -204,10 +204,6 @@ services:
 
   # Forms *************************************************************
   TelNowEdge\FreePBX\Base\Form\DestinationType:
-    calls:
-      - method: setContainer
-        arguments:
-          - '@service_container'
     tags:
       - "form.type"
 

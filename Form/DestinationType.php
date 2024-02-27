@@ -18,55 +18,50 @@
 
 namespace TelNowEdge\FreePBX\Base\Form;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Serializer\Serializer;
 use TelNowEdge\FreePBX\Base\Form\Model\Destination;
 use TelNowEdge\FreePBX\Base\Helper\DestinationHelper;
 
-class DestinationType extends AbstractType implements ContainerAwareInterface
+class DestinationType extends AbstractType
 {
-    private ?ContainerInterface $container = null;
+
+    public function __construct(private readonly DestinationHelper $destinationHelper, private readonly Serializer $serializer)
+    {
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $destinationHelper = $this->container->get(DestinationHelper::class);
-
         // All in event because $builder->getData() isn't available on child form.
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($destinationHelper): void {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $data = $event->getData();
             $form = $event->getForm();
             if (is_a($data, Destination::class, true)) {
-                $destinationHelper->addFake($data);
+                $this->destinationHelper->addFake($data);
             }
 
             $form
                 ->add('category', ChoiceType::class, [
                     'choices' => array_combine(
-                        $destinationHelper->getCategories(),
-                        $destinationHelper->getCategories()
+                        $this->destinationHelper->getCategories(),
+                        $this->destinationHelper->getCategories()
                     ),
                     'placeholder' => '-',
                 ])
                 ->add('destination', ChoiceType::class, [
-                    'choices' => $destinationHelper->getDestinations(),
+                    'choices' => $this->destinationHelper->getDestinations(),
                     'attr' => [
-                        'data-prototype' => $this->container->get('serializer')->serialize($destinationHelper->getRaw(), 'json'),
+                        'data-prototype' => $this->serializer->serialize($this->destinationHelper->getRaw(), 'json'),
                         'data-type' => 'tne-destination',
                     ],
                     'placeholder' => '-',
                 ]);
         });
-    }
-
-    public function setContainer(ContainerInterface $container = null): void
-    {
-        $this->container = $container;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

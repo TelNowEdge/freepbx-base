@@ -18,17 +18,7 @@
 
 namespace TelNowEdge\FreePBX\Base\DialPlan\File;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
-abstract class AbstractFile implements ContainerAwareInterface
+abstract class AbstractFile
 {
-    protected $container;
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
     abstract public function generate(array $config);
 }
