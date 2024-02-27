@@ -39,40 +39,40 @@ class ChoiceValidator extends BaseChoiceValidator implements ContainerAwareInter
     /**
      * @throws ReflectionException
      */
-    public function validate(mixed $value, Constraint $consraint)
+    public function validate(mixed $value, Constraint $constraint)
     {
-        if (is_array($consraint->service)) {
-            if (true === $consraint->nullable) {
+        if (is_array($constraint->service)) {
+            if (true === $constraint->nullable) {
                 return true;
             }
 
-            if (false === $this->container->has($consraint->service[0])) {
+            if (false === $this->container->has($constraint->service[0])) {
                 $this->context
                     ->buildViolation('Unable to find service: {{ service }}')
-                    ->setParameter('{{ service }}', $consraint->service[0])
+                    ->setParameter('{{ service }}', $constraint->service[0])
                     ->addViolation();
             }
 
-            $service = $this->container->get($consraint->service[0]);
+            $service = $this->container->get($constraint->service[0]);
 
             $reflector = new ReflectionClass($service);
 
-            if (false === $reflector->hasMethod($consraint->service[1])) {
+            if (false === $reflector->hasMethod($constraint->service[1])) {
                 $this->context
                     ->buildViolation('Unable to find method: {{ method }}')
-                    ->setParameter('{{ method }}', $consraint->service[1])
+                    ->setParameter('{{ method }}', $constraint->service[1])
                     ->addViolation();
             }
 
-            $method = $reflector->getMethod($consraint->service[1]);
+            $method = $reflector->getMethod($constraint->service[1]);
 
             if (false === in_array($value, $method->invoke($service), true)) {
-                $this->context->addViolation($consraint->message);
+                $this->context->addViolation($constraint->message);
             }
 
             return true;
         }
 
-        parent::validate($value, $consraint);
+        parent::validate($value, $constraint);
     }
 }
