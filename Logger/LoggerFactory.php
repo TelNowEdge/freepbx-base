@@ -26,10 +26,7 @@ use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 
 readonly class LoggerFactory
 {
-
-    public function __construct(private AmpConfManager $ampConfManager)
-    {
-    }
+    public function __construct(private AmpConfManager $ampConfManager) {}
 
     public function createLogger(): Logger
     {

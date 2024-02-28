@@ -25,6 +25,7 @@ use Exception;
 use IteratorAggregate;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 use Traversable;
+
 use function array_key_exists;
 use function count;
 
@@ -35,9 +36,7 @@ class AutoExpireBag implements SessionBagInterface, IteratorAggregate, Countable
 
     private array $attributes;
 
-    public function __construct(protected string $storageKey = '_telnowedge_autoexpires')
-    {
-    }
+    public function __construct(protected string $storageKey = '_telnowedge_autoexpires') {}
 
     public function getName(): string
     {

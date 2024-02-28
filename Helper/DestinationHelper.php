@@ -18,6 +18,7 @@
 
 namespace TelNowEdge\FreePBX\Base\Helper;
 
+use FreePBX;
 use TelNowEdge\FreePBX\Base\Form\Model\Destination;
 
 class DestinationHelper
@@ -26,7 +27,7 @@ class DestinationHelper
 
     public function __construct()
     {
-        $destinations = \FreePBX::Modules()->getDestinations();
+        $destinations = FreePBX::Modules()->getDestinations();
 
         foreach ($destinations as $destination) {
             $category = $destination['category'] ?? $destination['name'];

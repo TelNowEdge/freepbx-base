@@ -39,7 +39,7 @@ class SpecialPhpBridgeSessionStorage extends NativeSessionStorage
             return true;
         }
 
-        if (\PHP_SESSION_ACTIVE === session_status()) {
+        if (PHP_SESSION_ACTIVE === session_status()) {
             $this->loadSession();
 
             return true;

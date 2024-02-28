@@ -22,17 +22,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
 use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
+
 use function call_user_func;
 use function is_object;
 
 class RepositoryChoiceLoader implements ChoiceLoaderInterface
 {
-
     private ArrayChoiceList $choiceList;
 
-    public function __construct(private readonly ArrayCollection $collection)
-    {
-    }
+    public function __construct(private readonly ArrayCollection $collection) {}
 
     public function loadChoicesForValues(array $values, ?callable $value = null): array
     {
@@ -82,7 +80,7 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
                     continue;
                 }
 
-                $values[$i] = (string)$val;
+                $values[$i] = (string) $val;
             }
         }
 

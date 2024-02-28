@@ -30,10 +30,7 @@ use TelNowEdge\FreePBX\Base\Helper\DestinationHelper;
 
 class DestinationType extends AbstractType
 {
-
-    public function __construct(private readonly DestinationHelper $destinationHelper, private readonly Serializer $serializer)
-    {
-    }
+    public function __construct(private readonly DestinationHelper $destinationHelper, private readonly Serializer $serializer) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

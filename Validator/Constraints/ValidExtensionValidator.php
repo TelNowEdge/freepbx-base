@@ -24,6 +24,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
+
 use function array_key_exists;
 
 class ValidExtensionValidator extends ConstraintValidator
@@ -36,8 +37,6 @@ class ValidExtensionValidator extends ConstraintValidator
     }
 
     /**
-     * @param mixed $value
-     * @param Constraint $constraint
      * @throws ReflectionException
      */
     public function validate(mixed $value, Constraint $constraint): void
@@ -84,7 +83,7 @@ class ValidExtensionValidator extends ConstraintValidator
 
         $exts = framework_get_extmap();
 
-        if (false === array_key_exists($fieldValue, (array)$exts)) {
+        if (false === array_key_exists($fieldValue, (array) $exts)) {
             return;
         }
 

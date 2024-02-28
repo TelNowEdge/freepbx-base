@@ -4,6 +4,7 @@
 
 namespace TelNowEdge\FreePBX\Base\DependencyInjection;
 
+use Exception;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -20,7 +21,7 @@ final class KernelTest extends Kernel
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function registerContainerConfiguration(LoaderInterface $loader): void
     {

@@ -24,7 +24,6 @@ use TelNowEdge\FreePBX\Base\Manager\UserEventManager;
 
 class UserEventBuilder
 {
-
     protected string $name;
 
     protected $type;

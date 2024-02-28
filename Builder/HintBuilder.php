@@ -29,9 +29,7 @@ class HintBuilder
 
     protected $status;
 
-    public function __construct(protected HintManager $hintManager)
-    {
-    }
+    public function __construct(protected HintManager $hintManager) {}
 
     public function getName(): string
     {

@@ -24,6 +24,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+
 use function is_object;
 
 class CompoundUniqueValidator extends ConstraintValidator implements ContainerAwareInterface
@@ -71,7 +72,7 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
                 foreach ($values as $key => $val) {
                     ++$i;
 
-                    $errors['{{ ' . $i . ' }}'] = is_object($val) ? sprintf('%s__%s', $key, $val->getId()) : sprintf('%s__%s', $key, $val);
+                    $errors['{{ '.$i.' }}'] = is_object($val) ? sprintf('%s__%s', $key, $val->getId()) : sprintf('%s__%s', $key, $val);
                 }
 
                 $constraint->message = sprintf($constraint->message, implode(',', $errors));

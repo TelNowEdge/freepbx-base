@@ -38,6 +38,7 @@ use Symfony\Component\Form\DependencyInjection\FormPass;
 use Symfony\Component\Validator\DependencyInjection\AddConstraintValidatorsPass;
 use TelNowEdge\FreePBX\Base\DependencyInjection\Compiler\ControllerPass;
 use TelNowEdgeCachedContainer;
+
 use const PHP_SAPI;
 
 class ContainerBuilderFactory
@@ -50,6 +51,28 @@ class ContainerBuilderFactory
     {
         static::autoloadTelNowEdgeModule();
         $this->container = static::startContainer($debug, $disabledCache);
+    }
+
+    public static function getInstance(bool $debug = false, bool $disabledCache = false): BaseContainerBuilder|TelNowEdgeCachedContainer
+    {
+        if (false === isset(static::$instance)) {
+            static::$instance = new static($debug, $disabledCache);
+        }
+
+        return static::$instance->container;
+    }
+
+    public static function dropCache(): bool
+    {
+        // $file = sprintf('%s/../../../../../../assets/cache/container.php', __DIR__);
+
+        $file = '/var/www/admin/assets/cache/container.php';
+
+        if (false === file_exists($file)) {
+            return true;
+        }
+
+        return unlink($file);
     }
 
     private function autoloadTelNowEdgeModule(): void
@@ -161,9 +184,8 @@ class ContainerBuilderFactory
 
     private function registerModule(
         BaseContainerBuilder $container,
-        bool                 $forceLoading = false
-    ): void
-    {
+        bool $forceLoading = false
+    ): void {
         $modules = FreePBX::Modules()->getActiveModules(true);
 
         foreach (new DirectoryIterator('/var/www/admin/modules/') as $child) {
@@ -207,27 +229,5 @@ class ContainerBuilderFactory
                 $instance->build($container);
             }
         }
-    }
-
-    public static function getInstance(bool $debug = false, bool $disabledCache = false): BaseContainerBuilder|TelNowEdgeCachedContainer
-    {
-        if (false === isset(static::$instance)) {
-            static::$instance = new static($debug, $disabledCache);
-        }
-
-        return static::$instance->container;
-    }
-
-    public static function dropCache(): bool
-    {
-        // $file = sprintf('%s/../../../../../../assets/cache/container.php', __DIR__);
-
-        $file = '/var/www/admin/assets/cache/container.php';
-
-        if (false === file_exists($file)) {
-            return true;
-        }
-
-        return unlink($file);
     }
 }

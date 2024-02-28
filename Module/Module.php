@@ -18,13 +18,16 @@
 
 namespace TelNowEdge\FreePBX\Base\Module;
 
+use Exception;
+use FreePBX_Helpers;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 use TelNowEdge\FreePBX\Base\DependencyInjection\ContainerBuilderFactory;
+use TelNowEdgeCachedContainer;
 
-abstract class Module extends \FreePBX_Helpers
+abstract class Module extends FreePBX_Helpers
 {
     use ModuleTrait;
 
@@ -56,13 +59,13 @@ abstract class Module extends \FreePBX_Helpers
     /**
      * Symfony\Component\DependencyInjection\ContainerBuilder.
      */
-    protected ContainerBuilder|\TelNowEdgeCachedContainer $container;
+    protected ContainerBuilder|TelNowEdgeCachedContainer $container;
 
     /**
      * @param null|mixed $freepbx
      * @param mixed      $disabledCache
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct($freepbx = null, $disabledCache = false)
     {

@@ -18,6 +18,9 @@
 
 namespace TelNowEdge\FreePBX\Base\Repository;
 
+use Exception;
+use ReflectionClass;
+use ReflectionException;
 use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 
 abstract class AbstractFileSystemRepository
@@ -34,12 +37,12 @@ abstract class AbstractFileSystemRepository
     /**
      * @param mixed $fqn
      *
-     * @throws \ReflectionException
-     * @throws \Exception
+     * @throws ReflectionException
+     * @throws Exception
      */
     protected function objectFromArray($fqn, array $array)
     {
-        $reflector = new \ReflectionClass($fqn);
+        $reflector = new ReflectionClass($fqn);
         $class = $reflector->newInstance();
 
         foreach ($array as $prop => $value) {
@@ -48,7 +51,7 @@ abstract class AbstractFileSystemRepository
             if (true === $reflector->hasMethod($method)) {
                 $reflector->getMethod($method)->invoke($class, $value);
             } else {
-                throw new \Exception(sprintf('%s:%s is not callable', $fqn, $method));
+                throw new Exception(sprintf('%s:%s is not callable', $fqn, $method));
             }
         }
 

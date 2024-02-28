@@ -27,10 +27,7 @@ use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 
 class ConnectionFactory
 {
-
-    public function __construct(private AmpConfManager $ampConfManager)
-    {
-    }
+    public function __construct(private AmpConfManager $ampConfManager) {}
 
     /**
      * @throws Exception

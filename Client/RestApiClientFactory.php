@@ -27,10 +27,7 @@ use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 
 class RestApiClientFactory
 {
-
-    public function __construct(private AmpConfManager $ampConfManager)
-    {
-    }
+    public function __construct(private AmpConfManager $ampConfManager) {}
 
     public function createClient($apiKey = null, int $timeout = 15): Client
     {

@@ -25,6 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
+
 use function is_object;
 
 class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInterface
@@ -37,8 +38,6 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
     }
 
     /**
-     * @param mixed $value
-     * @param Constraint $constraint
      * @throws ReflectionException
      */
     public function validate(mixed $value, Constraint $constraint): void
@@ -78,7 +77,7 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
             $fieldValue = $fieldValue->getId();
         }
 
-        if (null === $fieldValue && (bool)$constraint->nullable) {
+        if (null === $fieldValue && (bool) $constraint->nullable) {
             return;
         }
 

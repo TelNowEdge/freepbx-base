@@ -23,6 +23,8 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
+use function is_array;
+
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
@@ -44,7 +46,7 @@ class CollectionToArrayTransformer implements DataTransformerInterface
         }
         // For cases when the collection getter returns $collection->toArray()
         // in order to prevent modifications of the returned collection
-        if (\is_array($collection)) {
+        if (is_array($collection)) {
             return $collection;
         }
         if (!$collection instanceof Collection) {

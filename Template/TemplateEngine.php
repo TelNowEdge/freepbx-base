@@ -27,6 +27,7 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\RuntimeLoader\FactoryRuntimeLoader;
 use Twig\TwigFilter;
+
 use function dirname;
 use function in_array;
 
@@ -45,12 +46,12 @@ class TemplateEngine implements TemplateEngineInterface
         $vendorTwigBridgeDir = dirname($appVariableReflection->getFileName());
 
         $twig = new Environment(new FilesystemLoader([
-            $vendorTwigBridgeDir . '/Resources/views/Form',
-            __DIR__ . '/../Resources/views/Form',
+            $vendorTwigBridgeDir.'/Resources/views/Form',
+            __DIR__.'/../Resources/views/Form',
         ]), [// 'cache' => sprintf('%s/../../../../../../assets/cache/twig/', __DIR__),
         ]);
 
-        $twig->getLoader()->addPath(__DIR__ . '/../Resources/views', 'telnowedge');
+        $twig->getLoader()->addPath(__DIR__.'/../Resources/views', 'telnowedge');
 
         $formEngine = new TwigRendererEngine([$defaultFormTheme], $twig);
 

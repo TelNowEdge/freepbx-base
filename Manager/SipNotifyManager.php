@@ -40,10 +40,10 @@ class SipNotifyManager
      */
     public function notify($event, int $device, string $tech = 'sip'): void
     {
-        $cmd = sprintf('sip notify %s %d', $event, (int)$device);
+        $cmd = sprintf('sip notify %s %d', $event, (int) $device);
 
         if ('pjsip' === $tech) {
-            $cmd = sprintf('pjsip send notify %s endpoint %d', $event, (int)$device);
+            $cmd = sprintf('pjsip send notify %s endpoint %d', $event, (int) $device);
         }
 
         $command = [

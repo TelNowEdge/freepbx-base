@@ -24,6 +24,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+
 use function in_array;
 use function is_object;
 
@@ -37,9 +38,6 @@ class DependsValidator extends ConstraintValidator implements ContainerAwareInte
     }
 
     /**
-     * @param mixed $value
-     * @param Constraint $constraint
-     * @return true
      * @throws ReflectionException
      */
     public function validate(mixed $value, Constraint $constraint): true

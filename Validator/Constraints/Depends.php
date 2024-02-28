@@ -18,9 +18,10 @@
 
 namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
+use Attribute;
 use Symfony\Component\Validator\Constraint;
 
-#[\Attribute]
+#[Attribute]
 class Depends extends Constraint
 {
     public string $field;
