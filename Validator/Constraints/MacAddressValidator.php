@@ -23,9 +23,9 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class MacAddressValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $consraint)
+    public function validate($value, Constraint $constraint)
     {
-        if (true === $consraint->allowAuto && 'auto' === strtolower($value)) {
+        if (true === $constraint->allowAuto && 'auto' === strtolower($value)) {
             return true;
         }
 
@@ -33,6 +33,6 @@ class MacAddressValidator extends ConstraintValidator
             return true;
         }
 
-        $this->context->addViolation($consraint->message);
+        $this->context->addViolation($constraint->message);
     }
 }

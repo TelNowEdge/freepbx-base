@@ -38,7 +38,7 @@ class DestinationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // All in event because $builder->getData() isn't available on child form.
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             $data = $event->getData();
             $form = $event->getForm();
             if (is_a($data, Destination::class, true)) {

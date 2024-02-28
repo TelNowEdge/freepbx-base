@@ -23,20 +23,20 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class IpeiValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $consraint): true
+    public function validate($value, Constraint $constraint): true
     {
         if (null === $value) {
             return true;
         }
 
         if ((0 === preg_match('/^\d{12}[0-9\*]$/', $value)) && (0 === preg_match('/^0[0-9a-fA-F]{9}$/', $value))) {
-            $this->context->addViolation($consraint->message);
+            $this->context->addViolation($constraint->message);
         }
 
         if (1 === preg_match('/^\d{12}[0-9\*]$/', $value)) {
             // C'est un ipei
             if ($this->calculCrc($value) !== $value) {
-                $this->context->addViolation($consraint->message);
+                $this->context->addViolation($constraint->message);
             }
         }
 
@@ -56,6 +56,6 @@ class IpeiValidator extends ConstraintValidator
 
         $crc = 10 === $crc ? '*' : $crc;
 
-        return $ipei.$crc;
+        return $ipei . $crc;
     }
 }

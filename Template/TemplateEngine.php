@@ -18,6 +18,7 @@
 
 namespace TelNowEdge\FreePBX\Base\Template;
 
+use ReflectionClass;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Bridge\Twig\Form\TwigRendererEngine;
 use Symfony\Component\Form\FormRenderer;
@@ -26,6 +27,8 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\RuntimeLoader\FactoryRuntimeLoader;
 use Twig\TwigFilter;
+use function dirname;
+use function in_array;
 
 class TemplateEngine implements TemplateEngineInterface
 {
@@ -38,21 +41,21 @@ class TemplateEngine implements TemplateEngineInterface
     {
         $defaultFormTheme = 'freepbx_layout_page.html.twig';
 
-        $appVariableReflection = new \ReflectionClass('\Symfony\Bridge\Twig\AppVariable');
-        $vendorTwigBridgeDir = \dirname($appVariableReflection->getFileName());
+        $appVariableReflection = new ReflectionClass('\Symfony\Bridge\Twig\AppVariable');
+        $vendorTwigBridgeDir = dirname($appVariableReflection->getFileName());
 
         $twig = new Environment(new FilesystemLoader([
-            $vendorTwigBridgeDir.'/Resources/views/Form',
-            __DIR__.'/../Resources/views/Form',
+            $vendorTwigBridgeDir . '/Resources/views/Form',
+            __DIR__ . '/../Resources/views/Form',
         ]), [// 'cache' => sprintf('%s/../../../../../../assets/cache/twig/', __DIR__),
         ]);
 
-        $twig->getLoader()->addPath(__DIR__.'/../Resources/views', 'telnowedge');
+        $twig->getLoader()->addPath(__DIR__ . '/../Resources/views', 'telnowedge');
 
         $formEngine = new TwigRendererEngine([$defaultFormTheme], $twig);
 
         $twig->addRuntimeLoader(new FactoryRuntimeLoader([
-            FormRenderer::class => static function () use ($formEngine, $csrfManager): \Symfony\Component\Form\FormRenderer {
+            FormRenderer::class => static function () use ($formEngine, $csrfManager): FormRenderer {
                 return new FormRenderer($formEngine, $csrfManager);
             },
         ]));
@@ -80,7 +83,7 @@ class TemplateEngine implements TemplateEngineInterface
 
         $paths = $this->twig->getLoader()->getPaths($namespace);
 
-        if (\in_array($path, $paths, true)) {
+        if (in_array($path, $paths, true)) {
             return $this;
         }
 

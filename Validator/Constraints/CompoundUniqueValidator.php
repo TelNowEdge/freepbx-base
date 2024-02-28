@@ -43,7 +43,7 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
     public function validate($class, Constraint $constraint): void
     {
         $values = $this->getClassValues($class, $constraint);
-        if (true === $this->container->has($constraint->service[0])) {
+        if ($this->container->has($constraint->service[0])) {
             $service = $this->container->get($constraint->service[0]);
             $reflector = new ReflectionClass($service);
 
