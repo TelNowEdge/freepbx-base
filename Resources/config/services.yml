@@ -1,11 +1,3 @@
-#parameters:
-#  base_validator_classes:
-#    - ChoiceValidator
-#    - DependsValidator
-#    - UniqueIdValidator
-#    - CompoundUniqueValidator
-#    - ValidExtensionValidator
-
 services:
   _defaults:
     autowire: true
@@ -283,11 +275,7 @@ services:
   #          - '@AsteriskManager'
 
   # Consoles *************************************************************
-  TelNowEdge\FreePBX\Base\Console\ApplicationFactory:
-    calls:
-      - method: setContainer
-        arguments:
-          - '@service_container'
+  TelNowEdge\FreePBX\Base\Console\ApplicationFactory: ~
 
   freepbx_application:
     class: Symfony\Component\Console\Application
