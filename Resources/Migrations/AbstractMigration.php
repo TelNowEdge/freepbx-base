@@ -21,9 +21,12 @@ namespace TelNowEdge\FreePBX\Base\Resources\Migrations;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Exception\TableNotFoundException;
+use ReflectionClass;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use const PHP_SAPI;
 
 abstract class AbstractMigration
 {
@@ -37,18 +40,14 @@ abstract class AbstractMigration
      */
     protected Connection $cdrConnection;
 
-    protected AnnotationReader $annotationReader;
-
     protected ConsoleOutput $output;
 
     protected ArrayCollection $skipped;
 
-    public function __construct(AnnotationReader $annotationReader)
+    public function __construct(private readonly AnnotationReader $annotationReader)
     {
-        $this->annotationReader = $annotationReader;
         $this->output = new ConsoleOutput();
         $this->skipped = new ArrayCollection();
-
         $outputStyle = new OutputFormatterStyle('cyan');
         $this->output->getFormatter()->setStyle('skipped', $outputStyle);
     }
@@ -61,16 +60,45 @@ abstract class AbstractMigration
         return $this;
     }
 
+    // MigrationBuilder -> migrateOne -> (Abstract(...)Migration)parent::migrateOne -> migrateOne
     public function migrateOne($id, array $res)
     {
         $this->checkDb();
     }
 
+    // MigrationBuilder -> migrateOne -> (Abstract(...)Migration)parent::migrateOne -> migrateOne -> checkDb
+    // MigrationBuilder -> uninstallOne -> (Abstract(...)Migration)parent::uninstallOne -> uninstallOne -> checkDb
+    protected function checkDb(): void
+    {
+        try {
+            $this->connection->executeQuery('desc tne_migrations');
+        } catch (TableNotFoundException $e) {
+            $this->connection->executeQuery('
+                CREATE
+                    TABLE
+                        tne_migrations (
+                            `id` INT
+                            ,`module` VARCHAR (255) NOT NULL
+                            ,created_at DATETIME NOT NULL
+                            ,PRIMARY KEY (
+                                `id`
+                                ,`module`
+                            )
+                        )
+            ');
+        }
+    }
+
+    // Deprecated
+    // MigrationBuilder -> playAgainOne -> uninstallOne
+    // MigrationBuilder -> uninstall -> uninstallOne
+    // MigrationBuilder -> uninstallOne -> (Abstract(...)Migration)parent::uninstallOne -> uninstallOne
     public function uninstallOne($id, array $res)
     {
         $this->checkDb();
     }
 
+    // MigrationBuilder -> playAgainOne
     public function playAgainOne($id, array $res): bool
     {
         if (true !== $res['annotation'][0]->playAgain) {
@@ -99,8 +127,97 @@ abstract class AbstractMigration
         return true;
     }
 
-    // Deprecated
+    // MigrationBuilder -> playAgainOne -> out
+    // MigrationBuilder -> displaySkipped -> out
+    // MigrationBuilder -> uninstall -> needReinstallOne
+    protected function out($msg): void
+    {
+        $mapping = [
+            'OK' => [
+                'console' => 'info',
+                'web' => 'green',
+            ],
+            'SKIPPED' => [
+                'console' => 'skipped',
+                'web' => 'cyan',
+            ],
+            'ERROR' => [
+                'console' => 'error',
+                'web' => 'red',
+            ],
+            'PROCESS' => [
+                'console' => 'comment',
+                'web' => 'orange',
+            ],
+            'PLAYAGAIN' => [
+                'console' => 'comment',
+                'web' => 'orange',
+            ],
+        ];
 
+        $mode = 'cli' === PHP_SAPI
+            ? 'console'
+            : 'web';
+
+        if (1 !== preg_match('/^\[([^\]]+)\]/', $msg, $match)) {
+            $this->write($msg);
+        }
+
+        if (false === isset($mapping[$match[1]][$mode])) {
+            $this->write($msg);
+
+            return;
+        }
+
+        $pattern = sprintf('/%s/', $match[1]);
+        $subject = 'console' === $mode
+            ? '<%1$s>%2$s</%1$s>'
+            : '<span style="font-weight: bold; color:%1$s;">%2$s</span>';
+
+        $replacement = sprintf($subject, $mapping[$match[1]][$mode], $match[1]);
+
+        $msg = preg_replace($pattern, $replacement, $msg);
+
+        $this->write($msg);
+    }
+
+    // MigrationBuilder -> playAgainOne -> out -> write
+    // MigrationBuilder -> displaySkipped -> out -> write
+    private function write(iterable|string $msg): void
+    {
+        if ('cli' === PHP_SAPI) {
+            $this->output->writeln($msg);
+
+            return;
+        }
+
+        outn(sprintf('%s<br/>', $msg));
+    }
+
+    // MigrationBuilder -> playAgainOne -> removeMigration
+    // MigrationBuilder -> uninstall -> needReinstallOne -> removeMigration
+    // MigrationBuilder -> uninstall -> uninstallOne -> -> removeMigration
+    /**
+     * @param mixed $version
+     * @param mixed $module
+     *
+     * @throws Exception
+     */
+    protected function removeMigration($version, $module): void
+    {
+        if (1 === preg_match('/^99(\d{10})_doLast$/', $version, $match)) {
+            $version = $match[1];
+        }
+
+        $stmt = $this->connection->prepare('DELETE FROM `tne_migrations` WHERE id = ? AND module = ?');
+
+        $stmt->bindValue(1, $version);
+        $stmt->bindValue(2, $module);
+
+        $stmt->executeQuery();
+    }
+
+    // MigrationBuilder -> uninstall -> needReinstallOne
     public function needReinstallOne($id, array $res): bool
     {
         if (true !== $res['annotation'][0]->reinstall) {
@@ -130,7 +247,7 @@ abstract class AbstractMigration
     }
 
     // Deprecated
-
+    // MigrationBuilder -> displaySkipped
     public function displaySkipped(ArrayCollection $collection): void
     {
         $number = array_reduce($collection->getValues(), static function ($acc, $x): float|int {
@@ -143,65 +260,13 @@ abstract class AbstractMigration
         ));
     }
 
-    public function migrate()
-    {
-        @trigger_error('Remove in new version', E_USER_DEPRECATED);
-        $this->checkDb();
-    }
-
     // Deprecated
-
-    public function uninstall()
-    {
-        @trigger_error('Remove in new version', E_USER_DEPRECATED);
-        $this->checkDb();
-    }
-
-    /**
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function playAgain(): bool
-    {
-        @trigger_error('Remove in new version', E_USER_DEPRECATED);
-
-        $this->checkDb();
-
-        $error = false;
-        $methods = $this->getOrderedMigration();
-        $this->connection->beginTransaction();
-
-        foreach ($methods as $key => $res) {
-            if (1 !== preg_match('/^migration(\d{10})$/', $res['method']->name)) {
-                continue;
-            }
-
-            if (true !== $res['annotation'][0]->playAgain) {
-                continue;
-            }
-
-            try {
-                $this->removeMigration($key, static::class);
-                $this->out(sprintf('%s marked for playAgain', $key));
-            } catch (\Exception $e) {
-                $this->out($e->getMessage());
-                $error = true;
-            }
-        }
-
-        if ($error) {
-            $this->connection->rollBack();
-
-            return false;
-        }
-
-        $this->connection->commit();
-
-        return true;
-    }
-
+    // MigrationBuilder -> (MigrationBuilder)getOrderedMigration -> getOrderedMigration
+    // MigrationBuilder -> install -> playAgainOne -> removeMigration -> getOrderedMigration
+    // MigrationBuilder -> uninstall -> (MigrationBuilder)getOrderedUninstall -> getOrderedMigration
     public function getOrderedMigration(): array
     {
-        $reflector = new \ReflectionClass(static::class);
+        $reflector = new ReflectionClass(static::class);
         $methods = $reflector->getMethods();
         $temp = [];
         $last = [];
@@ -233,171 +298,14 @@ abstract class AbstractMigration
         return $temp + $last;
     }
 
-    /**
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function needReinstall(): bool
-    {
-        @trigger_error('Remove in new version', E_USER_DEPRECATED);
-
-        $this->checkDb();
-
-        $error = false;
-        $methods = $this->getOrderedMigration();
-        $this->connection->beginTransaction();
-
-        foreach ($methods as $key => $res) {
-            if (1 !== preg_match('/^migration(\d{10})$/', $res['method']->name)) {
-                continue;
-            }
-
-            if (true !== $res['annotation'][0]->reinstall) {
-                continue;
-            }
-
-            try {
-                $this->removeMigration($key, static::class);
-                $this->out(sprintf('%s marked for reinstall', $key));
-            } catch (\Exception $e) {
-                $this->out($e->getMessage());
-                $error = true;
-            }
-        }
-
-        if ($error) {
-            $this->connection->rollBack();
-
-            return false;
-        }
-
-        $this->connection->commit();
-
-        return true;
-    }
-
-    protected function checkDb()
-    {
-        try {
-            $this->connection->executeQuery('desc tne_migrations');
-        } catch (TableNotFoundException $e) {
-            $this->connection->executeQuery('
-CREATE
-    TABLE
-        tne_migrations (
-            `id` INT
-            ,`module` VARCHAR (255) NOT NULL
-            ,created_at DATETIME NOT NULL
-            ,PRIMARY KEY (
-                `id`
-                ,`module`
-            )
-        )
-            ');
-        }
-    }
-
-    protected function out($msg): void
-    {
-        $mapping = [
-            'OK' => [
-                'console' => 'info',
-                'web' => 'green',
-            ],
-            'SKIPPED' => [
-                'console' => 'skipped',
-                'web' => 'cyan',
-            ],
-            'ERROR' => [
-                'console' => 'error',
-                'web' => 'red',
-            ],
-            'PROCESS' => [
-                'console' => 'comment',
-                'web' => 'orange',
-            ],
-            'PLAYAGAIN' => [
-                'console' => 'comment',
-                'web' => 'orange',
-            ],
-        ];
-
-        $mode = 'cli' === \PHP_SAPI
-            ? 'console'
-            : 'web';
-
-        if (1 !== preg_match('/^\[([^\]]+)\]/', $msg, $match)) {
-            $this->write($msg);
-        }
-
-        if (false === isset($mapping[$match[1]][$mode])) {
-            $this->write($msg);
-
-            return;
-        }
-
-        $pattern = sprintf('/%s/', $match[1]);
-        $subject = 'console' === $mode
-            ? '<%1$s>%2$s</%1$s>'
-            : '<span style="font-weight: bold; color:%1$s;">%2$s</span>';
-
-        $replacement = sprintf($subject, $mapping[$match[1]][$mode], $match[1]);
-
-        $msg = preg_replace($pattern, $replacement, $msg);
-
-        $this->write($msg);
-    }
-
     // Deprecated
-
+    // MigrationBuilder -> migrateOne -> (Abstract(...)Migration)parent::migrateOne -> alreadyMigrate
+    // MigrationBuilder -> uninstallOne -> (Abstract(...)Migration)parent::uninstallOne -> alreadyMigrate
     /**
      * @param mixed $version
      * @param mixed $module
      *
-     * @throws \Doctrine\DBAL\Exception
-     */
-    protected function removeMigration($version, $module): void
-    {
-        if (1 === preg_match('/^99(\d{10})_doLast$/', $version, $match)) {
-            $version = $match[1];
-        }
-
-        $stmt = $this->connection->prepare('DELETE FROM `tne_migrations` WHERE id = ? AND module = ?');
-
-        $stmt->bindValue(1, $version);
-        $stmt->bindValue(2, $module);
-
-        $stmt->execute();
-    }
-
-    protected function getOrderedUninstall(): array
-    {
-        @trigger_error('Remove in new version', E_USER_DEPRECATED);
-
-        $reflector = new \ReflectionClass(static::class);
-        $methods = $reflector->getMethods();
-        $temp = [];
-
-        arsort($methods);
-
-        foreach ($methods as $method) {
-            if (1 !== preg_match('/^uninstall(\d{10})$/', $method->name, $match)) {
-                continue;
-            }
-
-            $temp[$match[1]] = [
-                'annotation' => $this->annotationReader->getMethodAnnotations($method),
-                'method' => $method,
-            ];
-        }
-
-        return $temp;
-    }
-
-    /**
-     * @param mixed $version
-     * @param mixed $module
-     *
-     * @throws \Doctrine\DBAL\Exception
+     * @throws Exception
      */
     protected function alreadyMigrate($version, $module): bool
     {
@@ -413,16 +321,15 @@ CREATE
             ]
         );
 
-        return false !== $stmt->fetch();
+        return false !== $stmt->fetchAssociative();
     }
 
+    // MigrationBuilder -> migrateOne -> (Abstract(...)Migration)parent::migrateOne -> markAsMigrated
+
     /**
-     * @param mixed $version
-     * @param mixed $module
-     *
-     * @throws \Doctrine\DBAL\Exception
+     * @throws Exception
      */
-    protected function markAsMigrated($version, $module): void
+    protected function markAsMigrated(mixed $version, mixed $module): void
     {
         if (1 === preg_match('/^99(\d{10})_doLast$/', $version, $match)) {
             $version = $match[1];
@@ -433,19 +340,6 @@ CREATE
         $stmt->bindValue(1, $version);
         $stmt->bindValue(2, $module);
 
-        $stmt->execute();
-    }
-
-    // Deprecated
-
-    private function write(iterable|string $msg): void
-    {
-        if ('cli' === \PHP_SAPI) {
-            $this->output->writeln($msg);
-
-            return;
-        }
-
-        outn(sprintf('%s<br/>', $msg));
+        $stmt->executeQuery();
     }
 }

@@ -30,6 +30,8 @@ abstract class AbstractPhpMigration extends AbstractMigration
         $this->application = $application;
     }
 
+    // MigrationBuilder -> migrateOne
+
     /**
      * @param mixed $id
      *
@@ -78,6 +80,8 @@ abstract class AbstractPhpMigration extends AbstractMigration
         return true;
     }
 
+    // MigrationBuilder -> uninstallOne
+
     /**
      * @param mixed $id
      *
@@ -85,10 +89,9 @@ abstract class AbstractPhpMigration extends AbstractMigration
      */
     public function uninstallOne($id, array $res): bool
     {
-        global $key;
         parent::uninstallOne($id, $res);
 
-        if (false === $this->alreadyMigrate($key, static::class)) {
+        if (false === $this->alreadyMigrate($id, static::class)) {
             $this->out(sprintf(
                 '[SKIPPED]      [%s::%s] Already uninstalled.',
                 $res['method']->class,
@@ -106,7 +109,7 @@ abstract class AbstractPhpMigration extends AbstractMigration
             ));
 
             $res['method']->invoke($this);
-            $this->removeMigration($key, static::class);
+            $this->removeMigration($id, static::class);
 
             $this->out(sprintf(
                 '[OK]           [%s::%s]',
@@ -125,67 +128,5 @@ abstract class AbstractPhpMigration extends AbstractMigration
         }
 
         return true;
-    }
-
-    // Deprecated
-    /**
-     * @throws Exception
-     */
-    public function migrate(): bool
-    {
-        parent::migrate();
-
-        $error = false;
-        $methods = $this->getOrderedMigration();
-
-        foreach ($methods as $key => $res) {
-            if ($this->alreadyMigrate($key, static::class)) {
-                $this->out(sprintf('%s already migrate. Nothing todo', $key));
-
-                continue;
-            }
-
-            try {
-                $res['method']->invoke($this);
-                $this->markAsMigrated($key, static::class);
-                $this->out(sprintf('Apply migration %s', $key));
-            } catch (\Exception $e) {
-                $this->out($e->getMessage());
-                $error = true;
-            }
-        }
-
-        return !$error;
-    }
-
-    // Deprecated
-    /**
-     * @throws Exception
-     */
-    public function uninstall(): bool
-    {
-        parent::uninstall();
-
-        $error = false;
-        $methods = $this->getOrderedUninstall();
-
-        foreach ($methods as $key => $res) {
-            if (false === $this->alreadyMigrate($key, static::class)) {
-                $this->out(sprintf('%s not currently present. Nothing todo', $key));
-
-                continue;
-            }
-
-            try {
-                $res['method']->invoke($this);
-                $this->removeMigration($key, static::class);
-                $this->out(sprintf('Uninstall %s', $key));
-            } catch (\Exception $e) {
-                $this->out($e->getMessage());
-                $error = true;
-            }
-        }
-
-        return !$error;
     }
 }

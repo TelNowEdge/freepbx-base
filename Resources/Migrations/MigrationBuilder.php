@@ -76,26 +76,6 @@ class MigrationBuilder
         return $ok;
     }
 
-    public function uninstall(): true
-    {
-        $ordered = $this->getOrderedUninstall();
-        $ok = true;
-
-        $ordered->forAll(static function ($id, $x) use ($ok): bool {
-            $x->forAll(static function ($j, array $z) use ($ok, $id): bool {
-                $ok = $ok
-                    && $z['object']->needReinstallOne($id, $z['migration'])
-                    && $z['object']->uninstallOne($id, $z['migration']);
-
-                return true;
-            });
-
-            return true;
-        });
-
-        return $ok;
-    }
-
     private function getOrderedMigration(): ArrayCollection
     {
         $migrations = new ArrayCollection();
@@ -120,6 +100,26 @@ class MigrationBuilder
         ksort($temp);
 
         return new ArrayCollection($temp);
+    }
+
+    public function uninstall(): true
+    {
+        $ordered = $this->getOrderedUninstall();
+        $ok = true;
+
+        $ordered->forAll(static function ($id, $x) use ($ok): bool {
+            $x->forAll(static function ($j, array $z) use ($ok, $id): bool {
+                $ok = $ok
+                    && $z['object']->needReinstallOne($id, $z['migration'])
+                    && $z['object']->uninstallOne($id, $z['migration']);
+
+                return true;
+            });
+
+            return true;
+        });
+
+        return $ok;
     }
 
     private function getOrderedUninstall(): ArrayCollection

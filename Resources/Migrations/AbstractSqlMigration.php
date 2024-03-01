@@ -18,16 +18,21 @@
 
 namespace TelNowEdge\FreePBX\Base\Resources\Migrations;
 
+use Doctrine\DBAL\Exception;
+
 /**
  * Transactional error with DDL
  * Please read https://www.doctrine-project.org/projects/doctrine-migrations/en/3.3/explanation/implicit-commits.
  */
 abstract class AbstractSqlMigration extends AbstractMigration
 {
+
+    // MigrationBuilder -> migrateOne
+
     /**
      * @param mixed $id
      *
-     * @throws \Doctrine\DBAL\Exception
+     * @throws Exception
      */
     public function migrateOne($id, array $res): bool
     {
@@ -87,10 +92,12 @@ abstract class AbstractSqlMigration extends AbstractMigration
         return true;
     }
 
+    // MigrationBuilder -> uninstallOne
+    
     /**
      * @param mixed $id
      *
-     * @throws \Doctrine\DBAL\Exception
+     * @throws Exception
      */
     public function uninstallOne($id, array $res): bool
     {
@@ -99,7 +106,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
         $this->connection->beginTransaction();
         $this->cdrConnection->beginTransaction();
 
-        if (false === $this->alreadyMigrate($key, static::class)) {
+        if (false === $this->alreadyMigrate($id, static::class)) {
             $this->out(sprintf(
                 '[SKIPPED]      [%s::%s] Already uninstalled.',
                 $res['method']->class,
@@ -122,7 +129,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
             $result = $stmt->execute();
             $result->free();
 
-            $this->removeMigration($key, static::class);
+            $this->removeMigration($id, static::class);
 
             $this->out(sprintf(
                 '[OK]           [%s::%s]',
@@ -145,91 +152,6 @@ abstract class AbstractSqlMigration extends AbstractMigration
 
         $this->connection->commit();
         $this->cdrConnection->commit();
-
-        return true;
-    }
-
-    // Deprecated
-    /**
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function migrate(): bool
-    {
-        parent::migrate();
-
-        $error = false;
-        $methods = $this->getOrderedMigration();
-        $this->connection->beginTransaction();
-        $this->cdrConnection->beginTransaction();
-
-        foreach ($methods as $key => $res) {
-            if ($this->alreadyMigrate($key, static::class)) {
-                $this->out(sprintf('%s already migrate. Nothing todo', $key));
-
-                continue;
-            }
-
-            try {
-                $sql = $res['method']->invoke($this);
-                $this->{$res['annotation'][0]->connection}->executeUpdate($sql);
-                $this->markAsMigrated($key, static::class);
-                $this->out(sprintf('Apply migration %s: [%s]', $key, $sql));
-            } catch (\Exception $e) {
-                $this->out($e->getMessage());
-                $error = true;
-            }
-        }
-
-        if ($error) {
-            $this->connection->rollBack();
-            $this->cdrConnection->rollBack();
-
-            return false;
-        }
-
-        $this->connection->commit();
-        $this->cdrConnection->commit();
-
-        return true;
-    }
-
-    // Deprecated
-    /**
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function uninstall(): bool
-    {
-        parent::uninstall();
-
-        $error = false;
-        $methods = $this->getOrderedUninstall();
-        $this->connection->beginTransaction();
-
-        foreach ($methods as $key => $res) {
-            if (false === $this->alreadyMigrate($key, static::class)) {
-                $this->out(sprintf('%s not currently present. Nothing todo', $key));
-
-                continue;
-            }
-
-            try {
-                $sql = $res['method']->invoke($this);
-                $this->connection->executeUpdate($sql);
-                $this->removeMigration($key, static::class);
-                $this->out(sprintf('Uninstall %s: [%s]', $key, $sql));
-            } catch (\Exception $e) {
-                $this->out($e->getMessage());
-                $error = true;
-            }
-        }
-
-        if ($error) {
-            $this->connection->rollBack();
-
-            return false;
-        }
-
-        $this->connection->commit();
 
         return true;
     }
