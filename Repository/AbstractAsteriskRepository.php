@@ -21,24 +21,29 @@ namespace TelNowEdge\FreePBX\Base\Repository;
 use AGI_AsteriskManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Statement;
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Result;
 use Doctrine\Inflector\Inflector;
+use ReflectionClass;
+use ReflectionException;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
+
+use function count;
 
 abstract class AbstractAsteriskRepository
 {
     public const SQL = '
-SELECT
-        a.key a__key
-        ,a.value a__value
-    FROM
-        astdb a
-';
+        SELECT
+                a.key a__key
+                ,a.value a__value
+            FROM
+                astdb a
+    ';
 
     /**
      * class AGI_AsteriskManager (libraries/php-asmanager.php).
      */
-    protected \AGI_AsteriskManager $connection;
+    protected AGI_AsteriskManager $connection;
 
     /**
      * \Doctrine\DBAL\Connection.
@@ -46,7 +51,7 @@ SELECT
     protected Connection $asteriskConnection;
 
     public function setConnection(
-        \AGI_AsteriskManager $connection,
+        AGI_AsteriskManager $connection,
         Connection $asteriskConnection
     ): void {
         $this->connection = $connection;
@@ -60,9 +65,7 @@ SELECT
      */
     public function getByFamily($family): array
     {
-        $res = $this->connection
-            ->database_show($family)
-        ;
+        $res = $this->connection->database_show($family);
 
         if (empty($res)) {
             throw new NoResultException();
@@ -81,9 +84,7 @@ SELECT
     {
         $request = sprintf('%s/%s', $family, $key);
 
-        $res = $this->connection
-            ->database_show($request)
-        ;
+        $res = $this->connection->database_show($request);
 
         if (empty($res)) {
             throw new NoResultException();
@@ -136,7 +137,7 @@ SELECT
 
         $key = Inflector::camelize($array[0]);
 
-        if (1 === \count($array)) {
+        if (1 === count($array)) {
             $value = '' === $value ? null : $value;
 
             return [$key => $value];
@@ -149,19 +150,24 @@ SELECT
 
     /**
      * @throws NoResultException
+     * @throws Exception
      */
-    protected function fetch(Statement $statment)
+    protected function fetch(Result $result): array|false
     {
-        if (false === $res = $statment->fetch()) {
+        if (false === $res = $result->fetchAssociative()) {
             throw new NoResultException();
         }
 
         return $res;
     }
 
-    protected function fetchAll(Statement $statment)
+    /**
+     * @throws NoResultException
+     * @throws Exception
+     */
+    protected function fetchAll(Result $result): array
     {
-        $res = $statment->fetchAll();
+        $res = $result->fetchAllAssociative();
 
         if (empty($res)) {
             throw new NoResultException();
@@ -173,13 +179,13 @@ SELECT
     /**
      * @param mixed $fqn
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function objectFromArray($fqn, array $array): array
     {
         $violations = new ArrayCollection();
 
-        $reflector = new \ReflectionClass($fqn);
+        $reflector = new ReflectionClass($fqn);
         $class = $reflector->newInstance();
 
         foreach ($array as $prop => $value) {

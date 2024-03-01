@@ -28,7 +28,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
 use TelNowEdge\FreePBX\Base\Form\ChoiceList\RepositoryChoiceLoader;
 use TelNowEdge\FreePBX\Base\Form\DataTransformer\CollectionToArrayTransformer;
-
 use function call_user_func_array;
 
 class RepositoryType extends AbstractType implements ContainerAwareInterface
