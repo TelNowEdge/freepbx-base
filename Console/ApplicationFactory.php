@@ -23,14 +23,10 @@ use FreePBX;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use UnexpectedValueException;
 
-class ApplicationFactory implements ContainerAwareInterface
+class ApplicationFactory
 {
-    protected $container;
-
     /**
      * @throws ReflectionException
      */
@@ -42,11 +38,6 @@ class ApplicationFactory implements ContainerAwareInterface
         $application->addCommands($commands);
 
         return $application;
-    }
-
-    public function setContainer(ContainerInterface $container = null): void
-    {
-        $this->container = $container;
     }
 
     /**

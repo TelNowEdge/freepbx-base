@@ -19,10 +19,15 @@
 namespace TelNowEdge\FreePBX\Base\Repository;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Result;
-use Doctrine\DBAL\Statement;
+use ReflectionClass;
+use ReflectionException;
+use stdClass;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
+
+use function call_user_func;
 
 abstract class AbstractRepository
 {
@@ -62,10 +67,11 @@ abstract class AbstractRepository
 
     /**
      * @throws NoResultException
+     * @throws Exception
      */
-    protected function fetch(Statement $statment)
+    protected function fetch(Result $result)
     {
-        if (false === $res = $statment->fetch()) {
+        if (false === $res = $result->fetchAssociative()) {
             throw new NoResultException();
         }
 
@@ -74,11 +80,11 @@ abstract class AbstractRepository
 
     /**
      * @throws NoResultException
-     * @throws \Doctrine\DBAL\Exception
+     * @throws Exception
      */
-    protected function fetchAll(Result $statment): array
+    protected function fetchAll(Result $result): array
     {
-        $res = $statment->fetchAllAssociative();
+        $res = $result->fetchAllAssociative();
 
         if (empty($res)) {
             throw new NoResultException();
@@ -89,7 +95,7 @@ abstract class AbstractRepository
 
     protected function sqlToArray($param): array
     {
-        if ($param instanceof \stdClass) {
+        if ($param instanceof stdClass) {
             $param = (array) $param;
         }
 
@@ -99,7 +105,7 @@ abstract class AbstractRepository
             $class = $chunks[0];
             $prop = trim($chunks[1], '_');
 
-            $prop = preg_replace_callback('/_(\w)/', static function ($match): string {
+            $prop = preg_replace_callback('/_(\w)/', static function (array $match): string {
                 return ucfirst($match[1]);
             }, $prop);
             $res[$class][$prop] = $value;
@@ -115,7 +121,7 @@ abstract class AbstractRepository
      */
     protected function objectFromArray($fqn, array $array, array $params = [])
     {
-        $reflector = new \ReflectionClass($fqn);
+        $reflector = new ReflectionClass($fqn);
 
         $class = $reflector->newInstanceArgs($params);
 
@@ -135,17 +141,17 @@ abstract class AbstractRepository
     /**
      * @param mixed $fqdn
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function uncontrolledObjectFromArray($fqdn, array $array, array $params = [])
     {
-        $reflector = new \ReflectionClass($fqdn);
+        $reflector = new ReflectionClass($fqdn);
         $class = $reflector->newInstanceArgs($params);
 
         foreach ($array as $prop => $value) {
             $method = sprintf('set%s', ucfirst($prop));
 
-            \call_user_func([$class, $method], $value);
+            call_user_func([$class, $method], $value);
         }
 
         return $class;
