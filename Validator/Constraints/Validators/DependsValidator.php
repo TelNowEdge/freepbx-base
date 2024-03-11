@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright [2018] [TelNowEdge]
+ * Copyright [2016] [TelNowEdge]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
+namespace TelNowEdge\FreePBX\Base\Validator\Constraints\Validators;
 
 use ReflectionClass;
 use ReflectionException;
@@ -24,13 +24,12 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use TelNowEdge\FreePBX\Base\Exception\NoResultException;
-
+use function in_array;
 use function is_object;
 
-class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInterface
+class DependsValidator extends ConstraintValidator implements ContainerAwareInterface
 {
-    public $container;
+    private ?ContainerInterface $container = null;
 
     public function setContainer(ContainerInterface $container = null): void
     {
@@ -40,7 +39,7 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
     /**
      * @throws ReflectionException
      */
-    public function validate(mixed $value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint): true
     {
         if (false === $this->container->has($constraint->service[0])) {
             $this->context
@@ -61,42 +60,32 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
         }
 
         $reflModel = new ReflectionClass($value);
-
-        if (false === $reflModel->hasMethod(sprintf('get%s', ucfirst($constraint->field)))) {
+        if (false === $reflModel->hasMethod(sprintf('get%s', ucfirst($constraint->field)))
+            || false === $reflModel->hasMethod(sprintf('get%s', ucfirst($constraint->depends)))
+        ) {
             $this->context
-                ->buildViolation('Unable to find methods: {{ method }}')
-                ->setParameter('{{ method }}', $constraint->field)
+                ->buildViolation('Unable to find a least one of this methods: {{ methods }}')
+                ->setParameter('{{ methods }}', sprintf('%s or %s', $constraint->field, $constraint->depends))
                 ->addViolation();
         }
 
         $method = $reflector->getMethod($constraint->service[1]);
+        $dependsMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($constraint->depends)));
         $fieldMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($constraint->field)));
-        $fieldValue = $fieldMethod->invoke($value);
 
-        if (is_object($fieldValue)) {
-            $fieldValue = $fieldValue->getId();
+        $field = $fieldMethod->invoke($value);
+
+        if (is_object($field)) {
+            $field = $field->getId();
         }
 
-        if (null === $fieldValue && (bool) $constraint->nullable) {
-            return;
+        if (false === in_array($field, $method->invoke($service, $dependsMethod->invoke($value)), true)) {
+            $this->context
+                ->buildViolation($constraint->message)
+                ->atPath($constraint->field)
+                ->addViolation();
         }
 
-        try {
-            $res = $method
-                ->invoke($service, $fieldValue);
-        } catch (NoResultException $e) {
-            return;
-        }
-
-        // Update mode
-        if ($value->getId() === $res->getId()) {
-            return;
-        }
-
-        $this->context
-            ->buildViolation($constraint->message)
-            ->setParameter('{{ item }}', $fieldValue)
-            ->atPath($constraint->field)
-            ->addViolation();
+        return true;
     }
 }

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
+namespace TelNowEdge\FreePBX\Base\Validator\Constraints\Validators;
 
 use ReflectionClass;
 use ReflectionException;
@@ -24,7 +24,6 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\ChoiceValidator as BaseChoiceValidator;
-
 use function in_array;
 use function is_array;
 

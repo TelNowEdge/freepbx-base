@@ -16,20 +16,20 @@
  * limitations under the License.
  */
 
-namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
+namespace TelNowEdge\FreePBX\Base\Validator\Constraints\Validators;
 
 use ReflectionClass;
 use ReflectionException;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
+use function is_object;
 
-use function array_key_exists;
-
-class ValidExtensionValidator extends ConstraintValidator
+class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInterface
 {
-    private ?ContainerInterface $container = null;
+    public $container;
 
     public function setContainer(ContainerInterface $container = null): void
     {
@@ -72,24 +72,29 @@ class ValidExtensionValidator extends ConstraintValidator
         $fieldMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($constraint->field)));
         $fieldValue = $fieldMethod->invoke($value);
 
-        try {
-            $res = $method->invoke($service, $fieldValue);
-
-            if ($value->getId() === $res->getId()) {
-                return;
-            }
-        } catch (NoResultException $e) {
+        if (is_object($fieldValue)) {
+            $fieldValue = $fieldValue->getId();
         }
 
-        $exts = framework_get_extmap();
+        if (null === $fieldValue && (bool)$constraint->nullable) {
+            return;
+        }
 
-        if (false === array_key_exists($fieldValue, (array) $exts)) {
+        try {
+            $res = $method
+                ->invoke($service, $fieldValue);
+        } catch (NoResultException $e) {
+            return;
+        }
+
+        // Update mode
+        if ($value->getId() === $res->getId()) {
             return;
         }
 
         $this->context
             ->buildViolation($constraint->message)
-            ->setParameter('{{ item }}', $exts[$fieldValue])
+            ->setParameter('{{ item }}', $fieldValue)
             ->atPath($constraint->field)
             ->addViolation();
     }

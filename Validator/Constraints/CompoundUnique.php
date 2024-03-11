@@ -46,4 +46,9 @@ class CompoundUnique extends Constraint
     {
         return self::CLASS_CONSTRAINT;
     }
+
+    public function validatedBy(): string
+    {
+        return 'TelNowEdge\FreePBX\Base\Validator\Constraints\Validators\CompoundUniqueValidator';
+    }
 }

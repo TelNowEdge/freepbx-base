@@ -116,49 +116,49 @@ services:
           - '@event_dispatcher'
 
   #Constraints ***************************************************
+  validators:
+    namespace: TelNowEdge\FreePBX\Base\Validator\Constraints\Validators\
+    resource: '/devel/freepbx-base/Validator/Constraints/Validators/*'
+    calls:
+      - method: setContainer
+        arguments:
+          - '@service_container'
+    tags: [ validator.constraint_validator ]
 
-  #  validators:
-  #    class: TelNowEdge\FreePBX\Base\Validator\Constraints\{base_validator_classes}
+  #  TelNowEdge\FreePBX\Base\Validator\Constraints\Validators\ChoiceValidator:
   #    calls:
   #      - method: setContainer
   #        arguments:
   #          - '@service_container'
   #    tags: [ validator.constraint_validator ]
-
-  TelNowEdge\FreePBX\Base\Validator\Constraints\ChoiceValidator:
-    calls:
-      - method: setContainer
-        arguments:
-          - '@service_container'
-    tags: [ validator.constraint_validator ]
-
-  TelNowEdge\FreePBX\Base\Validator\Constraints\DependsValidator:
-    calls:
-      - method: setContainer
-        arguments:
-          - '@service_container'
-    tags: [ validator.constraint_validator ]
-
-  TelNowEdge\FreePBX\Base\Validator\Constraints\UniqueIdValidator:
-    calls:
-      - method: setContainer
-        arguments:
-          - '@service_container'
-    tags: [ validator.constraint_validator ]
-
-  TelNowEdge\FreePBX\Base\Validator\Constraints\CompoundUniqueValidator:
-    calls:
-      - method: setContainer
-        arguments:
-          - '@service_container'
-    tags: [ validator.constraint_validator ]
-
-  TelNowEdge\FreePBX\Base\Validator\Constraints\ValidExtensionValidator:
-    calls:
-      - method: setContainer
-        arguments:
-          - '@service_container'
-    tags: [ validator.constraint_validator ]
+  #
+  #  TelNowEdge\FreePBX\Base\Validator\Constraints\Validators\DependsValidator:
+  #    calls:
+  #      - method: setContainer
+  #        arguments:
+  #          - '@service_container'
+  #    tags: [ validator.constraint_validator ]
+  #
+  #  TelNowEdge\FreePBX\Base\Validator\Constraints\Validators\UniqueIdValidator:
+  #    calls:
+  #      - method: setContainer
+  #        arguments:
+  #          - '@service_container'
+  #    tags: [ validator.constraint_validator ]
+  #
+  #  TelNowEdge\FreePBX\Base\Validator\Constraints\Validators\CompoundUniqueValidator:
+  #    calls:
+  #      - method: setContainer
+  #        arguments:
+  #          - '@service_container'
+  #    tags: [ validator.constraint_validator ]
+  #
+  #  TelNowEdge\FreePBX\Base\Validator\Constraints\Validators\ValidExtensionValidator:
+  #    calls:
+  #      - method: setContainer
+  #        arguments:
+  #          - '@service_container'
+  #    tags: [ validator.constraint_validator ]
 
   # Migrations *************************************************************
   TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractMigration:
@@ -230,8 +230,7 @@ services:
         arguments:
           - '@TelNowEdge\FreePBX\Base\Manager\HintManager'
 
-  # Managers Auto-Registering *************************************************************
-
+  # Managers *************************************************************
   TelNowEdge\FreePBX\Base\Manager\:
     resource: '../../Manager/'
     calls:

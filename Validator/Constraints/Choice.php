@@ -28,4 +28,9 @@ class Choice extends BaseChoice
     public $service;
 
     public $nullable;
+
+    public function validatedBy(): string
+    {
+        return 'TelNowEdge\FreePBX\Base\Validator\Constraints\Validators\ChoiceValidator';
+    }
 }

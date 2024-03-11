@@ -32,12 +32,13 @@ class Depends extends Constraint
     public function __construct(
         string $field,
         string $depends,
-        array $service,
+        array  $service,
         string $message = null,
-        array $groups = null,
-        mixed $payload = null,
-        array $options = [],
-    ) {
+        array  $groups = null,
+        mixed  $payload = null,
+        array  $options = [],
+    )
+    {
         $options = array_merge(['field' => $field], ['depends' => $depends], ['service' => $service], $options);
 
         parent::__construct($options, $groups, $payload);
@@ -64,5 +65,10 @@ class Depends extends Constraint
     public function getTargets(): array|string
     {
         return self::CLASS_CONSTRAINT;
+    }
+
+    public function validatedBy(): string
+    {
+        return 'TelNowEdge\FreePBX\Base\Validator\Constraints\Validators\DependsValidator';
     }
 }
