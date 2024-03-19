@@ -18,11 +18,10 @@
 
 namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
+use Attribute;
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- */
+#[Attribute]
 class ValidExtension extends Constraint
 {
     public string $message = 'Extension already in use by [{{ item }}]';
@@ -31,11 +30,25 @@ class ValidExtension extends Constraint
 
     public $field;
 
+    public function __construct(
+        string $field,
+        array  $service,
+        string $message = null,
+        array  $groups = null,
+        mixed  $payload = null,
+        array  $options = [],
+    ){
+        $options = array_merge(['field' => $field],['service' => $service], $options);
+
+        parent::__construct($options, $groups, $payload);
+
+    }
+
     public function getRequiredOptions(): array
     {
         return [
-            'service',
             'field',
+            'service',
         ];
     }
 
