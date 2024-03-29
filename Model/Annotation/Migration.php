@@ -18,16 +18,16 @@
 
 namespace TelNowEdge\FreePBX\Base\Model\Annotation;
 
-/**
- * @Annotation
- */
-class Migration
+use Attribute;
+
+#[Attribute] class Migration
 {
-    public $playAgain = false;
+    public function __construct(
+        public bool $reinstall = false,
+        public string $connection = 'connection',
+        public bool $doLast = false,
+    )
+    {
+    }
 
-    public $reinstall = false;
-
-    public string $connection = 'connection';
-
-    public $doLast = false;
 }
