@@ -6,3 +6,5 @@ services:
 
   service_container:
     class: Symfony\Component\DependencyInjection\ContainerBuilder
+
+  Symfony\Component\HttpFoundation\ParameterBag: ~

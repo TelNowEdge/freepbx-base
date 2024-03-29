@@ -12,3 +12,5 @@ services:
   twig:
     class: Twig_Environment
     factory: [ '@template_engine', 'getTemplateEngine' ]
+
+

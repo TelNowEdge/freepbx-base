@@ -187,9 +187,6 @@ services:
   TelNowEdge\FreePBX\Base\Controller\AbstractController:
     abstract: true
     calls:
-      - method: setContainer
-        arguments:
-          - '@service_container'
       - method: setRequest
         arguments:
           - '@request'
@@ -293,7 +290,17 @@ services:
     resource: '/../../../var/www/admin/modules/*/Repository/'
     parent: TelNowEdge\FreePBX\Base\Repository\AbstractRepository
 
-  handlers:
+  asterisk_repositories:
+    namespace: TelNowEdge\Module\
+    resource: '/../../../var/www/admin/modules/*/Repository/Asterisk/'
+    parent: TelNowEdge\FreePBX\Base\Repository\AbstractAsteriskRepository
+
+  Ldap_repositories:
+    namespace: TelNowEdge\Module\
+    resource: '/../../../var/www/admin/modules/*/Repository/Ldap/'
+    parent: TelNowEdge\FreePBX\Base\Repository\AbstractLdapRepository
+
+  abstract_handlers:
     namespace: TelNowEdge\Module\
     resource: '/../../../var/www/admin/modules/*/Handler/'
     parent: TelNowEdge\FreePBX\Base\Handler\AbstractDbHandler
@@ -302,13 +309,37 @@ services:
     namespace: TelNowEdge\Module\
     resource: '/../../../var/www/admin/modules/*/Manager/'
 
-  migrations:
+  providers:
+    namespace: TelNowEdge\Module\
+    resource: '/../../../var/www/admin/modules/*/Provider/'
+
+  helpers:
+    namespace: TelNowEdge\Module\
+    resource: '/../../../var/www/admin/modules/*/Helpers/'
+
+  sql_migrations:
     namespace: TelNowEdge\Module\
     resource: '/../../../var/www/admin/modules/*/Resources/Migrations/'
     parent: TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractSqlMigration
 
-  event_subscriber:
+  event_subscribers:
     namespace: TelNowEdge\Module\
     resource: '/../../../var/www/admin/modules/*/EventSubscriber/'
     tags:
       - "kernel.event_subscriber"
+
+  dialPlans:
+    namespace: TelNowEdge\Module\
+    resource: '/../../../var/www/admin/modules/*/DialPlan/Generator/'
+    parent: TelNowEdge\FreePBX\Base\DialPlan\Generator\AbstractGenerator
+
+  forms:
+    namespace: TelNowEdge\Module\
+    resource: '/../../../var/www/admin/modules/*/Form/'
+    tags:
+      - "form.type"
+
+  modules_validators:
+    namespace: TelNowEdge\Module\
+    resource: '/../../../var/www/admin/modules/*/Validator/Constraints/Validators/''
+    tags: [validator.constraint_validator]
