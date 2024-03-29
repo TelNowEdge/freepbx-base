@@ -17,6 +17,7 @@ return (new PhpCsFixer\Config())
         'strict_param' => true,
         '@PhpCsFixer' => true,
         '@PhpCsFixer:risky' => true,
+        // Avoid conflict with rector
         'global_namespace_import' => ['import_classes' => true, 'import_constants' => true, 'import_functions' => true],
         'no_singleline_whitespace_before_semicolons' => true,
         'multiline_whitespace_before_semicolons' => ['strategy' => 'no_multi_line']

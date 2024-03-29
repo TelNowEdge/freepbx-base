@@ -2,6 +2,7 @@
 
 use Rector\Config\RectorConfig;
 use Rector\Set\ValueObject\SetList;
+use Rector\Symfony\Set\SymfonySetList;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -19,8 +20,8 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::CODE_QUALITY,
         SetList::PHP_82,
         SetList::TYPE_DECLARATION,
-        //        SymfonySetList::SYMFONY_64,
-        //        SymfonySetList::SYMFONY_CODE_QUALITY,
-        //        SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
+        SymfonySetList::SYMFONY_64,
+        SymfonySetList::SYMFONY_CODE_QUALITY,
+        SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
     ]);
 };
