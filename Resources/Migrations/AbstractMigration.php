@@ -44,7 +44,7 @@ abstract class AbstractMigration
 
     protected ArrayCollection $skipped;
 
-    public function __construct(private readonly AnnotationReader $annotationReader)
+    public function __construct()
     {
         $this->output = new ConsoleOutput();
         $this->skipped = new ArrayCollection();
@@ -278,6 +278,11 @@ abstract class AbstractMigration
                 continue;
             }
 
+        /*
+         *
+         * Plus d'annotations que des attributes (php 8.2)
+         *
+         *
             $annotation = $this->annotationReader->getMethodAnnotations($method);
 
             if (true === $annotation[0]->doLast) {
@@ -293,6 +298,23 @@ abstract class AbstractMigration
                 'annotation' => $annotation,
                 'method' => $method,
             ];
+
+            $annotation = $this->annotationReader->getMethodAnnotations($method);
+
+            if (true === $annotation[0]->doLast) {
+                $last[sprintf('99%s_doLast', $match[1])] = [
+                    'annotation' => $annotation,
+                    'method' => $method,
+                ];
+
+                continue;
+            }
+
+            $temp[$match[1]] = [
+                'annotation' => $annotation,
+                'method' => $method,
+            ];
+        */
         }
 
         return $temp + $last;
