@@ -21,7 +21,7 @@ namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 use Attribute;
 use Symfony\Component\Validator\Constraint;
 
-#[Attribute]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 class Depends extends Constraint
 {
     public string $field;

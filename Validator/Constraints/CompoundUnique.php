@@ -18,20 +18,23 @@
 
 namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
+use Attribute;
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- */
-class CompoundUnique extends Constraint
+#[Attribute] class CompoundUnique extends Constraint
 {
-    public string $message = 'This fields already exists [%s]';
-
-    public array $fields = [];
-
-    public $service;
-
-    public $compare;
+    public function __construct(
+        public array  $service,
+        public $compare,
+        public array $fields = [],
+        public string $message = 'This fields already exists [%s]',
+        array  $groups = null,
+        mixed  $payload = null,
+        array  $options = [],
+    )
+    {
+        parent::__construct($options, $groups, $payload);
+    }
 
     public function getRequiredOptions(): array
     {

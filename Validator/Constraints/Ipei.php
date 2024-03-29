@@ -18,12 +18,21 @@
 
 namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
+use Attribute;
 use Symfony\Component\Validator\Constraint;
 
 /**
  * @Annotation
  */
-class Ipei extends Constraint
+#[Attribute] class Ipei extends Constraint
 {
-    public string $message = 'The value is not a valid IPEI or IPUI.';
+    public function __construct(
+        public string $message = 'The value is not a valid IPEI or IPUI.',
+        array  $groups = null,
+        mixed  $payload = null,
+        array  $options = [],
+    )
+    {
+        parent::__construct($options, $groups, $payload);
+    }
 }

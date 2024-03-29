@@ -18,20 +18,22 @@
 
 namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
+use Attribute;
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- */
-class UniqueId extends Constraint
+#[Attribute] class UniqueId extends Constraint
 {
-    public string $message = 'This id is already in use';
-
-    public $service;
-
-    public $field;
-
-    public bool $nullable = false;
+    public function __construct(
+        public string $field,
+        public array  $service,
+        public string $message = 'This id is already in use',
+        public bool $nullable = false,
+        array  $groups = null,
+        mixed  $payload = null,
+        array  $options = [],
+    ){
+        parent::__construct($options, $groups, $payload);
+    }
 
     public function getRequiredOptions(): array
     {

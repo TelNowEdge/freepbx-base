@@ -24,16 +24,10 @@ use Symfony\Component\Validator\Constraint;
 #[Attribute]
 class ValidExtension extends Constraint
 {
-    public string $message = 'Extension already in use by [{{ item }}]';
-
-    public $service;
-
-    public $field;
-
     public function __construct(
-        string $field,
-        array  $service,
-        string $message = null,
+        public string $field,
+        public array  $service,
+        public string $message = 'Extension already in use by [{{ item }}]',
         array  $groups = null,
         mixed  $payload = null,
         array  $options = [],

@@ -18,16 +18,24 @@
 
 namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
+use Attribute;
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- */
-class MacAddress extends Constraint
+#[Attribute] class MacAddress extends Constraint
 {
-    public string $message = 'The value is not a valid mac address.';
+    public function __construct(
+        public string $message = 'The value is not a valid mac address.',
+        public bool $allowAuto = false,
+        public bool $changeAll = false,
+        array  $groups = null,
+        mixed  $payload = null,
+        array  $options = [],
+    )
+    {
+        parent::__construct($options, $groups, $payload);
+    }
 
-    public bool $allowAuto = false;
 
-    public bool $changeAll = false;
+
+
 }
