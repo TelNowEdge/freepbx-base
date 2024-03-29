@@ -69,7 +69,7 @@ abstract class AbstractRepository
      * @throws NoResultException
      * @throws Exception
      */
-    protected function fetch(Result $result)
+    protected function fetch(Result $result): array|false
     {
         if (false === $res = $result->fetchAssociative()) {
             throw new NoResultException();

@@ -62,9 +62,6 @@ abstract class Module extends FreePBX_Helpers
     protected ContainerBuilder|TelNowEdgeCachedContainer $container;
 
     /**
-     * @param null|mixed $freepbx
-     * @param mixed      $disabledCache
-     *
      * @throws Exception
      */
     public function __construct($freepbx = null, $disabledCache = false)

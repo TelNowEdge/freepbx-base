@@ -75,8 +75,8 @@ abstract class AbstractAsteriskRepository
     }
 
     /**
-     * @param mixed $family
-     * @param mixed $key
+     * @param $family
+     * @param $key
      *
      * @throws NoResultException
      */

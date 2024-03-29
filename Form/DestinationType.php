@@ -30,17 +30,19 @@ use TelNowEdge\FreePBX\Base\Helper\DestinationHelper;
 
 class DestinationType extends AbstractType
 {
-    public function __construct(private readonly DestinationHelper $destinationHelper, private readonly Serializer $serializer) {}
+    public function __construct(private readonly DestinationHelper $destinationHelper, private readonly Serializer $serializer)
+    {
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // All in event because $builder->getData() isn't available on child form.
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
-            $data = $event->getData();
+//            $data = $event->getData();
             $form = $event->getForm();
-            if (is_a($data, Destination::class, true)) {
-                $this->destinationHelper->addFake($data);
-            }
+//            if (is_a($data, Destination::class, true)) {
+//                $this->destinationHelper->addFake($data);
+//            }
 
             $form
                 ->add('category', ChoiceType::class, [
