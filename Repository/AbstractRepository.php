@@ -23,6 +23,7 @@ use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Result;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionNamedType;
 use stdClass;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
@@ -115,21 +116,29 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param mixed $fqn
-     *
      * @throws \Exception
      */
-    protected function objectFromArray($fqn, array $array, array $params = [])
+    protected function objectFromArray(string $fqn, array $array, array $params = [])
     {
         $reflector = new ReflectionClass($fqn);
-
         $class = $reflector->newInstanceArgs($params);
 
         foreach ($array as $prop => $value) {
             $method = sprintf('set%s', ucfirst($prop));
 
             if (true === $reflector->hasMethod($method)) {
-                $reflector->getMethod($method)->invoke($class, $value);
+                $reflectMethod = $reflector->getMethod($method);
+                if ($value !== null) {
+                    $reflectMethod->invoke($class, $value);
+                } else {
+                    $param = $reflectMethod->getParameters()[0];
+                    if ($param->hasType()){
+                        $type = $param->getType();
+                        if ($type instanceof ReflectionNamedType && $type->allowsNull()) {
+                            $reflectMethod->invoke($class, $value);
+                        }
+                    }
+                }
             } else {
                 throw new \Exception(sprintf('%s:%s is not callable', $fqn, $method));
             }
@@ -139,8 +148,6 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param mixed $fqdn
-     *
      * @throws ReflectionException
      */
     protected function uncontrolledObjectFromArray($fqdn, array $array, array $params = [])
