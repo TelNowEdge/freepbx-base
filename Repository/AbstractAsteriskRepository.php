@@ -23,9 +23,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Result;
-use Doctrine\Inflector\Inflector;
 use ReflectionClass;
 use ReflectionException;
+use Symfony\Component\String\UnicodeString;
+use function Symfony\Component\String\u;
 use TelNowEdge\FreePBX\Base\Exception\NoResultException;
 
 use function count;
@@ -135,15 +136,15 @@ abstract class AbstractAsteriskRepository
 
         $array = explode('/', $keys, 2);
 
-        $key = Inflector::camelize($array[0]);
+        $key = u($array[0])->camel();
 
         if (1 === count($array)) {
             $value = '' === $value ? null : $value;
 
-            return [$key => $value];
+            return [(string)$key => $value];
         }
 
-        $out[$key] = $this->linearize($array[1], $value);
+        $out[(string)$key] = $this->linearize($array[1], $value);
 
         return $out;
     }
