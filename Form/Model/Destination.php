@@ -19,12 +19,13 @@
 namespace TelNowEdge\FreePBX\Base\Form\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use TelNowEdge\FreePBX\Base\Helper\DestinationHelper;
 use TelNowEdge\FreePBX\Base\Validator\Constraints as TNEAssert;
 
 #[TNEAssert\Depends(
     field: 'destination',
     depends: 'category',
-    service: ['TelNowEdge\\FreePBX\\Base\\Helper\\DestinationHelper', 'getFlatDestinationsByCategory']
+    service: [DestinationHelper::class, 'getFlatDestinationsByCategory']
 )]
 class Destination
 {
@@ -32,22 +33,21 @@ class Destination
     protected string $category;
 
     #[Assert\NotNull]
-    protected string $destination;
+    protected ?string $destination = null;
 
     public function __toString(): string
     {
         return $this->destination;
     }
 
-    public function getDestination(): string
+    public function getDestination(): ?string
     {
         return $this->destination;
     }
 
-    public function setDestination(string $destination): static
+    public function setDestination(?string $destination): ?static
     {
-        $this->destination = $destination;
-
+        $this->destination = $destination ?? null;
         return $this;
     }
 
