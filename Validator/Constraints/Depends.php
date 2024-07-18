@@ -69,6 +69,6 @@ class Depends extends Constraint
 
     public function validatedBy(): string
     {
-        return 'TelNowEdge\FreePBX\Base\Validator\Constraints\Validators\DependsValidator';
+        return 'TelNowEdge\FreePBX\Base\Validator\Constraints\DependsValidator';
     }
 }

@@ -18,11 +18,10 @@
 
 namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
+use Attribute;
 use Symfony\Component\Validator\Constraints\Choice as BaseChoice;
 
-/**
- * @Annotation
- */
+#[Attribute]
 class Choice extends BaseChoice
 {
     public $service;
@@ -31,6 +30,6 @@ class Choice extends BaseChoice
 
     public function validatedBy(): string
     {
-        return 'TelNowEdge\FreePBX\Base\Validator\Constraints\Validators\ChoiceValidator';
+        return 'TelNowEdge\FreePBX\Base\Validator\Constraints\ChoiceValidator';
     }
 }

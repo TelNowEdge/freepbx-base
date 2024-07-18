@@ -16,18 +16,17 @@
  * limitations under the License.
  */
 
-namespace TelNowEdge\FreePBX\Base\Validator\Constraints\Validators;
+namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
 use ReflectionClass;
 use ReflectionException;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use function in_array;
 use function is_object;
 
-class DependsValidator extends ConstraintValidator implements ContainerAwareInterface
+class DependsValidator extends ConstraintValidator
 {
     private ?ContainerInterface $container = null;
 

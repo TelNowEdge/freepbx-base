@@ -21,9 +21,6 @@ namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 use Attribute;
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- */
 #[Attribute] class Ipei extends Constraint
 {
     public function __construct(

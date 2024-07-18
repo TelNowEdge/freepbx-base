@@ -53,6 +53,6 @@ class ValidExtension extends Constraint
 
     public function validatedBy(): string
     {
-        return 'TelNowEdge\FreePBX\Base\Validator\Constraints\Validators\ValidExtensionValidator';
+        return 'TelNowEdge\FreePBX\Base\Validator\Constraints\ValidExtensionValidator';
     }
 }

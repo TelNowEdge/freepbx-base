@@ -21,7 +21,8 @@ namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 use Attribute;
 use Symfony\Component\Validator\Constraint;
 
-#[Attribute] class UniqueId extends Constraint
+#[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
+class UniqueId extends Constraint
 {
     public function __construct(
         public string $field,
@@ -32,14 +33,15 @@ use Symfony\Component\Validator\Constraint;
         mixed  $payload = null,
         array  $options = [],
     ){
+        $options = array_merge(['field' => $field], ['service' => $service], $options);
         parent::__construct($options, $groups, $payload);
     }
 
     public function getRequiredOptions(): array
     {
         return [
-            'service',
             'field',
+            'service',
         ];
     }
 
@@ -50,6 +52,6 @@ use Symfony\Component\Validator\Constraint;
 
     public function validatedBy(): string
     {
-        return 'TelNowEdge\FreePBX\Base\Validator\Constraints\Validators\UniqueIdValidator';
+        return 'TelNowEdge\FreePBX\Base\Validator\Constraints\UniqueIdValidator';
     }
 }

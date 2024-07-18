@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace TelNowEdge\FreePBX\Base\Validator\Constraints\Validators;
+namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
 use ReflectionClass;
 use ReflectionException;

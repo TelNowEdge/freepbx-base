@@ -33,6 +33,8 @@ use Symfony\Component\Validator\Constraint;
         array  $options = [],
     )
     {
+        $options = array_merge(['fields' => $fields], ['service' => $service], ['compare' => $compare], $options);
+
         parent::__construct($options, $groups, $payload);
     }
 
@@ -52,6 +54,6 @@ use Symfony\Component\Validator\Constraint;
 
     public function validatedBy(): string
     {
-        return 'TelNowEdge\FreePBX\Base\Validator\Constraints\Validators\CompoundUniqueValidator';
+        return 'TelNowEdge\FreePBX\Base\Validator\Constraints\CompoundUniqueValidator';
     }
 }
