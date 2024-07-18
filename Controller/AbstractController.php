@@ -32,7 +32,7 @@ abstract class AbstractController implements ControllerInterface
 
     // SYMFONY CODE SOURCE 6.4
     #[Required]
-    public function setContainer(ContainerInterface $container = null): ?ContainerInterface
+    public function setContainer(ContainerInterface $container): ?ContainerInterface
     {
         $previous = $this->container ?? null;
         $this->container = $container;
@@ -62,7 +62,7 @@ abstract class AbstractController implements ControllerInterface
         return $this->container->get('form_factory')->createBuilder(FormType::class, $data, $options);
     }
 
-    protected function render($template, $data = [])
+    protected function render($template, $data = []): string
     {
         $nsTemplate = sprintf('@%s/%s', static::getViewsNamespace(), $template);
 

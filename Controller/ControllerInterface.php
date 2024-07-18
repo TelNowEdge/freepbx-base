@@ -27,7 +27,7 @@ interface ControllerInterface
 
     public static function getViewsNamespace();
 
-    public function setContainer(ContainerInterface $container = null);
+    public function setContainer(ContainerInterface $container);
 
     public function setRequest(Request $request);
 }
