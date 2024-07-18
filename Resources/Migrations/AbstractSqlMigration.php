@@ -30,12 +30,14 @@ abstract class AbstractSqlMigration extends AbstractMigration
     // MigrationBuilder -> migrateOne
 
     /**
-     * @param mixed $id
-     *
      * @throws Exception
      */
-    public function migrateOne($id, array $res): bool
+    public function migrateOne(string $id, array $res): bool
     {
+        /*
+         * id = '20240102'
+         * res = ['attribute', 'method' (migration2020040901)]
+        */
         parent::migrateOne($id, $res);
 
         if ($this->alreadyMigrate($id, static::class)) {
@@ -55,14 +57,13 @@ abstract class AbstractSqlMigration extends AbstractMigration
             $sql = $res['method']->invoke($this);
             $this->out(sprintf(
                 '[PROCESS]      [%s::%s]: [%s]',
-                $res['method']->class,
-                $res['method']->name,
-                $sql
+                $res['method']->class, // Nom de la fonction, Ex : migration2020040901
+                $res['method']->name, // Nom de la classe, Ex : TrackingMigration
+                $sql // Res de la méthode, Ex : migration2020040901()
             ));
 
-            $stmt = $this->{$res['annotation'][0]->connection}->prepare($sql);
-
-            $result = $stmt->execute();
+            $stmt = $this->{$res['attribute']->connection}->prepare($sql);
+            $result = $stmt->executeQuery();
             $result->free();
 
             $this->markAsMigrated($id, static::class);
@@ -125,7 +126,7 @@ abstract class AbstractSqlMigration extends AbstractMigration
                 $sql
             ));
 
-            $stmt = $this->{$res['annotation'][0]->connection}->prepare($sql);
+            $stmt = $this->{$res['attribute']->connection}->prepare($sql);
             $result = $stmt->execute();
             $result->free();
 

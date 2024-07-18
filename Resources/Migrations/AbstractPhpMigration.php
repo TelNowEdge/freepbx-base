@@ -33,11 +33,9 @@ abstract class AbstractPhpMigration extends AbstractMigration
     // MigrationBuilder -> migrateOne
 
     /**
-     * @param mixed $id
-     *
      * @throws Exception
      */
-    public function migrateOne($id, array $res): bool
+    public function migrateOne(string $id, array $res): bool
     {
         parent::migrateOne($id, $res);
 
@@ -83,11 +81,9 @@ abstract class AbstractPhpMigration extends AbstractMigration
     // MigrationBuilder -> uninstallOne
 
     /**
-     * @param mixed $id
-     *
      * @throws Exception
      */
-    public function uninstallOne($id, array $res): bool
+    public function uninstallOne(string $id, array $res): bool
     {
         parent::uninstallOne($id, $res);
 

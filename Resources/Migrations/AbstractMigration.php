@@ -18,7 +18,8 @@
 
 namespace TelNowEdge\FreePBX\Base\Resources\Migrations;
 
-use Doctrine\Common\Annotations\AnnotationReader;
+use Attribute;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
@@ -61,7 +62,7 @@ abstract class AbstractMigration
     }
 
     // MigrationBuilder -> migrateOne -> (Abstract(...)Migration)parent::migrateOne -> migrateOne
-    public function migrateOne($id, array $res)
+    public function migrateOne(string $id, array $res)
     {
         $this->checkDb();
     }
@@ -93,7 +94,7 @@ abstract class AbstractMigration
     // MigrationBuilder -> playAgainOne -> uninstallOne
     // MigrationBuilder -> uninstall -> uninstallOne
     // MigrationBuilder -> uninstallOne -> (Abstract(...)Migration)parent::uninstallOne -> uninstallOne
-    public function uninstallOne($id, array $res)
+    public function uninstallOne(string $id, array $res)
     {
         $this->checkDb();
     }
@@ -101,7 +102,11 @@ abstract class AbstractMigration
     // MigrationBuilder -> playAgainOne
     public function playAgainOne($id, array $res): bool
     {
-        if (true !== $res['annotation'][0]->playAgain) {
+        /*
+         * id = '20240102'
+         * res = ['attribute', 'method' (migration2020040901)]
+        */
+        if (true !== $res['attribute']->playAgain) {
             return true;
         }
 
@@ -116,8 +121,8 @@ abstract class AbstractMigration
         } catch (\Exception $e) {
             $this->out(sprintf(
                 '[ERROR]        [%s::%s]: [%s]',
-                $res['method']->class,
-                $res['method']->name,
+                $res['method']->class, // Nom de la fonction, Ex : migration2020040901
+                $res['method']->name, // Nom de la classe, Ex : TrackingMigration
                 $e->getMessage()
             ));
 
@@ -198,12 +203,9 @@ abstract class AbstractMigration
     // MigrationBuilder -> uninstall -> needReinstallOne -> removeMigration
     // MigrationBuilder -> uninstall -> uninstallOne -> -> removeMigration
     /**
-     * @param mixed $version
-     * @param mixed $module
-     *
      * @throws Exception
      */
-    protected function removeMigration($version, $module): void
+    protected function removeMigration(string $version, string $module): void
     {
         if (1 === preg_match('/^99(\d{10})_doLast$/', $version, $match)) {
             $version = $match[1];
@@ -218,9 +220,9 @@ abstract class AbstractMigration
     }
 
     // MigrationBuilder -> uninstall -> needReinstallOne
-    public function needReinstallOne($id, array $res): bool
+    public function needReinstallOne(string $id, array $res): bool
     {
-        if (true !== $res['annotation'][0]->reinstall) {
+        if (true !== $res['attribute']->reinstall) {
             return true;
         }
 
@@ -247,7 +249,7 @@ abstract class AbstractMigration
     }
 
     // Deprecated
-    // MigrationBuilder -> displaySkipped
+    // MigrationBuilder -> install -> displaySkipped
     public function displaySkipped(ArrayCollection $collection): void
     {
         $number = array_reduce($collection->getValues(), static function ($acc, $x): float|int {
@@ -261,61 +263,76 @@ abstract class AbstractMigration
     }
 
     // Deprecated
-    // MigrationBuilder -> (MigrationBuilder)getOrderedMigration -> getOrderedMigration
+    // MigrationBuilder -> (MigrationBuilder)getOrderedMigration -> getOrderedMigration -> install ->
     // MigrationBuilder -> install -> playAgainOne -> removeMigration -> getOrderedMigration
     // MigrationBuilder -> uninstall -> (MigrationBuilder)getOrderedUninstall -> getOrderedMigration
+    /**
+     * @throws Exception
+     */
     public function getOrderedMigration(): array
     {
-        $reflector = new ReflectionClass(static::class);
-        $methods = $reflector->getMethods();
+        $reflector = new ReflectionClass(static::class); // TrackingMigration
+
+        $methods = $reflector->getMethods(); // [ReflectionMethod = migration20240102(), migration2020040901]
         $temp = [];
         $last = [];
 
         asort($methods);
 
         foreach ($methods as $method) {
-            if (1 !== preg_match('/^migration(\d{10})$/', $method->name, $match)) {
+            if (1 !== preg_match('/^migration(\d{10})$/', $method->name, $match)) { // match[1] = 20240102
                 continue;
             }
+
+            /*
+             * No annotations => attributes (php 8.2)
+             * $annotation = $this->annotationReader->getMethodAnnotations($method);
+             * ($annotation instanceof Migration)
+             */
+
+            /*
+             * Exemple :
+             * #[Migration] ( => #[Attribute] class Migration)
+             * migration20240102() {}
+             *
+             * $method = migration20240102
+             * $attribute = class Migration
+             */
+
+            $attributes = $method->getAttributes(); // retourne les #[attributs] d'une méthode = Array of attributes
+
+            if ($attributes[0] !== null) {
+                $instance = $attributes[0]->newInstance(); // instance of class Migration
+
+                if (true === $instance->doLast) {
+                    $last[sprintf('99%s_doLast', $match[1])] = [ // 9920240102_doLast
+                        'attribute' => $instance,
+                        'method' => $method,
+                    ];
+                    continue;
+                }
+
+                $temp[$match[1]] = [ //'20240102'
+                    'attribute' => $instance,
+                    'method' => $method,
+                ];
+
+            }else{
+                throw new Exception("Pas d'attribut sur la méthode ".$method->name." ".$method->class  );
+            }
+
+        }
 
         /*
-         *
-         * Plus d'annotations que des attributes (php 8.2)
-         *
-         *
-            $annotation = $this->annotationReader->getMethodAnnotations($method);
-
-            if (true === $annotation[0]->doLast) {
-                $last[sprintf('99%s_doLast', $match[1])] = [
-                    'annotation' => $annotation,
-                    'method' => $method,
-                ];
-
-                continue;
-            }
-
-            $temp[$match[1]] = [
-                'annotation' => $annotation,
-                'method' => $method,
-            ];
-
-            $annotation = $this->annotationReader->getMethodAnnotations($method);
-
-            if (true === $annotation[0]->doLast) {
-                $last[sprintf('99%s_doLast', $match[1])] = [
-                    'annotation' => $annotation,
-                    'method' => $method,
-                ];
-
-                continue;
-            }
-
-            $temp[$match[1]] = [
-                'annotation' => $annotation,
-                'method' => $method,
-            ];
-        */
-        }
+         * Result :
+         * [
+         *   '20240102' :
+         *   [
+         *      'attribute' => $instance,'method' => $method
+         *   ]
+         * ],
+         * [...], [...]
+         */
 
         return $temp + $last;
     }
@@ -324,13 +341,14 @@ abstract class AbstractMigration
     // MigrationBuilder -> migrateOne -> (Abstract(...)Migration)parent::migrateOne -> alreadyMigrate
     // MigrationBuilder -> uninstallOne -> (Abstract(...)Migration)parent::uninstallOne -> alreadyMigrate
     /**
-     * @param mixed $version
-     * @param mixed $module
-     *
      * @throws Exception
      */
-    protected function alreadyMigrate($version, $module): bool
+    protected function alreadyMigrate(string $version, string $module): bool
     {
+        /*
+         * version = Ex: '20240102'
+         * $module = Ex: TelNowEdge\Module\modfagi\Resources\Migrations\TrackingMigration
+         */
         if (1 === preg_match('/^99(\d{10})_doLast$/', $version, $match)) {
             $version = $match[1];
         }
@@ -351,7 +369,7 @@ abstract class AbstractMigration
     /**
      * @throws Exception
      */
-    protected function markAsMigrated(mixed $version, mixed $module): void
+    protected function markAsMigrated(string $version, mixed $module): void
     {
         if (1 === preg_match('/^99(\d{10})_doLast$/', $version, $match)) {
             $version = $match[1];

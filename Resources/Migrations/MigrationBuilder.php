@@ -58,9 +58,21 @@ class MigrationBuilder
         $ordered = $this->getOrderedMigration();
         $ok = true;
 
+        /*
+         * $ordered = [
+         *  [
+         *   20240102 : [
+         *    [
+         *     'object' => Migration Class,
+         *     'migration' => ['attribute','method'],
+         *    ]
+         *  ]
+         * ], [...], [...]
+         * ]
+        */
         $ordered->forAll(static function ($id, $x) use ($ok): bool {
             $x->forAll(static function ($j, array $z) use ($ok, $id): bool {
-                $ok = $ok
+                    $ok
                     && $z['object']->playAgainOne($id, $z['migration'])
                     && $z['object']->migrateOne($id, $z['migration']);
 
@@ -80,17 +92,35 @@ class MigrationBuilder
     {
         $migrations = new ArrayCollection();
 
+        // collection = addMigration : Migration Class
         $this->collection->forAll(static function ($k, $x) use ($migrations): bool {
+
+            /*
+             * getOrderedMigration : [['20240102' : ['attribute' => $instance,'method' => $method]] , [...], [...] ]
+             * $key = '20240102' / $method = ['attribute' => $instance,'method' => $method]
+            */
             foreach ($x->getOrderedMigration() as $key => $method) {
                 if (null === $sub = $migrations->get($key)) {
                     $sub = new ArrayCollection();
                     $migrations->set($key, $sub);
+                    // $migrations = [20240102 : [] ]
                 }
 
                 $sub->add([
                     'object' => $x,
                     'migration' => $method,
                 ]);
+                /*
+                 * $migrations = [
+                 *  [20240102 : [
+                 *   [
+                 *    'object' => $x (Migration Class),
+                 *    'migration' => $method (['attribute','method']),
+                 *   ]
+                 *  ]], [...], [...]
+                 * ]
+                */
+
             }
 
             return true;
@@ -104,9 +134,20 @@ class MigrationBuilder
 
     public function uninstall(): true
     {
+        /*
+         * $ordered = [
+         *  [
+         *   20240102 : [
+         *    [
+         *     'object' => Migration Class,
+         *     'migration' => ['attribute','method'],
+         *    ]
+         *  ]
+         * ], [...], [...]
+         * ]
+        */
         $ordered = $this->getOrderedUninstall();
         $ok = true;
-
         $ordered->forAll(static function ($id, $x) use ($ok): bool {
             $x->forAll(static function ($j, array $z) use ($ok, $id): bool {
                 $ok = $ok
@@ -126,13 +167,13 @@ class MigrationBuilder
     {
         $migrations = new ArrayCollection();
 
+        // collection = addMigration : Migration Class
         $this->collection->forAll(static function ($k, $x) use ($migrations): bool {
             foreach ($x->getOrderedMigration() as $key => $method) {
                 if (null === $sub = $migrations->get($key)) {
                     $sub = new ArrayCollection();
                     $migrations->set($key, $sub);
                 }
-
                 $sub->add([
                     'object' => $x,
                     'migration' => $method,
