@@ -24,6 +24,7 @@ use Symfony\Bridge\Twig\Form\TwigRendererEngine;
 use Symfony\Component\Form\FormRenderer;
 use Symfony\Component\Security\Csrf\CsrfTokenManager;
 use Twig\Environment;
+use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 use Twig\RuntimeLoader\FactoryRuntimeLoader;
 use Twig\TwigFilter;
@@ -48,7 +49,9 @@ class TemplateEngine implements TemplateEngineInterface
         $twig = new Environment(new FilesystemLoader([
             $vendorTwigBridgeDir.'/Resources/views/Form',
             __DIR__.'/../Resources/views/Form',
-        ]), [// 'cache' => sprintf('%s/../../../../../../assets/cache/twig/', __DIR__),
+        ]), [
+            'debug' => true
+            // 'cache' => sprintf('%s/../../../../../../assets/cache/twig/', __DIR__),
         ]);
 
         $twig->getLoader()->addPath(__DIR__.'/../Resources/views', 'telnowedge');
@@ -61,6 +64,7 @@ class TemplateEngine implements TemplateEngineInterface
             },
         ]));
 
+        $twig->addExtension(new DebugExtension());
         $twig->addExtension(new FormExtension());
 
         $filter = new TwigFilter('fpbxtrans', static function ($string): string {
