@@ -22,8 +22,8 @@ use Exception;
 
 class NoResultException extends Exception
 {
-    public function __construct($code = 0, $e = null)
+    public function __construct($mes = '', $code = 0, $e = null)
     {
-        parent::__construct('', $code, $e);
+        parent::__construct($mes, $code, $e);
     }
 }
