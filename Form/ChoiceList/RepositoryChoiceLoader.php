@@ -28,7 +28,7 @@ use function is_object;
 
 class RepositoryChoiceLoader implements ChoiceLoaderInterface
 {
-    private ArrayChoiceList $choiceList;
+    private ?ArrayChoiceList $choiceList = null;
 
     public function __construct(private readonly ArrayCollection $collection) {}
 
@@ -37,7 +37,6 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
         if ([] === $values) {
             return [];
         }
-
         return $this->loadChoiceList($value)->getChoicesForValues($values);
     }
 
@@ -52,6 +51,7 @@ class RepositoryChoiceLoader implements ChoiceLoaderInterface
 
     public function loadValuesForChoices(array $choices, ?callable $value = null): array
     {
+
         if ([] === $choices) {
             return [];
         }
