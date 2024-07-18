@@ -1,7 +1,7 @@
 services:
   _defaults:
     autowire: true
-    autoconfigure: false
+    autoconfigure: true
     public: true
 
   template_engine:
@@ -10,7 +10,8 @@ services:
       - '@security.csrf.token_manager'
 
   twig:
-    class: Twig_Environment
+    class: Twig\Environment
     factory: [ '@template_engine', 'getTemplateEngine' ]
 
-
+  Twig\Environment :
+    alias : twig

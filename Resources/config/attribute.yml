@@ -1,7 +1,7 @@
 services:
   _defaults:
     autowire: true
-    autoconfigure: false
+    autoconfigure: true
     public: true
 
   annotation.reader:
@@ -10,3 +10,7 @@ services:
       - method: addGlobalIgnoredName
         arguments:
           - 'required'
+
+
+  Doctrine\Common\Annotations\AnnotationReader:
+    alias : annotation.reader

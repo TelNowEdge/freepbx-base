@@ -1,7 +1,7 @@
 services:
   _defaults:
     autowire: true
-    autoconfigure: false
+    autoconfigure: true
     public: true
 
   TelNowEdge\FreePBX\Base\Logger\LoggerFactory:
@@ -11,3 +11,6 @@ services:
   logger:
     class: Monolog\Logger
     factory: ['@TelNowEdge\FreePBX\Base\Logger\LoggerFactory', 'createLogger']
+
+  Monolog\Logger:
+    alias: logger

@@ -1,8 +1,11 @@
 services:
   _defaults:
     autowire: true
-    autoconfigure: false
+    autoconfigure: true
     public: true
 
   event_dispatcher:
     class: Symfony\Component\EventDispatcher\EventDispatcher
+
+  Symfony\Component\EventDispatcher\EventDispatcher:
+    alias : event_dispatcher

@@ -1,12 +1,15 @@
 services:
   _defaults:
     autowire: true
-    autoconfigure: false
+    autoconfigure: true
     public: true
 
   form_factory:
     class: Symfony\Component\Form\FormFactoryInterface
     factory: [ '@form_factory.builder', 'getFormFactory' ]
+
+  Symfony\Component\Form\FormFactoryInterface:
+    alias : form_factory
 
   form_factory.builder:
     class: Symfony\Component\Form\FormFactoryBuilderInterface

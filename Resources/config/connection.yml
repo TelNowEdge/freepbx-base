@@ -1,15 +1,30 @@
 services:
   _defaults:
     autowire: true
-    autoconfigure: false
+    autoconfigure: true
     public: true
 
   TelNowEdge\FreePBX\Base\Connection\ConnectionFactory:
     arguments:
       $ampConfManager: '@TelNowEdge\FreePBX\Base\Manager\AmpConfManager'
 
+
+  # [ERROR : "Cannot autowire service "(...)\Resources\Migrations\PhpMigrations\(CtiPhpMigration)":
+  # argument "$defaultConnection" of method "__construct()" references class
+  # "Doctrine\DBAL\Connection" but no such service exists. You should maybe alias this class "]
+
+  # Can't use alias because it must be namespace and namespace is same for all (Doctrine\DBAL\Connection\) :
+  ##  Doctrine\DBAL\Connection:
+  ##    alias : default_connection
+
+  # So Each connection is detailed in its service.yml
+  # Exemple :
+  ##  TelNowEdge\Module\tnecallcenter\Resources\Migrations\PhpMigrations\CtiPhpMigration:
+  ##    arguments:
+  ##      $defaultConnection: '@default_connection'
+
   default_connection:
-    class: Doctrine\DBAL\Connection
+    class: Doctrine\DBAL\Connection\
     factory: ['@TelNowEdge\FreePBX\Base\Connection\ConnectionFactory', 'getDefaultConnection']
 
   cdr_connection:

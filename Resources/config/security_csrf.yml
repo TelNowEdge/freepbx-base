@@ -1,7 +1,7 @@
 services:
   _defaults:
     autowire: true
-    autoconfigure: false
+    autoconfigure: true
     public: true
 
   security.csrf.token_generator:
@@ -24,3 +24,9 @@ services:
       - '@security.csrf.token_generator'
       - '@security.csrf.token_storage'
       - '@request_stack'
+
+  Symfony\Component\Security\Csrf\CsrfTokenManager:
+    alias : security.csrf.token_manager
+
+  Symfony\Component\Security\Csrf\TokenStorage\SessionTokenStorage:
+    alias: security.csrf.token_storage
