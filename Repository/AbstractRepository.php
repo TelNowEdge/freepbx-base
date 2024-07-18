@@ -125,23 +125,22 @@ abstract class AbstractRepository
 
         foreach ($array as $prop => $value) {
             $method = sprintf('set%s', ucfirst($prop));
-
-            if (true === $reflector->hasMethod($method)) {
-                $reflectMethod = $reflector->getMethod($method);
-                if ($value !== null) {
-                    $reflectMethod->invoke($class, $value);
-                } else {
-                    $param = $reflectMethod->getParameters()[0];
-                    if ($param->hasType()){
-                        $type = $param->getType();
-                        if ($type instanceof ReflectionNamedType && $type->allowsNull()) {
-                            $reflectMethod->invoke($class, $value);
-                        }
-                    }
-                }
-            } else {
+            if (null === $reflectMethod = $reflector->getMethod($method)) {
                 throw new \Exception(sprintf('%s:%s is not callable', $fqn, $method));
             }
+
+            if (null === $value) {
+                //TODO If many parameters
+                $param = $reflectMethod->getParameters()[0];
+                $type = $param->getType();
+
+                if (null !== $type && !$type->allowsNull()) {
+                    continue;
+                }
+            }
+
+            $reflectMethod->invoke($class, $value);
+
         }
 
         return $class;
