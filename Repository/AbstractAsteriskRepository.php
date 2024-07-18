@@ -76,19 +76,15 @@ abstract class AbstractAsteriskRepository
     }
 
     /**
-     * @param $family
-     * @param $key
-     *
      * @throws NoResultException
      */
     public function show($family, $key): array
     {
         $request = sprintf('%s/%s', $family, $key);
-
         $res = $this->connection->database_show($request);
 
         if (empty($res)) {
-            throw new NoResultException();
+            throw new NoResultException('No results found for family ' . $family);
         }
 
         return $res;
@@ -99,7 +95,7 @@ abstract class AbstractAsteriskRepository
         $out = [];
 
         foreach ($res as $x) {
-            $out[$x->a__key] = $x->a__value;
+            $out[$x["a__key"]] = $x["a__value"];
         }
 
         return $this->sqlToArray($out);
@@ -158,7 +154,6 @@ abstract class AbstractAsteriskRepository
         if (false === $res = $result->fetchAssociative()) {
             throw new NoResultException();
         }
-
         return $res;
     }
 
