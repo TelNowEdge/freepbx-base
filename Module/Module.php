@@ -73,7 +73,7 @@ abstract class Module extends FreePBX_Helpers
         $this->database = $freepbx->Database;
         $this->freepbx = $freepbx;
         $this->container = ContainerBuilderFactory::getInstance(
-            true,
+            false,
             true
         );
     }
@@ -83,7 +83,7 @@ abstract class Module extends FreePBX_Helpers
         ContainerBuilderFactory::dropCache();
     }
 
-    public function getContainer()
+    public function getContainer(): ContainerBuilder|TelNowEdgeCachedContainer
     {
         return $this->container;
     }
