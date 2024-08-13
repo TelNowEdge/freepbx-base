@@ -24,7 +24,7 @@ services:
   ##      $defaultConnection: '@default_connection'
 
   default_connection:
-    class: Doctrine\DBAL\Connection\
+    class: Doctrine\DBAL\Connection
     factory: ['@TelNowEdge\FreePBX\Base\Connection\ConnectionFactory', 'getDefaultConnection']
 
   cdr_connection:

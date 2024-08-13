@@ -255,12 +255,11 @@ services:
         arguments:
           - '@AsteriskManager'
 
-  TelNowEdge\FreePBX\Base\Manager\DevStateManager:
-    calls:
-      - method: setConnection
-        arguments:
-          - '@AsteriskManager'
-
+  TelNowEdge\FreePBX\Base\Manager\DevStateManager: ~
+#    calls:
+#      - method: setConnection
+#        arguments:
+#          - '@AsteriskManager'
 
   TelNowEdge\FreePBX\Base\Manager\SendRequestManager:
     calls:
