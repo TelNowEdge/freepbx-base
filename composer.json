@@ -12,11 +12,6 @@
       "email": "bernard.merindol@telnowedge.com"
     }
   ],
-  "autoload": {
-    "psr-4": {
-      "TelNowEdge\\FreePBX\\Base\\": ""
-    }
-  },
   "require": {
     "doctrine/annotations": "^2.0",
     "symfony/cache": "^6.4",
@@ -37,7 +32,8 @@
     "ext-ldap": "*",
     "ext-openssl": "*",
     "ext-curl": "*",
-    "symfony/string": "^7.1"
+    "symfony/string": "^6.4.3",
+    "ext-pdo": "*"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "v3.39.0",
