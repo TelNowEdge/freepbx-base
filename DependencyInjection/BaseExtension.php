@@ -31,11 +31,11 @@ class BaseExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
-
-
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
+
+        $container->setParameter('freepbx.root_dir', __DIR__);
 
         $this
             ->registerLoggerConfiguration($config, $container, $loader)
@@ -54,7 +54,6 @@ class BaseExtension extends Extension
             ->registerClientConfiguration($config, $container, $loader);
 
 
-        //$container->setParameter('freepbx.root_dir', dirname($container->get('request')->server->get('SCRIPT_FILENAME')));
 
         $loader->load('services.yml');
 

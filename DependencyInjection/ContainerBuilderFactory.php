@@ -64,9 +64,9 @@ class ContainerBuilderFactory
 
     public static function dropCache(): bool
     {
-        // $file = sprintf('%s/../../../../../../assets/cache/container.php', __DIR__);
+         $file = sprintf('%s/../../../../../../assets/cache/container.php', __DIR__);
 
-        $file = '/var/www/admin/assets/cache/container.php';
+//        $file = '/var/www/admin/assets/cache/container.php';
 
         if (false === file_exists($file)) {
             return true;
@@ -85,9 +85,7 @@ class ContainerBuilderFactory
             }
 
             $classLoader = preg_replace('/\\\\/', '/', $match[1]);
-
-            // require sprintf('%s/../../../../../../modules/%s.php', __DIR__, $classLoader);
-            require sprintf('/var/www/admin/modules/%s.php', $classLoader);
+             require sprintf('%s/../../../../../../modules/%s.php', __DIR__, $classLoader);
         });
     }
 
@@ -96,9 +94,9 @@ class ContainerBuilderFactory
         $action = false === isset($_GET['action']) ? null : $_GET['action'];
         $forceLoading = false;
         $display = false === isset($_GET['display']) ? null : $_GET['display'];
-        $file = '/var/www/admin/assets/cache/container.php';
+//        $file = '/var/www/admin/assets/cache/container.php';
 
-        // $file = sprintf('%s/../../../../../../assets/cache/container.php', __DIR__);
+         $file = sprintf('%s/../../../../../../assets/cache/container.php', __DIR__);
 
         $containerConfigCache = new ConfigCache($file, $debug);
 
@@ -188,8 +186,8 @@ class ContainerBuilderFactory
     ): void {
         $modules = FreePBX::Modules()->getActiveModules(true);
 
-        foreach (new DirectoryIterator('/var/www/admin/modules/') as $child) {
-            // foreach (new \DirectoryIterator(__DIR__.'/../../../../../../modules/') as $child) {
+//        foreach (new DirectoryIterator('/var/www/admin/modules/') as $child) {
+         foreach (new \DirectoryIterator(__DIR__.'/../../../../../../modules/') as $child) {
             if (false === $child->isDir()) {
                 continue;
             }

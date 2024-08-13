@@ -225,17 +225,6 @@ services:
           - '@TelNowEdge\FreePBX\Base\Manager\HintManager'
 
   # Managers *************************************************************
-#  TelNowEdge\FreePBX\Base\Manager\:
-#    resource: '../../Manager/'
-#    calls:
-#      - method: setConnection
-#        arguments:
-#          - '@AsteriskManager'
-#    exclude:
-#      - '../../Manager/AmpConfManager.php'
-#      - '../../Manager/AsteriskManagerFactory.php'
-#      - '../../Manager/ManagerFactory.php'
-#      - '../../Manager/MemcachedFactory.php'
 
   TelNowEdge\FreePBX\Base\Manager\UserEventManager:
     calls:
@@ -256,10 +245,6 @@ services:
           - '@AsteriskManager'
 
   TelNowEdge\FreePBX\Base\Manager\DevStateManager: ~
-#    calls:
-#      - method: setConnection
-#        arguments:
-#          - '@AsteriskManager'
 
   TelNowEdge\FreePBX\Base\Manager\SendRequestManager:
     calls:
@@ -280,122 +265,123 @@ services:
   # Globals *************************************************************
   controllers:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Controller/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Controller/'
     parent: TelNowEdge\FreePBX\Base\Controller\AbstractController
     tags:
       - "telnowedge.controller"
 
   repositories:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Repository/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Repository/'
     parent: TelNowEdge\FreePBX\Base\Repository\AbstractRepository
 
   simple_repositories:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Repository/Simple/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Repository/Simple/'
     parent: TelNowEdge\FreePBX\Base\Repository\AbstractRepository
 
   notmapped_repositories:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Repository/NotMapped/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Repository/NotMapped/'
     parent: TelNowEdge\FreePBX\Base\Repository\AbstractRepository
 
   asterisk_repositories:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Repository/Asterisk/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Repository/Asterisk/'
     parent: TelNowEdge\FreePBX\Base\Repository\AbstractAsteriskRepository
 
   ldap_repositories:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Repository/Ldap/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Repository/Ldap/'
     parent: TelNowEdge\FreePBX\Base\Repository\AbstractLdapRepository
 
   filesystem_repositories:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Repository/FileSystem/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Repository/FileSystem/'
     parent: TelNowEdge\FreePBX\Base\Repository\AbstractFileSystemRepository
 
   db_handlers:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Handler/DbHandler/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Handler/DbHandler/'
     parent: TelNowEdge\FreePBX\Base\Handler\AbstractDbHandler
 
   ast_handlers:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Handler/AstHandler/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Handler/AstHandler/'
     parent: TelNowEdge\FreePBX\Base\Handler\AbstractAstHandler
 
   fileSystem_handlers:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Handler/FileSystemHandler/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Handler/FileSystemHandler/'
     parent: TelNowEdge\FreePBX\Base\Handler\AbstractFileSystemHandler
 
   ldap_handlers:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Handler/LdapHandler/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Handler/LdapHandler/'
     parent: TelNowEdge\FreePBX\Base\Handler\AbstractLdapHandler
 
   managers:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Manager/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Manager/'
 
   providers:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Provider/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Provider/'
 
   helpers:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Helpers/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Helpers/'
 
   helper:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Helper/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Helper/'
 
   wrappers:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Wrapper/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Wrapper/'
 
   sql_migrations:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Resources/Migrations/SqlMigrations/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Resources/Migrations/SqlMigrations/'
     parent: TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractSqlMigration
 
   php_migrations:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Resources/Migrations/PhpMigrations/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Resources/Migrations/PhpMigrations/'
     parent: TelNowEdge\FreePBX\Base\Resources\Migrations\AbstractPhpMigration
 
   event_subscribers:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/EventSubscriber/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/EventSubscriber/'
     tags:
       - "kernel.event_subscriber"
 
   generator_dialPlans:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/DialPlan/Generator/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/DialPlan/Generator/'
     parent: TelNowEdge\FreePBX\Base\DialPlan\Generator\AbstractGenerator
 
   file_dialPlans:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/DialPlan/File/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/DialPlan/File/'
     parent: TelNowEdge\FreePBX\Base\DialPlan\File\AbstractFile
 
   forms:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Form/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Form/'
     tags:
       - "form.type"
 
   utils:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Util/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Util/'
+
 
   modules_validators:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Validator/Constraints/*Validator.php'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Validator/Constraints/*Validator.php'
     tags: [validator.constraint_validator]
 
   models:
     namespace: TelNowEdge\Module\
-    resource: '/../../../var/www/admin/modules/*/Model/'
+    resource: '%freepbx.root_dir%/../../../../../../modules/*/Model'
