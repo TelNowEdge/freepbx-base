@@ -12,6 +12,11 @@
       "email": "bernard.merindol@telnowedge.com"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "TelNowEdge\\FreePBX\\Base\\": ""
+    }
+  },
   "require": {
     "doctrine/annotations": "^2.0",
     "symfony/cache": "^6.4",
