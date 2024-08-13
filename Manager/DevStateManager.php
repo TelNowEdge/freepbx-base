@@ -27,16 +27,12 @@ class DevStateManager
      * class AGI_AsteriskManager (libraries/php-asmanager.php).
      */
     protected AGI_AsteriskManager $connection;
-
-    public function setConnection(AGI_AsteriskManager $connection): void
+    public function __construct(AGI_AsteriskManager $connection)
     {
         $this->connection = $connection;
     }
 
     /**
-     * @param mixed $hint
-     * @param mixed $state
-     *
      * @throws Exception
      */
     public function update($hint, $state): true
@@ -46,7 +42,7 @@ class DevStateManager
         ];
 
         try {
-            $this->connection->send_request('Command', $array);
+            $res = $this->connection->send_request('Command', $array);
         } catch (Exception $e) {
             throw new Exception(sprintf('Error with: [%s]', $array['command']), 0, $e);
         }
