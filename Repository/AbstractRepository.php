@@ -88,7 +88,7 @@ abstract class AbstractRepository
         $res = $result->fetchAllAssociative();
 
         if (empty($res)) {
-            throw new NoResultException();
+            return [];
         }
 
         return $res;
