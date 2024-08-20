@@ -76,6 +76,10 @@ abstract class AbstractRepository
             throw new NoResultException();
         }
 
+        if (empty($res)) {
+            return [];
+        };
+
         return $res;
     }
 
