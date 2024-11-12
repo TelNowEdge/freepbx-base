@@ -1,5 +1,4 @@
 {% use "freepbx_bootstrap_3_horizontal_layout.html.twig" %}
-
 {# Big ack because FPBX gui_html create the parent whole structure #}
 {%- block form_rows -%}
   {% for child in form %}
@@ -8,6 +7,11 @@
 {%- endblock form_rows -%}
 
 {%- block form_row -%}
+  <style>
+      label.required:after {
+          content: "* ";
+      }
+  </style>
   <div class="element-container">
     <div class="row">
       <div class="col-md-12">
@@ -50,7 +54,7 @@
 {%- block choice_widget_expanded -%}
   <div class="radioset">
     {%- for child in form %}
-      <input type="radio" class="form-control" name="{{full_name}}" id="{{ child.vars.id }}" value="{{ child.vars.value }}" {{ value == child.vars.value ? 'checked' : '' }} />
+      <input type="radio" class="form-control" name="{{full_name}}" id="{{ child.vars.id }}" value="{{ child.vars.value }}" {{ value == child.vars.value ? 'checked' : '' }} {{ child.vars.disabled ? 'disabled' : '' }} />
       {{ form_label(child) }}
     {% endfor %}
   </div>
