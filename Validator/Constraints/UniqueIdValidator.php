@@ -81,14 +81,13 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
         }
 
         try {
-            $res = $method
-                ->invoke($service, $fieldValue);
+            $res = $method->invoke($service, $fieldValue);
         } catch (NoResultException $e) {
             return;
         }
 
         // Update mode
-        if ($value->getId() === $res->getId()) {
+        if ($fieldValue === $res->getId()) {
             return;
         }
 
