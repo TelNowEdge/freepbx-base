@@ -38,7 +38,8 @@
     "ext-openssl": "*",
     "ext-curl": "*",
     "symfony/string": "^6.4.3",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "symfony/intl": "^7.0"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "v3.39.0",
