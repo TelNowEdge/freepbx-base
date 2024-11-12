@@ -76,10 +76,6 @@ abstract class AbstractRepository
             throw new NoResultException();
         }
 
-        if (empty($res)) {
-            return [];
-        };
-
         return $res;
     }
 
@@ -90,11 +86,9 @@ abstract class AbstractRepository
     protected function fetchAll(Result $result): array
     {
         $res = $result->fetchAllAssociative();
-
-        if (empty($res)) {
-            return [];
+        if (true === empty($res)) {
+            throw new NoResultException();
         }
-
         return $res;
     }
 
