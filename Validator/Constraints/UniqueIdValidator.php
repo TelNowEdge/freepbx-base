@@ -87,7 +87,7 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
         }
 
         // Update mode
-        if ($fieldValue === $res->getId()) {
+        if ($value->getId() === $res->getId()) {
             return;
         }
 
