@@ -52,7 +52,7 @@ class TemplateEngine implements TemplateEngineInterface
         ]), [
             'debug' => true,
             'auto_reload' => true,
-            'cache' => sprintf('%s/../../../var/www/admin/assets/cache/twig/', __DIR__),
+            'cache' => sprintf('%s/../../../../../../assets/cache/twig/', __DIR__),
         ]);
 
         $twig->getLoader()->addPath(__DIR__.'/../Resources/views', 'telnowedge');
