@@ -20,12 +20,14 @@ namespace TelNowEdge\FreePBX\Base\Model\Annotation;
 
 use Attribute;
 
-#[Attribute] class Migration
+#[Attribute]
+class Migration
 {
     public function __construct(
         public bool $reinstall = false,
         public string $connection = 'connection',
         public bool $doLast = false,
+        public bool $playAgain = false,
     )
     {
     }
