@@ -73,8 +73,8 @@ abstract class Module extends FreePBX_Helpers
         $this->database = $freepbx->Database;
         $this->freepbx = $freepbx;
         $this->container = ContainerBuilderFactory::getInstance(
-            false,
-            true
+            0 === $this->config->get('TNE_DEBUG') ? false : true,
+            $disabledCache,
         );
     }
 
