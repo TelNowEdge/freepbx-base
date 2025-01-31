@@ -210,9 +210,6 @@ services:
     arguments:
       - 'default'
 
-  Memcached :
-    alias : memcached_default_connection
-
   TelNowEdge\FreePBX\Base\Manager\MemcachedFactory: ~
 
   TelNowEdge\FreePBX\Base\Manager\ManagerFactory:
