@@ -64,7 +64,7 @@ abstract class AbstractController implements ControllerInterface
 
     protected function render($template, $data = []): string
     {
-        $nsTemplate = sprintf('@%s/%s', static::getViewsNamespace(), $template);
+        $nsTemplate = sprintf('@%s/%s', $this->getViewsNamespace(), $template);
 
         return $this->container->get('twig')->render($nsTemplate, $data);
     }
