@@ -20,8 +20,8 @@ namespace TelNowEdge\FreePBX\Base\Traits;
 
 trait LdapTrait
 {
-    protected function escape($string): string
+    protected function escape(?string $string): string
     {
-        return ldap_escape($string);
+        return $string !== null ? ldap_escape($string) : '';
     }
 }
