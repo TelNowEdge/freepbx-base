@@ -76,6 +76,10 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
             return;
         }
 
+        if ('tempId' === $constraint->field && null === $fieldValue) {
+            return;
+        }
+
         if (is_object($fieldValue)) {
             $fieldValue = $fieldValue->getId();
         }
