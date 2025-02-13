@@ -20,13 +20,12 @@ namespace TelNowEdge\FreePBX\Base\Validator\Constraints;
 
 use ReflectionClass;
 use ReflectionException;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use function is_object;
 
-class CompoundUniqueValidator extends ConstraintValidator implements ContainerAwareInterface
+class CompoundUniqueValidator extends ConstraintValidator
 {
     private ?ContainerInterface $container = null;
 
@@ -36,8 +35,6 @@ class CompoundUniqueValidator extends ConstraintValidator implements ContainerAw
     }
 
     /**
-     * @param mixed $class
-     *
      * @throws ReflectionException
      */
     public function validate($class, Constraint $constraint): void

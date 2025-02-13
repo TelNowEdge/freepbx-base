@@ -72,12 +72,16 @@ class UniqueIdValidator extends ConstraintValidator implements ContainerAwareInt
         $fieldMethod = $reflModel->getMethod(sprintf('get%s', ucfirst($constraint->field)));
         $fieldValue = $fieldMethod->invoke($value);
 
-        if (is_object($fieldValue)) {
-            $fieldValue = $fieldValue->getId();
-        }
-
         if (null === $fieldValue && (bool)$constraint->nullable) {
             return;
+        }
+
+        if ('tempId' === $constraint->field && null === $fieldValue) {
+            return;
+        }
+
+        if (is_object($fieldValue)) {
+            $fieldValue = $fieldValue->getId();
         }
 
         try {
