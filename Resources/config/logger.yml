@@ -9,8 +9,8 @@ services:
       $ampConfManager: '@TelNowEdge\FreePBX\Base\Manager\AmpConfManager'
 
   logger:
-    class: Monolog\Logger
+    class: TelNowEdge\FreePBX\Base\Logger\Logger
     factory: ['@TelNowEdge\FreePBX\Base\Logger\LoggerFactory', 'createLogger']
 
-  Monolog\Logger:
+  TelNowEdge\FreePBX\Base\Logger\Logger:
     alias: logger

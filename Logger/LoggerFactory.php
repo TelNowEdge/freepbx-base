@@ -21,7 +21,8 @@ namespace TelNowEdge\FreePBX\Base\Logger;
 use Monolog\Handler\FingersCrossedHandler;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
+use Monolog\Logger as MonologLogger;
+use TelNowEdge\FreePBX\Base\Logger\Logger;
 use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 
 readonly class LoggerFactory
@@ -31,7 +32,6 @@ readonly class LoggerFactory
     public function createLogger(): Logger
     {
         $logger = new Logger('App');
-
         if (1 === $this->ampConfManager->get('FPBXDBUGDISABLE')) {
             $nullHandler = new NullHandler();
             $logger->pushHandler($nullHandler);
@@ -44,13 +44,13 @@ readonly class LoggerFactory
             : '/var/log/asterisk/freepbx_dbug';
 
         if (1 === $this->ampConfManager->get('DEVEL')) {
-            $streamHandler = new StreamHandler($file, Logger::DEBUG);
+            $streamHandler = new StreamHandler($file, MonologLogger::DEBUG);
             $logger->pushHandler($streamHandler);
 
             return $logger;
         }
 
-        $streamHandler = new StreamHandler($file, Logger::DEBUG);
+        $streamHandler = new StreamHandler($file, MonologLogger::DEBUG);
         $fingersCrossedHandler = new FingersCrossedHandler($streamHandler, Logger::WARNING);
         $logger->pushHandler($fingersCrossedHandler);
 
