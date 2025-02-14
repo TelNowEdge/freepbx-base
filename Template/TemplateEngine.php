@@ -23,6 +23,7 @@ use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Bridge\Twig\Form\TwigRendererEngine;
 use Symfony\Component\Form\FormRenderer;
 use Symfony\Component\Security\Csrf\CsrfTokenManager;
+use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
@@ -39,19 +40,20 @@ class TemplateEngine implements TemplateEngineInterface
      */
     private Environment $twig;
 
-    public function __construct(CsrfTokenManager $csrfManager)
+    public function __construct(CsrfTokenManager $csrfManager, AmpConfManager $ampConfManager)
     {
         $defaultFormTheme = 'freepbx_layout_page.html.twig';
 
         $appVariableReflection = new ReflectionClass('\Symfony\Bridge\Twig\AppVariable');
         $vendorTwigBridgeDir = dirname($appVariableReflection->getFileName());
+        $isDebug = 1 === $ampConfManager->get('TNE_DEBUG');
 
         $twig = new Environment(new FilesystemLoader([
             $vendorTwigBridgeDir.'/Resources/views/Form',
             __DIR__.'/../Resources/views/Form',
         ]), [
-            'debug' => true,
-            'auto_reload' => true,
+            'debug' => $isDebug,
+            'auto_reload' => $isDebug,
             'cache' => sprintf('%s/../../../../../../assets/cache/twig/', __DIR__),
         ]);
 
@@ -65,7 +67,10 @@ class TemplateEngine implements TemplateEngineInterface
             },
         ]));
 
-        $twig->addExtension(new DebugExtension());
+        if ($isDebug) {
+            $twig->addExtension(new DebugExtension());
+        }
+
         $twig->addExtension(new FormExtension());
 
         $filter = new TwigFilter('fpbxtrans', static function ($string): string {
