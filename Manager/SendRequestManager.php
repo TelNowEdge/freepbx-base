@@ -39,4 +39,34 @@ class SendRequestManager
             throw new \Exception(sprintf('Error with: %s', $request), 0, $e);
         }
     }
+
+    public function showPjsipContact($endpoint)
+    {
+        $details = [];
+
+        $this->connection->add_event_handler('ContactStatusDetail', function ($e, $d, $s, $p) use (&$details) {
+            $details = $d;
+        });
+
+        $this->connection->add_event_handler('EndpointDetailComplete', function ($e, $d, $s, $p) {
+            stream_set_timeout($this->connection->socket, 0, 1);
+        });
+
+        $response = $this->connection->send_request('PJSIPShowEndpoint', [ 'Endpoint' => $endpoint ]);
+        if ($response['Response'] == 'Success') {
+            $this->connection->wait_response(true);
+            stream_set_timeout($this->connection->socket, 30);
+        } else {
+            return false;
+        }
+
+        usleep(1000);
+        stream_set_blocking($this->connection->socket, false);
+        while (fgets($this->connection->socket)) { /* do nothing */ }
+        stream_set_blocking($this->connection->socket, true);
+        unset($this->connection->event_handlers['ContactStatusDetail']);
+        unset($this->connection->event_handlers['EndpointDetailComplete']);
+
+        return $details;
+    }
 }
