@@ -4,13 +4,17 @@ services:
     autoconfigure: true
     public: true
 
-  session:
-    class: TelNowEdge\FreePBX\Base\Session\Session
+  session.factory:
+    class: TelNowEdge\FreePBX\Base\Session\SessionFactory
     arguments:
       - '@session.storage'
       - '@session.attribute_bag'
       - '@session.flash_bag'
       - '@session.auto_expire_bag'
+
+  session:
+    class: Symfony\Component\HttpFoundation\Session\SessionInterface
+    factory: ['@session.factory', 'create']
 
   Symfony\Component\HttpFoundation\Session\SessionInterface:
     alias: session
