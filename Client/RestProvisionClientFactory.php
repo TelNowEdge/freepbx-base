@@ -22,32 +22,20 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use TelNowEdge\FreePBX\Base\Manager\AmpConfManager;
 
-class RestApiClientFactory
+class RestProvisionClientFactory
 {
     public function __construct(
         private AmpConfManager $ampConfManager,
     ) {
     }
 
-    public function createClient(?string $apiKey = null, int $timeout = 15): HttpClientInterface
+    public function createClient(?string $provisionKey = null, int $timeout = 15): HttpClientInterface
     {
-        $uri = 'https://localhost/api/v1/';
-
-        if ('yes' === $this->ampConfManager->get('TNE_API_URI_LOCALHOST')) {
-            $uri = 'http://localhost/api/v1/';
-        } elseif ('yes+debug' === $this->ampConfManager->get('TNE_API_URI_LOCALHOST')) {
-            $uri = 'http://localhost/api/v1/app_dev.php/';
-        } elseif (null !== ($configuredUri = $this->ampConfManager->get('TNE_API_URI'))) {
-            $uri = rtrim($configuredUri, '/') . '/';
-        }
+        $uri = 'http://provision:8080/';
 
         $headers = [
             'Content-Type' => 'application/json',
         ];
-
-        if (null !== $apiKey) {
-            $headers['x-api-key'] = $apiKey;
-        }
 
         return HttpClient::create([
             'base_uri' => $uri,

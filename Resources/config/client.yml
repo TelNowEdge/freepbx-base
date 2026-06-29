@@ -7,3 +7,7 @@ services:
   TelNowEdge\FreePBX\Base\Client\RestApiClientFactory:
     arguments:
       $ampConfManager: '@TelNowEdge\FreePBX\Base\Manager\AmpConfManager'
+
+  TelNowEdge\FreePBX\Base\Client\RestProvisionClientFactory:
+    arguments:
+      $ampConfManager: '@TelNowEdge\FreePBX\Base\Manager\AmpConfManager'
