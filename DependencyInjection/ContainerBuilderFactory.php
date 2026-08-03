@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright [2016] [TelNowEdge]
+ * Copyright 2026 TelNowEdge
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,13 @@
  * http://blog.mageekbox.net/?post/2011/07/14/Espace-de-noms-et-importations-de-classes
  */
 
+declare(strict_types=1);
+
 namespace TelNowEdge\FreePBX\Base\DependencyInjection;
 
 use DirectoryIterator;
 use FreePBX;
+use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
@@ -41,115 +44,102 @@ use TelNowEdgeCachedContainer;
 
 use const PHP_SAPI;
 
-class ContainerBuilderFactory
+final class ContainerBuilderFactory
 {
+    private const CACHE_FILE = '/../../../../../../assets/cache/container.php';
+    private const MODULES_DIRECTORY = '/../../../../../../modules';
+
     private static ?self $instance = null;
 
     private BaseContainerBuilder|TelNowEdgeCachedContainer $container;
 
-    public function __construct(bool $debug = false, bool $disabledCache = false)
-    {
-        static::autoloadTelNowEdgeModule();
-        $this->container = static::startContainer($debug, $disabledCache);
+    public function __construct(
+        bool $debug = false,
+        bool $disabledCache = false
+    ) {
+        self::autoloadTelNowEdgeModule();
+
+        $this->container = self::startContainer($debug, $disabledCache);
     }
 
-    public static function getInstance(bool $debug = false, bool $disabledCache = false): BaseContainerBuilder|TelNowEdgeCachedContainer
-    {
-        if (false === isset(static::$instance)) {
-            static::$instance = new static($debug, $disabledCache);
-        }
+    public static function getInstance(
+        bool $debug = false,
+        bool $disabledCache = false
+    ): BaseContainerBuilder|TelNowEdgeCachedContainer {
+        self::$instance ??= new self($debug, $disabledCache);
 
-        return static::$instance->container;
+        return self::$instance->container;
     }
 
     public static function dropCache(): bool
     {
-        $file = sprintf('%s/../../../../../../assets/cache/container.php', __DIR__);
+        $file = self::getCacheFile();
 
-        if (false === file_exists($file)) {
-            return true;
-        }
-
-        return unlink($file);
+        return !is_file($file) || unlink($file);
     }
 
-    private function autoloadTelNowEdgeModule(): void
+    private static function getCacheFile(): string
     {
-        // SearchHelper: TelNowEdge\Module
-        // Autoload to add my own NS starting by TelNowEdge\Module
-        spl_autoload_register(function ($class): void {
-            if (1 !== preg_match('/^TelNowEdge\\\\Module\\\\(.*)$/', $class, $match)) {
+        return __DIR__.self::CACHE_FILE;
+    }
+
+    private static function getModulesDirectory(): string
+    {
+        return __DIR__.self::MODULES_DIRECTORY;
+    }
+
+    private static function autoloadTelNowEdgeModule(): void
+    {
+        spl_autoload_register(static function (string $class): void {
+            if (!preg_match(
+                '/^TelNowEdge\\\\Module\\\\(.+)$/',
+                $class,
+                $matches
+            )) {
                 return;
             }
 
-            $classLoader = preg_replace('/\\\\/', '/', $match[1]);
-            require sprintf('%s/../../../../../../modules/%s.php', __DIR__, $classLoader);
+            $relativePath = str_replace('\\', '/', $matches[1]);
+            $file = self::getModulesDirectory().'/'.$relativePath.'.php';
+
+            if (is_file($file)) {
+                require_once $file;
+            }
         });
     }
 
-    private function startContainer(bool $debug, bool $disabledCache): BaseContainerBuilder|TelNowEdgeCachedContainer
-    {
-        $action = false === isset($_GET['action']) ? null : $_GET['action'];
-        $forceLoading = false;
-        $display = false === isset($_GET['display']) ? null : $_GET['display'];
+    private static function startContainer(
+        bool $debug,
+        bool $disabledCache
+    ): BaseContainerBuilder|TelNowEdgeCachedContainer {
+        $action = $_GET['action'] ?? null;
+        $display = $_GET['display'] ?? null;
+        $argv = $_SERVER['argv'] ?? [];
 
-        $file = sprintf('%s/../../../../../../assets/cache/container.php', __DIR__);
+        $cache = new ConfigCache(self::getCacheFile(), $debug);
 
-        $containerConfigCache = new ConfigCache($file, $debug);
-
-        $argv = $_SERVER['argv']
-        ?? [];
-
-        /*
-         * Module installation.
-         * So disable filter "by active" else I can't load module NS to install it.
-         */
-        if (
-            (PHP_SAPI === 'cli' && [] !== array_intersect(['ma', 'moduleadmin'], $argv))
-                || ('modules' === $display && 'process' === $action)
-        ) {
-            if (file_exists($containerConfigCache->getPath())) {
-                unlink($containerConfigCache->getPath());
-            }
-
-            $forceLoading = true;
-        }
+        $forceLoading = (
+            PHP_SAPI === 'cli'
+            && array_intersect(['ma', 'moduleadmin'], $argv) !== []
+        ) || (
+            $display === 'modules'
+            && $action === 'process'
+        );
 
         global $no_auth;
-        if (true === $no_auth) {
-            $forceLoading = true;
+
+        $forceLoading = $forceLoading || true === $no_auth;
+
+        if ($forceLoading && is_file($cache->getPath())) {
+            unlink($cache->getPath());
         }
 
-        if (
-            false === $containerConfigCache->isFresh()
-                || $forceLoading
-        ) {
+        if (!$cache->isFresh() || $forceLoading) {
             $container = new BaseContainerBuilder();
 
-            static::registerSelf($container);
-            static::registerModule($container, $forceLoading);
-
-            $container
-                ->addCompilerPass(
-                    new AddConstraintValidatorsPass(),
-                    PassConfig::TYPE_BEFORE_OPTIMIZATION,
-                    0
-                )
-                ->addCompilerPass(
-                    new FormPass(),
-                    PassConfig::TYPE_BEFORE_OPTIMIZATION,
-                    0
-                )
-                ->addCompilerPass(
-                    new ControllerPass(),
-                    PassConfig::TYPE_BEFORE_OPTIMIZATION,
-                    0
-                )
-                ->addCompilerPass(
-                    new RegisterListenersPass(),
-                    PassConfig::TYPE_BEFORE_OPTIMIZATION,
-                    0
-                );
+            self::registerSelf($container);
+            self::registerModules($container, $forceLoading);
+            self::registerCompilerPasses($container);
 
             $container->compile();
 
@@ -158,70 +148,144 @@ class ContainerBuilderFactory
             }
 
             $dumper = new PhpDumper($container);
-            $containerConfigCache->write(
-                $dumper->dump(['class' => 'TelNowEdgeCachedContainer']),
+
+            $cache->write(
+                $dumper->dump([
+                    'class' => TelNowEdgeCachedContainer::class,
+                ]),
                 $container->getResources()
             );
         }
 
-        require $file;
+        require_once $cache->getPath();
 
         return new TelNowEdgeCachedContainer();
     }
 
-    private function registerSelf(BaseContainerBuilder $container): void
-    {
-        $c = new BaseExtension();
+    private static function registerCompilerPasses(
+        BaseContainerBuilder $container
+    ): void {
+        $passes = [
+            new AddConstraintValidatorsPass(),
+            new FormPass(),
+            new ControllerPass(),
+            new RegisterListenersPass(),
+        ];
 
-        $container->registerExtension($c);
-        $container->loadFromExtension($c->getAlias());
+        foreach ($passes as $pass) {
+            $container->addCompilerPass(
+                $pass,
+                PassConfig::TYPE_BEFORE_OPTIMIZATION,
+                0
+            );
+        }
     }
 
-    private function registerModule(
+    private static function registerSelf(
+        BaseContainerBuilder $container
+    ): void {
+        $extension = new BaseExtension();
+
+        $container->registerExtension($extension);
+        $container->loadFromExtension($extension->getAlias());
+    }
+
+    private static function registerModules(
         BaseContainerBuilder $container,
         bool $forceLoading = false
     ): void {
-        $modules = FreePBX::Modules()->getActiveModules(true);
+        $activeModules = FreePBX::Modules()->getActiveModules(true);
 
-        foreach (new \DirectoryIterator(__DIR__.'/../../../../../../modules/') as $child) {
-            if (false === $child->isDir()) {
+        foreach (new DirectoryIterator(self::getModulesDirectory()) as $module) {
+            if ($module->isDot() || !$module->isDir()) {
                 continue;
             }
 
-            if (false === $forceLoading && false === isset($modules[$child->getFilename()])) {
+            $moduleName = $module->getFilename();
+
+            if (!$forceLoading && !isset($activeModules[$moduleName])) {
                 continue;
             }
 
-            $filePath = sprintf(
-                '%s/DependencyInjection/%sExtension.php',
-                $child->getPathname(),
-                ucfirst($child->getFilename())
+            self::registerModuleExtension(
+                $container,
+                $module,
+                $moduleName
             );
 
-            $extension = new SplFileInfo($filePath);
-
-            if (true === $extension->isReadable()) {
-                $fqdn = sprintf('\TelNowEdge\Module\%s\DependencyInjection\%sExtension', strtolower($child), ucfirst($child));
-
-                $instance = new $fqdn();
-                $container->registerExtension($instance);
-                $container->loadFromExtension($instance->getAlias());
-            }
-
-            $filePath = sprintf(
-                '%s/DependencyInjection/%sBundle.php',
-                $child->getPathname(),
-                ucfirst($child->getFilename())
+            self::registerModuleBundle(
+                $container,
+                $module,
+                $moduleName
             );
-
-            $extension = new SplFileInfo($filePath);
-
-            if (true === $extension->isReadable()) {
-                $fqdn = sprintf('\TelNowEdge\Module\%s\DependencyInjection\%sBundle', strtolower($child), ucfirst($child));
-
-                $instance = new $fqdn();
-                $instance->build($container);
-            }
         }
+    }
+
+    private static function registerModuleExtension(
+        BaseContainerBuilder $container,
+        SplFileInfo $module,
+        string $moduleName
+    ): void {
+        $className = ucfirst($moduleName);
+        $file = new SplFileInfo(sprintf(
+            '%s/DependencyInjection/%sExtension.php',
+            $module->getPathname(),
+            $className
+        ));
+
+        if (!$file->isReadable()) {
+            return;
+        }
+
+        $fqcn = sprintf(
+            'TelNowEdge\\Module\\%s\\DependencyInjection\\%sExtension',
+            strtolower($moduleName),
+            $className
+        );
+
+        if (!class_exists($fqcn)) {
+            throw new RuntimeException(sprintf(
+                'The module extension class "%s" was not found.',
+                $fqcn
+            ));
+        }
+
+        $extension = new $fqcn();
+
+        $container->registerExtension($extension);
+        $container->loadFromExtension($extension->getAlias());
+    }
+
+    private static function registerModuleBundle(
+        BaseContainerBuilder $container,
+        SplFileInfo $module,
+        string $moduleName
+    ): void {
+        $className = ucfirst($moduleName);
+        $file = new SplFileInfo(sprintf(
+            '%s/DependencyInjection/%sBundle.php',
+            $module->getPathname(),
+            $className
+        ));
+
+        if (!$file->isReadable()) {
+            return;
+        }
+
+        $fqcn = sprintf(
+            'TelNowEdge\\Module\\%s\\DependencyInjection\\%sBundle',
+            strtolower($moduleName),
+            $className
+        );
+
+        if (!class_exists($fqcn)) {
+            throw new RuntimeException(sprintf(
+                'The module bundle class "%s" was not found.',
+                $fqcn
+            ));
+        }
+
+        $bundle = new $fqcn();
+        $bundle->build($container);
     }
 }
