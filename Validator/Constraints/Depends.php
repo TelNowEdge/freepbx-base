@@ -44,7 +44,7 @@ class Depends extends Constraint
         parent::__construct($options, $groups, $payload);
     }
 
-    public function getDefaultOption(): array
+    public function getDefaultOptions(): array
     {
         return [
             'field',
