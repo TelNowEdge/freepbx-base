@@ -33,8 +33,8 @@ class Depends extends Constraint
         string $field,
         string $depends,
         array  $service,
-        string $message = null,
-        array  $groups = null,
+        ?string $message = null,
+        ?array  $groups = null,
         mixed  $payload = null,
         array  $options = [],
     )
