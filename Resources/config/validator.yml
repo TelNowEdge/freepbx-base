@@ -13,11 +13,9 @@ services:
 
   validator.builder:
     class: Symfony\Component\Validator\ValidatorBuilder
-    factory: ['Symfony\Component\Validator\Validation', createValidatorBuilder]
+    factory: ['Symfony\Component\Validator\Validation', 'createValidatorBuilder']
     calls:
-      - method: enableAnnotationMapping
-        arguments:
-          - '@annotation.reader'
+      - method: enableAttributeMapping
       - method: setConstraintValidatorFactory
         arguments:
           - '@validator.validator_factory'
