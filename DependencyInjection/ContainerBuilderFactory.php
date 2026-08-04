@@ -144,7 +144,7 @@ final class ContainerBuilderFactory
 
             self::registerModules(
                 $container,
-                loadInactiveModules: $isNoAuth,
+                loadInactiveModules: $isNoAuth || $isModuleManagement,
             );
 
             self::registerCompilerPasses($container);
