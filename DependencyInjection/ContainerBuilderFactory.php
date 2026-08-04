@@ -55,18 +55,18 @@ final class ContainerBuilderFactory
 
     public function __construct(
         bool $debug = false,
-        bool $disabledCache = false
+        bool $skipCacheWrite = false
     ) {
         self::autoloadTelNowEdgeModule();
 
-        $this->container = self::startContainer($debug, $disabledCache);
+        $this->container = self::startContainer($debug, $skipCacheWrite);
     }
 
     public static function getInstance(
         bool $debug = false,
-        bool $disabledCache = false
+        bool $skipCacheWrite = false
     ): BaseContainerBuilder|TelNowEdgeCachedContainer {
-        self::$instance ??= new self($debug, $disabledCache);
+        self::$instance ??= new self($debug, $skipCacheWrite);
 
         return self::$instance->container;
     }
@@ -110,40 +110,52 @@ final class ContainerBuilderFactory
 
     private static function startContainer(
         bool $debug,
-        bool $disabledCache
+        bool $skipCacheWrite,
     ): BaseContainerBuilder|TelNowEdgeCachedContainer {
         $action = $_GET['action'] ?? null;
-        $display = $_GET['display'] ?? null;
         $argv = $_SERVER['argv'] ?? [];
+        $display = $_GET['display'] ?? null;
+        $isAjaxRequest = 'ajax.php' === basename($_SERVER['SCRIPT_FILENAME'] ?? '');
 
         $cache = new ConfigCache(self::getCacheFile(), $debug);
 
-        $forceLoading = (
+        $isModuleManagement = (
             PHP_SAPI === 'cli'
             && array_intersect(['ma', 'moduleadmin'], $argv) !== []
         ) || (
-            $display === 'modules'
-            && $action === 'process'
+            'modules' === $display
+            && 'process' === $action
         );
 
         global $no_auth;
 
-        $forceLoading = $forceLoading || true === $no_auth;
+        $isNoAuth = true === $no_auth;
 
-        if ($forceLoading && is_file($cache->getPath())) {
+        if ($isModuleManagement && is_file($cache->getPath())) {
             unlink($cache->getPath());
         }
 
-        if (!$cache->isFresh() || $forceLoading) {
+        $mustBuildContainer = !$cache->isFresh();
+
+        if ($mustBuildContainer) {
             $container = new BaseContainerBuilder();
 
             self::registerSelf($container);
-            self::registerModules($container, $forceLoading);
+
+            self::registerModules(
+                $container,
+                loadInactiveModules: $isNoAuth,
+            );
+
             self::registerCompilerPasses($container);
 
             $container->compile();
 
-            if ($forceLoading || $disabledCache) {
+            $shouldWriteCache = !$skipCacheWrite
+            && !$isNoAuth
+            && !$isAjaxRequest;
+
+            if (!$shouldWriteCache) {
                 return $container;
             }
 
@@ -153,7 +165,7 @@ final class ContainerBuilderFactory
                 $dumper->dump([
                     'class' => TelNowEdgeCachedContainer::class,
                 ]),
-                $container->getResources()
+                $container->getResources(),
             );
         }
 
@@ -192,7 +204,7 @@ final class ContainerBuilderFactory
 
     private static function registerModules(
         BaseContainerBuilder $container,
-        bool $forceLoading = false
+        bool $loadInactiveModules = false
     ): void {
         $activeModules = FreePBX::Modules()->getActiveModules(true);
 
@@ -203,7 +215,7 @@ final class ContainerBuilderFactory
 
             $moduleName = $module->getFilename();
 
-            if (!$forceLoading && !isset($activeModules[$moduleName])) {
+            if (!$loadInactiveModules && !isset($activeModules[$moduleName])) {
                 continue;
             }
 

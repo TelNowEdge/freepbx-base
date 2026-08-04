@@ -64,7 +64,7 @@ abstract class Module extends FreePBX_Helpers
     /**
      * @throws Exception
      */
-    public function __construct($freepbx = null, $disabledCache = false)
+    public function __construct($freepbx = null, $skipCacheWrite = false)
     {
         parent::__construct($freepbx);
 
@@ -74,7 +74,7 @@ abstract class Module extends FreePBX_Helpers
         $this->freepbx = $freepbx;
         $this->container = ContainerBuilderFactory::getInstance(
             1 === $this->config->get('TNE_DEBUG'),
-            $disabledCache,
+            $skipCacheWrite,
         );
     }
 
